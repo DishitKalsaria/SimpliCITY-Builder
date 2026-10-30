@@ -1,0 +1,30 @@
+name: Verify SimpliCITY Builder
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Generate and validate four worlds
+        run: |
+          for theme in fairytale space custom clockwork; do
+            python3 simplicity-builder/scripts/build_portfolio.py --input "examples/${theme}-sample.json" --output "/tmp/${theme}.html"
+            python3 simplicity-builder/scripts/validate.py "examples/${theme}-sample.json" "/tmp/${theme}.html"
+          done
+      - name: Validate skill metadata (Agent Skills reference)
+        run: |
+          python3 -m pip install 'skills-ref==0.1.1'
+          agentskills validate simplicity-builder

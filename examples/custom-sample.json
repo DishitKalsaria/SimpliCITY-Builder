@@ -1,0 +1,56 @@
+{
+  "profile": {
+    "name": "Taylor Reed",
+    "headline": "Communications Specialist",
+    "summary": "A fictional communications professional interested in audience engagement and imaginative brand narratives.",
+    "links": []
+  },
+  "world": {
+    "title": "The Midnight Music Festival",
+    "tagline": "A career told through stages, soundchecks and headline performances.",
+    "theme": "midnight-festival",
+    "symbol": "🎸",
+    "accent": "#ffcf87",
+    "accent_secondary": "#e89fca",
+    "description": "Explore the stages and backstage moments of a creative career.",
+    "background": "#101324",
+    "background_secondary": "#342341",
+    "visual_name": "The nocturnal concert grounds",
+    "scene_svg": "<svg viewBox=\"0 0 620 520\"><circle cx=\"480\" cy=\"93\" r=\"40\" fill=\"#f6ca8e\" opacity=\"0.86\"/><path d=\"M0 425 L620 425 L620 520 L0 520 Z\" fill=\"#2a254b\"/><path d=\"M120 398 L200 215 L420 215 L503 398 Z\" fill=\"#653d76\"/><path d=\"M154 410 L200 230 L420 230 L467 410 Z\" fill=\"#7d537a\"/><rect x=\"226\" y=\"258\" width=\"168\" height=\"125\" rx=\"9\" fill=\"#1c1b35\"/><path d=\"M205 235 L308 159 L417 235 Z\" fill=\"#e09bba\"/><path d=\"M305 150 L305 104\" stroke=\"#ffd48e\" stroke-width=\"7\"/><circle cx=\"305\" cy=\"93\" r=\"10\" fill=\"#ffd48e\"/><path d=\"M226 255 L172 410\" stroke=\"#ffd48e\" stroke-width=\"9\" opacity=\"0.65\"/><path d=\"M395 255 L451 410\" stroke=\"#ffd48e\" stroke-width=\"9\" opacity=\"0.65\"/><circle cx=\"310\" cy=\"300\" r=\"24\" fill=\"#e6a0b8\"/><path d=\"M288 348 Q310 304 334 348 L334 378 L288 378 Z\" fill=\"#f4d092\"/><path d=\"M70 430 Q110 390 149 430 Q200 393 240 430 Q280 392 320 431 Q370 390 425 430 Q480 391 552 430 L620 520 L0 520 Z\" fill=\"#171831\"/><circle cx=\"80\" cy=\"155\" r=\"9\" fill=\"#e2a7ed\"/><circle cx=\"552\" cy=\"216\" r=\"6\" fill=\"#e2a7ed\"/><circle cx=\"130\" cy=\"90\" r=\"4\" fill=\"#f1c385\"/></svg>"
+  },
+  "sections": [
+    {
+      "id": "roles",
+      "name": "The Main Stage",
+      "symbol": "🎤",
+      "intro": "The professional roles at the center of the show.",
+      "entries": [
+        {
+          "title": "Communications Coordinator",
+          "subtitle": "Example Organization · 2024–2026",
+          "description": "In this fictional scenario, coordinated publishing calendars and helped write internal announcements.",
+          "tags": [
+            "Writing",
+            "Planning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "The Mixtape Lounge",
+      "symbol": "🎶",
+      "intro": "Example creative initiatives and campaigns.",
+      "entries": [
+        {
+          "title": "Soundcheck Newsletter",
+          "description": "A sample newsletter concept built to communicate new projects with playful language.",
+          "tags": [
+            "Editorial",
+            "Brand voice"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+# Quickstart for an AI assistant
+
+If this skill is installed, read `SKILL.md`, read the attached résumé with your available document tools, create `portfolio.json` from grounded facts and the user's arbitrary theme prompt, then run `scripts/build_portfolio.py` and `scripts/validate.py`. Return `index.html` as a downloadable artifact. No extra software is required for viewing output. Do not claim to have built files unless you executed the generator.
+
+For a link-only invocation, first retrieve the repository's `AI_START_HERE.md` and `simplicity-builder/SKILL.md`, then obtain the generator, HTML template and schema as files before attempting execution. A URL is not a runnable installation. If code execution or site retrieval is not available, explain the limitation and propose a capable host.

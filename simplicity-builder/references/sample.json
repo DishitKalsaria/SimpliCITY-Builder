@@ -1,0 +1,8 @@
+{
+  "profile": {"name": "Alex Rivers", "headline": "Product Designer & Creative Technologist", "summary": "A fictional example who turns research and prototypes into playful digital products.", "links": []},
+  "world": {"title": "The Kingdom of Curious Ideas", "tagline": "Every great solution begins with a little wonder.", "theme": "fairytale", "description": "Explore a fictional designer's journey through quests, guilds, and discoveries.", "symbol": "🏰"},
+  "sections": [
+    {"id": "experience", "name": "Castles of Experience", "symbol": "🏯", "intro": "Places where products were designed and teams worked together.", "entries": [{"title": "Product Designer", "subtitle": "Fictional Studio · 2023–2025", "description": "Worked on interface prototypes and usability research for a fictional digital product.", "tags": ["Product design", "Research"]}]},
+    {"id": "projects", "name": "Quests & Creations", "symbol": "🗝️", "intro": "Ideas turned into something people could explore.", "entries": [{"title": "The Storybook App", "description": "Built a fictional reading interface concept with an interactive prototype.", "tags": ["Prototyping"]}]}
+  ]
+}

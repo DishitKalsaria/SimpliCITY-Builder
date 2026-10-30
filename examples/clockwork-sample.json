@@ -1,0 +1,56 @@
+{
+  "profile": {
+    "name": "Taylor Reed",
+    "headline": "Communications Specialist",
+    "summary": "A fictional communications professional interested in audience engagement and imaginative brand narratives.",
+    "links": []
+  },
+  "world": {
+    "title": "The Clockwork Museum",
+    "tagline": "A career exhibited in curious rooms and mechanical discoveries.",
+    "theme": "clockwork-museum",
+    "symbol": "⚙️",
+    "accent": "#f0d38e",
+    "accent_secondary": "#9ddbbf",
+    "description": "Explore the stages and backstage moments of a creative career.",
+    "background": "#0d2025",
+    "background_secondary": "#243a39",
+    "visual_name": "A world of gears, rooms and curiosities",
+    "scene_svg": "<svg viewBox=\"0 0 620 520\"><circle cx=\"313\" cy=\"237\" r=\"170\" fill=\"#214b51\"/><circle cx=\"313\" cy=\"237\" r=\"145\" fill=\"none\" stroke=\"#e5ba70\" stroke-width=\"13\"/><circle cx=\"313\" cy=\"237\" r=\"98\" fill=\"#2a6b6d\"/><circle cx=\"313\" cy=\"237\" r=\"78\" fill=\"none\" stroke=\"#9ddbbf\" stroke-width=\"8\"/><path d=\"M313 237 L313 139\" stroke=\"#f0d38e\" stroke-width=\"12\" stroke-linecap=\"round\"/><path d=\"M313 237 L390 282\" stroke=\"#f0d38e\" stroke-width=\"9\" stroke-linecap=\"round\"/><circle cx=\"313\" cy=\"237\" r=\"16\" fill=\"#f0d38e\"/><rect x=\"225\" y=\"405\" width=\"182\" height=\"36\" rx=\"8\" fill=\"#936f61\"/><path d=\"M252 403 L252 372 L380 372 L380 403 Z\" fill=\"#d6b37b\"/><circle cx=\"128\" cy=\"324\" r=\"47\" fill=\"none\" stroke=\"#96d4b7\" stroke-width=\"16\"/><circle cx=\"507\" cy=\"155\" r=\"45\" fill=\"none\" stroke=\"#d5ad8b\" stroke-width=\"13\"/></svg>"
+  },
+  "sections": [
+    {
+      "id": "roles",
+      "name": "The Main Stage",
+      "symbol": "🎤",
+      "intro": "The professional roles at the center of the show.",
+      "entries": [
+        {
+          "title": "Communications Coordinator",
+          "subtitle": "Example Organization · 2024–2026",
+          "description": "In this fictional scenario, coordinated publishing calendars and helped write internal announcements.",
+          "tags": [
+            "Writing",
+            "Planning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "The Mixtape Lounge",
+      "symbol": "🎶",
+      "intro": "Example creative initiatives and campaigns.",
+      "entries": [
+        {
+          "title": "Soundcheck Newsletter",
+          "description": "A sample newsletter concept built to communicate new projects with playful language.",
+          "tags": [
+            "Editorial",
+            "Brand voice"
+          ]
+        }
+      ]
+    }
+  ]
+}
