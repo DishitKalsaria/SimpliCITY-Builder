@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
+# Generated real-person portfolios should not accidentally be committed
+portfolio.json
+/index.html
+*-demo.html
+out/
+dist/
