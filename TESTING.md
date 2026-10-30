@@ -1,88 +1,36 @@
-# Acceptance tests — SimpliCITY Builder v0.1.4
+# Test SimpliCITY Builder v0.1.5
 
-Use fictional résumés for public screenshots. For full acceptance use a résumé you have permission to process, then **do not publish its raw content**. Never post sensitive files in GitHub Issues.
-
-## Automated checks (local)
+## Automated tests
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 simplicity-builder/scripts/build_portfolio.py --input examples/clockwork-sample.json --output /tmp/clockwork.html
-python3 simplicity-builder/scripts/validate.py examples/clockwork-sample.json /tmp/clockwork.html
+python3 simplicity-builder/scripts/build_portfolio.py --input examples/space-sample.json --output space-demo.html
+python3 simplicity-builder/scripts/validate.py examples/space-sample.json space-demo.html
 ```
 
-## Human acceptance: installed skill
+All four examples are also built by GitHub Actions. The test suite checks SVG security, landmark labels, motion classes, mobile scene, résumé evidence, social metadata and publishing safety. An HTML validator pass is **not** a visual quality score.
 
-1. Install the packaged ZIP in Claude (with code execution) or copy `simplicity-builder/` into a Codex skills folder.
-2. Upload a résumé. Ask: `SimpliCITY Builder, make me a floating library in the clouds.`
-3. Verify `index.html` is actually downloadable and opens in a browser. The AI should not demand manual JSON entry.
-4. Open two locations, verify names, organizations, dates and accomplishments against the résumé. Check mobile and keyboard navigation, search and absence of broken links.
-5. Repeat with a materially different prompt (e.g., `a surreal street-food night market`) and check that the setting and *scene* differ, not merely titles/colors.
-
-## Human acceptance: paste repository URL
-
-Start a **new chat** in an AI app that can read GitHub, the résumé and run scripts. Upload the résumé and use the copy-paste prompt from README. Confirm the agent retrieves `AI_START_HERE.md`, the skill and the Python generator before building; it should not claim the link installed the skill. Verify the same deliverables and facts as above. A chat without retrieval/execution is an **unsupported host**, not a successful run.
-
-## Quality gate
-
-- [ ] Install/run tested in Claude and at least one coding agent.
-- [ ] Link + prompt tested successfully in at least one capable app.
-- [ ] Original off-preset themes produce visually distinct artwork and labels.
-- [ ] No fabricated résumé facts, no private home address or contact information.
-- [ ] Offline HTML, browser navigation and smartphone layout work.
-- [ ] GitHub Actions structural skill checks pass; optional independent `skills-ref validate simplicity-builder` is recorded separately when available (not currently executed by CI).
-- [ ] Public README demo is real, downloadable and works.
-- [ ] Another person follows the installation instructions without extra guidance.
-
-A passing unit suite does not establish cross-app reliability. Record tested host versions, prompt, error and remediation in release notes.
-
-## SVG and résumé regression tests (v0.1.4)
-
-Run the unit suite and preflight custom artwork before building:
-
-```bash
-python3 -m unittest discover -s tests -v
-python3 simplicity-builder/scripts/check_artwork.py examples/gradient-scene.svg
-python3 simplicity-builder/scripts/extract_resume.py your-resume.docx --output private/resume-extracted.txt
-```
-
-For PDF input, install optional `pypdf`; scanned files require OCR. After generation run real Chromium tests:
+## Real browser test (optional dependency)
 
 ```bash
 python3 -m pip install playwright
 python3 -m playwright install chromium
-python3 scripts/browser_smoke.py index.html --screenshots private/screenshots
+python3 scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html --screenshots private/screenshots
 ```
 
-Screenshot inspection is still a **human visual-review step**: smoke tests can catch layout overflow and broken interactions but cannot decide whether the fictional world is beautiful or sufficiently distinctive. Never publish unreviewed résumé details.
+Review screenshots manually for recognizable artwork, clear focal points, overlap/clipping, text contrast, landmark click areas and smartphone framing. The body must never scroll in desktop/mobile mode; accessible long dialogs may scroll internally.
 
-
-## Required v0.1.4 checks
-
-- Run `python3 -m unittest discover -s tests -v`.
-- Generate all four demo HTML files and validate with `simplicity-builder/scripts/validate.py`.
-- Run `python3 scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html --screenshots private/screenshots`.
-- Confirm zero **document** scrolling at 1440×900, 390×844 and 360×640; internal modal scrolling is deliberate.
-- Inspect screenshots for landmark label collisions, contrast, clipped text, thematic quality, and mobile finger target size. Automated checks do not grade artistry.
-- With a **private, user-approved résumé**, run `verify_facts.py --strict`; manually resolve any unmatched claims. Do not commit the résumé or report.
-- Before marking the release stable, test installed skill and pinned repository-link workflows in a capable AI app using varied, consenting résumés.
-
-### Optional screenshot regression aid
-
-After generating Chromium screenshots, compare the latest `fairytale-desktop.png` to the baseline in `docs/assets`:
+## Publishing test — no upload
 
 ```bash
-python3 -m pip install Pillow
-python3 scripts/compare_screenshots.py docs/assets/fairytale-desktop.png private/screenshots/fairytale-desktop.png --max-changed 0.15
+python3 simplicity-builder/scripts/publish_portfolio.py prepare \
+  --html docs/space.html --account DemoUser --repo my-world --out private/test-publish
 ```
 
-Screenshot diffs can be sensitive to OS/font/browser versions; they are a review trigger, not an automatic measure of good art. The release gate requires someone to look at desktop and mobile screenshots. Do not treat passing geometry or screenshot comparison as proof of aesthetics.
+Inspect `site/index.html`, `site/social-preview.jpg`, `LINKEDIN_POST.txt` and the review checklist. **This command never publishes.** If Playwright is absent, pass `--preview docs/assets/space-social.jpg` instead.
 
-## v0.1.4 acceptance before tagging
+The `deploy` command requires explicit `--approve-public`, GitHub CLI authentication and an unused repository name. Only test remote deployment on a user-owned account with approval.
 
-- [ ] A landmark with `class="motion-float"` builds without duplicate `class` and remains hoverable, tabbable and clickable.
-- [ ] Sparse stroked constellations pass geometric center hover and click with accessible list fallback.
-- [ ] A custom desktop AND custom mobile `scene_svg` retain the same section destinations.
-- [ ] Offline image-assisted mode embeds a local image safely, does not depend on external network, and still opens landmark dialogs.
-- [ ] Inspect desktop/mobile/landscape screenshots and score composition, illustration, interaction, theme recognition and accessibility (4/5 minimum each).
-- [ ] Test several real, consented résumés through at least two intended agents.
-- [ ] No tag or public stable label until those tests pass.
+## End-to-end AI tests
+
+[RELEASE_ACCEPTANCE.md](RELEASE_ACCEPTANCE.md) defines installed-skill, link-only and publication acceptance. Record actual results before marking compatible AI apps as verified. The skill cannot guarantee that a link-only chat will have code execution.

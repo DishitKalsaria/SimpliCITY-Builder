@@ -1,4 +1,4 @@
-# Visual quality acceptance rubric — v0.1.4
+# Visual quality acceptance rubric — v0.1.5
 
 Qualitative, not a mathematically objective score. Evaluate each 1–5; revise any dimension below 4 before presenting as polished.
 

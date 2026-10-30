@@ -1,4 +1,4 @@
-"""v0.1.4 fixes: animations, sparse objects, optional mobile SVG and image layer."""
+"""Visual regressions: animations, sparse objects, optional mobile SVG and image layer."""
 import base64
 import copy
 import json
@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'simplicity-builder/scripts'))
 from build_portfolio import generate, validate_model, embedded_image, sanitize_scene
 
-class V014Tests(unittest.TestCase):
+class VisualRegressionTests(unittest.TestCase):
     def setUp(self):
         self.data=json.loads((ROOT/'examples/space-sample.json').read_text())
 

@@ -1,4 +1,4 @@
-"""Regression tests for the exact v0.1.4 sample-generation CI path."""
+"""Regression tests for the sample-generation CI path."""
 import contextlib
 import io
 import json

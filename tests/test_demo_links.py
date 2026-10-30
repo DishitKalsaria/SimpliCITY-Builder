@@ -38,7 +38,7 @@ class DemoLinksTests(unittest.TestCase):
         self.assertIn('## See what it builds', readme)
         for name in ('fairytale','space','festival','clockwork'):
             self.assertIn(f'{BASE}{name}.html', readme)
-        self.assertIn('Generator input (for developers)', readme)
+        self.assertIn('Fictional source input', readme)
         self.assertIn('gallery-preview.webp', readme)
 
 if __name__ == '__main__':

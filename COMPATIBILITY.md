@@ -1,11 +1,13 @@
-# Compatibility and tested status — v0.1.4
+# SimpliCITY Builder v0.1.5 — compatibility
 
-| Host | Skill installation path documented | Full live résumé-to-world acceptance test |
+| Environment | Supported route | Acceptance status |
 |---|---|---|
-| Claude (with custom Skills and code execution) | Yes | Not verified in this release session |
-| Claude Code | Yes | Not verified in this release session |
-| OpenAI Codex | Yes | Not verified in this release session |
-| ChatGPT with repository link | Only where repository reading, file execution and downloads are available | Not verified universally |
-| Text-only chat without tools | Not executable | Not supported |
+| Claude custom Skills | Import skill ZIP with code execution | External host acceptance pending |
+| Claude Code | Install skill folder and run Python | External host acceptance pending |
+| OpenAI Codex | Install skill folder and run Python | External host acceptance pending |
+| Other AI chats | Repository link + prompt where retrieval and execution exist | Capability-dependent, not guaranteed |
+| Local Python | Generate, validate, package approved site | Automated tests cover this route |
+| GitHub Pages | Hosts the approved static `index.html` | Optional deployment; live user-account flow not end-to-end tested here |
+| LinkedIn | Link preview + user-written post | Does not run the interactive HTML inside a post |
 
-**Locally verified:** standalone generator, SVG safety, résumé text extraction tests, evidence-report unit tests, and Chromium page interactions at five viewport sizes across four fictional demo worlds. These are not substitutes for real résumé tests in each host.
+The Builder is portable, not a universal chatbot installation. Do not mark a host *verified* without recording résumé type, theme, test date, result and manual intervention in [RELEASE_ACCEPTANCE.md](RELEASE_ACCEPTANCE.md).

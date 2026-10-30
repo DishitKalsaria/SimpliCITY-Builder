@@ -1,4 +1,4 @@
-# Illustrated landmark rules — SimpliCITY Builder v0.1.4
+# Illustrated landmark rules — SimpliCITY Builder v0.1.5
 
 The illustration is the navigation. **Do not draw icon pins, badges or clickable circles over an unrelated background.** A saloon, windmill, planet, bridge, train, creature or crystal spire is itself a safe clickable SVG object.
 
@@ -23,7 +23,7 @@ Example minimal scene:
 
 Preflight the SVG with `scripts/check_artwork.py`, then run the full builder, validator, and browser smoke test. Preflight alone checks SVG safety; **full build** checks that every section has a matching named landmark.
 
-## v0.1.4 interaction and mobile guidance
+## Interaction and mobile guidance
 
 Landmarks may use a single permitted `motion-*` class; the generator merges this with `scene-landmark` instead of emitting a duplicate class attribute. Hollow constellations and comet trails use a bounding-box click target where supported without drawing visible pins; use the accessible location list as a universal fallback. Test hovering the landmark's geometric center and keyboard Enter to catch sparse object defects.
 

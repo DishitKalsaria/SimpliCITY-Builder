@@ -1,4 +1,4 @@
-name: Verify SimpliCITY Builder v0.1.4
+name: Verify SimpliCITY Builder v0.1.5
 
 on:
   push:
@@ -26,8 +26,15 @@ jobs:
             python3 simplicity-builder/scripts/build_portfolio.py --input "examples/${theme}-sample.json" --output "/tmp/${theme}.html"
             python3 simplicity-builder/scripts/validate.py "examples/${theme}-sample.json" "/tmp/${theme}.html"
           done
-      - name: Build installable skill archive
-        run: python3 scripts/package_skill.py
+      - name: Check public bundle preparation (offline)
+        run: |
+          python3 simplicity-builder/scripts/publish_portfolio.py prepare \
+            --html /tmp/space.html --account DemoUser --repo career-world \
+            --preview docs/assets/space-social.jpg --out /tmp/test-publish
+          test -f /tmp/test-publish/site/index.html
+          grep -q 'og:image' /tmp/test-publish/site/index.html
+      - name: Build installable skill archive and checksum manifest
+        run: python3 scripts/package_release.py --label v0.1.5-rc.1
 
   browser:
     runs-on: ubuntu-latest

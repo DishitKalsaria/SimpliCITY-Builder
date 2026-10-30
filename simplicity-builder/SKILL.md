@@ -5,10 +5,10 @@ license: MIT
 compatibility: Python 3.9+, local files and code execution for building; host must read an uploaded résumé. Optional Chromium browser testing.
 metadata:
   author: Dishit Kalsaria
-  version: "0.1.4"
+  version: "0.1.5"
 ---
 
-# SimpliCITY Builder v0.1.4
+# SimpliCITY Builder v0.1.5
 
 **Promise:** Your résumé tells your story. Your imagination builds its world.
 
@@ -30,7 +30,8 @@ metadata:
    If strict evidence checking flags accurate paraphrases/false positives, investigate and record the owner's review; never simply disable it and declare all facts validated. The report tests exact tokens, **not semantic truth**.
 7. Test desktop, mobile and compact sizes in real Chromium when possible: from repo root `python3 scripts/browser_smoke.py /path/to/index.html --screenshots /path/to/private/screenshots`. Inspect screenshots manually for visual coherence, labels/overlap, contrast and factual relevance. If browser tools are missing, disclose this. Visual plausibility, depth, thematic coherence and legible smartphone layout require actual screenshot review; a green smoke test is not a visual-quality score. If mobile framing is poor, provide `world.scene_svg_mobile` with the same named landmarks.
 8. **Optional image-assisted art:** only if the user provided original artwork or the host can generate a permissible image; use `world.artwork_mode: "image-assisted"` and `--background-image /local/file.png`. The image remains a decorative embedded raster layer, SVG landmark geometry remains the clickable interaction. Do not imply every AI host can make images. Without image tools, SVG-only mode is the full default experience.
-9. Deliver a downloadable single offline `index.html` and optional JSON. The page must work with no external trackers, fonts or CDN. Do not publish automatically. Ask the owner to review facts and personal information before sharing.
+9. Deliver a downloadable single offline `index.html` and optional JSON. The page must work with no external trackers, fonts or CDN. **Never publish automatically.** Ask the owner to review facts and personal information before sharing.
+10. **Optional publish/share ONLY when requested:** Read `references/publishing.md`. Prepare the GitHub Pages package with `scripts/publish_portfolio.py prepare` after reviewing content; the operation does not upload anything. Generate an actual image and `LINKEDIN_POST.txt` for the owner to edit. For automatic deployment, obtain explicit owner authorization and verify GitHub account access; use `deploy --approve-public` only after confirmation. LinkedIn is a link preview, never an interactive embed, and the owner posts manually. If GitHub CLI or browser tooling is unavailable, provide manual steps; do not claim a public URL is live without checking it.
 
 ## Quality gates
 
@@ -40,6 +41,6 @@ metadata:
 - `world.copy` customizes the documented narrative interface labels; non-narrative accessibility text remains fixed. User-provided theme controls scene, art, colors and metaphor.
 - Résumé bullets via `highlights`, numerical evidence via `metrics`, endorsements via grounded `quote` entries.
 - No invented accomplishments, no silent omission of major résumé sections, no unlicensed logos or character replicas.
-- Browser execution is required for an actual UI test. Link-only use works only with repo/file access and code execution, never universally.
+- Publishing requires separate owner authorization. No résumé or raw evidence report goes in a public repo. Browser execution is required for an actual UI test. Link-only use works only with repo/file access and code execution, never universally.
 
 Skill entry points: "SimpliCITY Builder, make me a fairytale land"; "Build an underwater career archipelago from my résumé"; "Transform my CV into a neon music-world".

@@ -1,4 +1,4 @@
-# SimpliCITY Builder v0.1.4 — portfolio JSON contract
+# SimpliCITY Builder v0.1.5 — portfolio JSON contract
 
 Provide verified `profile`, `world`, and `sections` objects. The generated HTML is offline, with no tracker or external runtime dependencies. Career information must be grounded in the résumé. Section IDs use lowercase hyphens and must be unique.
 
@@ -71,3 +71,7 @@ An agent may use `world.scene_svg_mobile` to create a second composition for pho
 Top-level `review.approved_paraphrases` accepts at most 30 records with `field`, `claim`, `source_excerpt`, and `approved_by_owner: true`; source excerpts must be verifiably present in private extracted résumé text. These approvals only resolve nonnumeric, non-employer, non-date, non-quote discrepancies and are recorded in the private evidence report. Do not include original extracted résumé text in public Git repositories. See `resume-review.md`.
 
 Legacy `world.symbol` and section `symbol` emoji fields are ignored for compatibility. New JSON should not use them. Consistent UI icons are inline SVG, and primary navigation is the illustrated scene itself.
+
+## Publishing output (optional)
+
+The source schema need not know a GitHub Pages URL at creation time. After the owner approves the generated offline site, `scripts/publish_portfolio.py prepare` creates public-site HTML with the correct canonical URL, Open Graph `og:image` and Twitter-card metadata and a local preview image. Do not include private review data in public packages. Publishing itself is separate and opt-in; see `references/publishing.md`.

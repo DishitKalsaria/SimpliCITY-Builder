@@ -100,8 +100,8 @@ def validate_model(data: object) -> dict:
     for key, value in copy.items():
         if key not in allowed_copy or not isinstance(value, str) or len(value) > 180:
             fail(f'world.copy.{key}: unsupported key or text longer than 180 characters')
-    # v0.1.3: labels refer to real SVG objects, never coordinates or icon pins.
-    # v0.1.2 hotspot records are accepted for migration; x/y are ignored.
+    # Labels refer to real SVG objects, never coordinates or icon pins.
+    # Legacy hotspot records are accepted for migration; x/y are ignored.
     landmarks = world.get('landmarks', world.get('hotspots', []))
     if not isinstance(landmarks, list) or len(landmarks) > 8:
         fail('world.landmarks must be an array of up to 8 labelled objects')

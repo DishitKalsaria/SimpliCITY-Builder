@@ -1,4 +1,4 @@
-# Art direction — SimpliCITY Builder v0.1.4
+# Art direction — SimpliCITY Builder v0.1.5
 
 **Do not begin by drawing disconnected SVG shapes.** Prepare a compact internal plan first, then build the interactive scene. Any user-defined world (saloon, fantasy, underwater, space, graffiti, original hybrid) is valid.
 
