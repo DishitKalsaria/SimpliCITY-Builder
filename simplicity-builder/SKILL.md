@@ -1,51 +1,44 @@
 ---
 name: simplicity-builder
-description: Transform a user's uploaded résumé or CV and any imaginative prompt into a truthful, interactive, downloadable portfolio world. Trigger for "SimpliCITY Builder", resume-to-world requests, portfolio worlds, and custom themes (space, fairytale, museum, or anything invented). Build the HTML website, not only a design plan.
+description: Turn an attached résumé or CV and a freely imagined world prompt into a truthful, clickable, no-page-scroll portfolio website. Use for "SimpliCITY Builder", "make my résumé a fairytale land", cosmic portfolio, fantasy, graffiti or any invented world. Generate and validate downloadable HTML, not just a mockup.
 license: MIT
-compatibility: Requires Python 3.9+, local filesystem and code execution to build files. The AI host must read the attached PDF, DOCX, or text résumé.
+compatibility: Python 3.9+, local files and code execution for building; host must read an uploaded résumé. Optional Chromium browser testing.
 metadata:
   author: Dishit Kalsaria
-  version: "0.2.0"
+  version: "0.1.2"
 ---
 
-# SimpliCITY Builder
+# SimpliCITY Builder v0.1.2
 
-**Promise:** The résumé tells the story; the user's imagination chooses the world.
+**Promise:** Your résumé tells your story. Your imagination builds its world.
 
-Build an actual offline, interactive `index.html` from the uploaded résumé and creative prompt. Examples of *possible* worlds are fairytales, space, museums and graffiti; **never restrict the setting to these examples**.
+## Execute this workflow
 
-## Workflow (execute, don't just describe)
-
-1. Read the user's résumé using the AI host's native PDF/DOCX/text capabilities. The generator accepts verified JSON. The bundled `scripts/extract_resume.py` can extract local TXT/DOCX and (with optional `pypdf`) text-based PDF files when native host extraction fails; it does **not** infer career facts. Read `references/resume-review.md`. If no résumé is available, request one or accept pasted career details. Never invent roles, project results, qualifications, dates, or links. The world metaphor may be fictional; the career facts may not.
-2. Interpret the **exact creative prompt**. Invent world geography, atmospheric colors, title, navigation labels, section metaphors and coherent visual details. Use any lowercase-hyphenated `world.theme` name; no preset list constrains it.
-3. Map grounded résumé facts into `portfolio.json` using `references/portfolio-schema.md`. Career information is real and legible inside every region. Use 1–8 meaningful sections with entries only where supported. Preserve important role and project facts; consolidate sections and split entries if necessary rather than silently dropping content. Do not copy names or accomplishments from example data.
-4. For a world outside the starter scenes, create a distinctive `world.scene_svg` vector illustration of the requested environment following `references/illustration-rules.md`. Safe internal SVG gradients, shapes with transforms and stroke caps are supported. Validate a raw SVG first via `scripts/check_artwork.py` to avoid failed full builds. This is the principal way to make user-created themes visually distinct. If the scene cannot be validated, use the built-in fallback as a last resort and clearly disclose that the requested world art was simplified. For recognized starter worlds, bundled fallback scenes remain available. Supply dark palette colors for readability. Never fetch unlicensed external imagery.
-5. Keep contact details, private links, home address, and phone number out of the output by default. Only include user-approved public links. Generate a **local file**; do not upload the résumé or publish the resulting site automatically. Do not echo résumé contents in public logs.
-6. Save the structured model and execute:
+1. Read the user's attached résumé via host tools or local `scripts/extract_resume.py`. For DOCX/TXT, stdlib is sufficient; a text PDF needs optional `pypdf`. Scanned PDFs require OCR or pasted text. Read `references/resume-review.md`. Never manufacture qualifications, numbers, employers, endorsements, dates or links. Do not echo private résumé data in logs.
+2. Interpret **any** user theme. A space voyage, fairyland, clockwork ocean, musical jungle, etc. are all allowed. Compose a distinctive `world.scene_svg` illustration and title, location metaphors, open-ended colors, `world.copy`, and `world.hotspots` (one labelled location per section). Never constrain people to starter themes. Use original unbranded art when a request references protected characters, logos or franchises, and tell the user of the substitution. See `references/world-rules.md` and `references/art-components.md`.
+3. Ground `portfolio.json` in the résumé. Maintain real roles, projects, dates, skills, evidence-based metrics, bullet highlights, attributed quotes (when documented), and optional user-approved public links. See `references/portfolio-schema.md`. Use only confirmed data and omit contact details by default. Fact verification is necessary but not sufficient. Create a private résumé evidence report, especially for numbers and endorsements. For any ambiguous fact, omit or mark for owner review.
+4. **World navigation is essential.** The map has accessible named hotspots tied to each section; the location list and recruiter view are fallbacks. The document MUST NOT vertically or horizontally scroll at desktop or mobile sizes. Longer detail content may scroll *within accessible modal panels*. Every hotspot must have an understandable accessible label and visible title. Do not make badges float over the scene; the surrounding header/footer are safe zones.
+5. Generate inert SVG (max 25,000 characters) using the accepted shapes and internal gradients. Safe styles are bundled as CSS classes (`motion-float`, `motion-twinkle`, `motion-drift`, `motion-pulse`); no user-supplied CSS/JavaScript. Respect reduced motion. Preflight `scene_svg` with `scripts/check_artwork.py` and consult `references/illustration-rules.md`.
+6. Locally save `portfolio.json` and extracted résumé text in a private working folder. Run from the skill folder (adjust paths):
 
    ```bash
-   python3 scripts/build_portfolio.py --input /absolute/path/portfolio.json --output /absolute/path/index.html
-   python3 scripts/validate.py /absolute/path/portfolio.json /absolute/path/index.html
+   python3 scripts/verify_facts.py --input /path/to/portfolio.json --resume-text /path/to/private-resume.txt --strict --report /path/to/private-review.json
+   python3 scripts/build_portfolio.py --input /path/to/portfolio.json --output /path/to/index.html
+   python3 scripts/validate.py /path/to/portfolio.json /path/to/index.html
    ```
 
-   Paths are relative to this skill's `scripts/` folder if running from inside the skill directory. Locate these files from the skill's actual installation location. Never assume the user has cloned the repository.
-7. Open and test the site in a browser at desktop and mobile widths. If Playwright/Chromium are available, run the bundled browser smoke test from the repo root: `python3 scripts/browser_smoke.py /absolute/path/index.html --screenshots /absolute/path/private/screenshots`. Inspect screenshots for contrast, layout, and theme fit (the smoke test cannot judge design quality). If a browser is unavailable, report that explicitly. Give the user the generated `index.html` as a downloadable file, plus optional `portfolio.json`. Remind them to review facts and personal information before publishing.
+   If strict evidence checking flags accurate paraphrases/false positives, investigate and record the owner's review; never simply disable it and declare all facts validated. The report tests exact tokens, **not semantic truth**.
+7. Test desktop, mobile and compact sizes in real Chromium when possible: from repo root `python3 scripts/browser_smoke.py /path/to/index.html --screenshots /path/to/private/screenshots`. Inspect screenshots manually for visual coherence, labels/overlap, contrast and factual relevance. If browser tools are missing, disclose this.
+8. Deliver a downloadable single offline `index.html` and optional JSON. The page must work with no external trackers, fonts or CDN. Do not publish automatically. Ask the owner to review facts and personal information before sharing.
 
-## Quality contract
+## Quality gates
 
-- The result is **functional interactive HTML**, not an AI image, screenshot, vague plan, or untested code snippet.
-- Content must be grounded in user-supplied career evidence; no synthetic accomplishments.
-- Arbitrary themes are allowed. Use actual thematic illustration, not the same generic graphic with a renamed heading where possible.
-- Navigation remains discoverable and keyboard accessible; all important details are selectable text.
-- The generated site works offline as one HTML file with no JavaScript framework, external tracking or fonts.
-- Avoid extra clarification when the résumé and imaginative prompt are sufficient; choose safe defaults.
-- If the AI environment has no file or code execution capability, **say so**. Offer to generate files in a capable environment; do not pretend the link alone installs the skill.
-- Cite *provided* résumé information in a private review note when supported, but do not add sensitive source content to the public site.
+- **No-page-scroll** at supported device widths; internally scrolling dialogs permitted for accessible long content, printing exempt.
+- Hotspots are the primary navigation and each has keyboard focus and clear labelled destination.
+- Responsive mobile scene plus searchable locations and recruiter/print view.
+- `world.copy` allows all narrative interface labels to be customized. User-provided theme controls scene, art, colors and metaphor.
+- Résumé bullets via `highlights`, numerical evidence via `metrics`, endorsements via grounded `quote` entries.
+- No invented accomplishments, no silent omission of major résumé sections, no unlicensed logos or character replicas.
+- Browser execution is required for an actual UI test. Link-only use works only with repo/file access and code execution, never universally.
 
-Read `references/world-rules.md`, `references/portfolio-schema.md`, `references/illustration-rules.md`, and `references/resume-review.md` for constraints. Sample JSON is fictional test material only.
-
-## Invocation examples
-
-- "SimpliCITY Builder, turn my attached résumé into an underwater city."
-- "SimpliCITY, make me a fairytale land."
-- "Use SimpliCITY Builder to create a floating garden of islands around my career."
+Skill entry points: "SimpliCITY Builder, make me a fairytale land"; "Build an underwater career archipelago from my résumé"; "Transform my CV into a neon music-world".

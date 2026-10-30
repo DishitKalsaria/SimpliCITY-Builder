@@ -1,0 +1,30 @@
+name: Build failure
+description: Report a skill generation or browser build problem (do not paste private résumé data)
+title: 'Bug: '
+labels: ['bug']
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: AI host and runtime
+      description: Tool/agent name, OS, Python version, and skill version
+    validations:
+      required: true
+  - type: textarea
+    id: reproduced
+    attributes:
+      label: Steps to reproduce with fictional data
+      description: Never paste a real résumé or private personal information
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected versus actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized error logs
+      description: Remove any private data, paths and tokens

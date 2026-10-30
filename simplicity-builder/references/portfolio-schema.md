@@ -1,38 +1,44 @@
-# Verified portfolio model
+# Portfolio JSON schema — SimpliCITY Builder v0.1.2
 
-Create UTF-8 `portfolio.json` with `profile`, `world`, and `sections`. See `references/sample.json` for shape only and `examples/clockwork-sample.json` in the repository for original theme artwork. **Never reuse sample profile facts.**
+The generator takes `profile`, `world`, and `sections`; text is HTML-escaped. Career facts must be grounded in the supplied résumé. See `examples/fairytale-sample.json` for an entirely fictional example.
 
 ```json
 {
-  "profile": {"name": "Verified person", "headline": "Grounded professional title", "summary": "Grounded narrative summary", "links": []},
+  "profile": {"name":"Verified person","headline":"Verified profession","summary":"Verified introduction","links":[]},
   "world": {
-    "title": "The Clockwork Museum",
-    "tagline": "Original invitation to explore",
-    "description": "What visitors discover",
-    "theme": "clockwork-museum",
-    "visual_name": "Gallery of mechanical inventions",
-    "symbol": "⚙️",
-    "accent": "#f0d38e",
-    "accent_secondary": "#9ddbbf",
-    "background": "#0d2025",
-    "background_secondary": "#243a39",
-    "scene_svg": "<svg viewBox=\"0 0 620 520\"><circle cx=\"310\" cy=\"250\" r=\"100\" fill=\"#9ddbbf\"/></svg>"
+    "theme":"flying-library", "title":"The Floating Library", "tagline":"Explore a story among the clouds",
+    "description":"Navigate landmarks to find professional chapters", "visual_name":"Floating islands",
+    "accent":"#f1d498", "accent_secondary":"#b1a6fa", "background":"#101525", "background_secondary":"#242642",
+    "scene_svg":"<svg viewBox=\"0 0 620 520\"><circle cx=\"300\" cy=\"250\" r=\"95\" fill=\"#b1a6fa\"/></svg>",
+    "hotspots":[{"section_id":"projects","x":36,"y":56,"label":"Sky Library"}],
+    "copy":{"eyebrow":"The story among the clouds","list":"Explore islands","hint":"Select a floating landmark","recruiter":"Career at a glance"}
   },
-  "sections": [{
-    "id": "experience",
-    "name": "The Clockmaker's Workshops",
-    "intro": "Career roles and responsibilities",
-    "symbol": "🔧",
-    "eyebrow": "Professional experience",
-    "entries": [{"title": "Grounded role", "subtitle": "Employer and dates when verified", "description": "Verifiable résumé facts", "tags": ["Verified skill"]}]
-  }]
+  "sections":[{"id":"projects","name":"Sky Library","intro":"Verified projects and outcomes","eyebrow":"Featured work","entries":[
+    {"title":"A verified project","subtitle":"Verified team / timeframe","description":"Factual summary","highlights":["Actual task or outcome"],"metrics":[{"value":"97%","label":"Less manual effort (verified)"}],"tags":["Verified skill"]},
+    {"type":"quote","title":"Endorsement","description":"Exact authorized quotation","attribution":"Verified source"}
+  ]}]
 }
 ```
 
-The `world.theme` field may be **any lowercase, hyphenated identifier** (`a-z`, digits, hyphen). There are starter visual scenes for fairytale, space, graffiti, ocean and custom; other names fall back to a generic scene **unless** you supply `scene_svg`, which is recommended for truly custom worlds. This is deliberately not a preset-only theme system. `visual_name`, `accent`, `accent_secondary`, `background`, `background_secondary`, and `scene_svg` are optional. Dark backgrounds required to maintain readable text.
+## Sections and entries
 
-The hero SVG must follow `illustration-rules.md`; it is strictly sanitized. Original artwork can use local linear/radial gradients with `url(#id)`, shape transforms and stroke caps; preflight using `scripts/check_artwork.py`. Sections: 1–8. Each section: unique lowercase-hyphenated id; name, intro, 1–20 entries. Entry: title, description, optional subtitle, tags, verified public http(s) URL. No email/phone/address are output by default. Public profile links only when user-approved.
+- `sections`: 1–8 sections, unique lowercase-hyphen `id`, with `name`, `intro`, and 1–20 entries each. `eyebrow` optional.
+- Entry required `title`, `description`. Optional `type: standard|quote` (default standard), `subtitle`, `highlights` (up to 12 bullet strings, 400 chars each), `metrics` (up to 6 `{value,label}` objects), `tags` (up to 12 strings), `employer`, `dates`, `url` (public http(s) only).
+- A `quote` entry requires `attribution`, which must come from an authentic user-approved source. Never invent testimonials.
+- Section names, thematic titles and descriptions may use imaginative *metaphors*; hard facts may not be fictionalized.
 
-Static content will be HTML escaped. Do not put raw HTML, JavaScript, or markup in text fields. If an unusual career fact is unclear or conflicting, omit it and flag for review.
+## Hotspots and no-scroll design
 
-For résumé extraction and evidence-based mapping, see `resume-review.md`. A valid schema does not prove that the résumé facts are correct.
+`world.hotspots` should have exactly one location for each section: `section_id`, `x` (8–92% of SVG frame), `y` (10–86%), and visible `label` (up to 42 characters). Distinct hotspots must be separated by at least 13 percentage points; avoid placing them over creature faces or important visual features. If omitted, the renderer uses stable default coordinates. Labels are accessible by keyboard and screen readers. The world scene fills the viewport without *page* scrolling; detailed panels can scroll internally. Reserve the interface header and footer **outside** the SVG area and keep landmarks visible at mobile width. For large detailed résumés, use recruiter view and internal scrolling; never truncate actual career facts to fit a scene.
+
+## Editable UI text
+
+`world.copy` optional keys: `eyebrow`, `explore`, `hint`, `list`, `recruiter`, `about`, `close`, `search`, `empty`, `made_with`, `privacy`, `print`, `intro`, `locations`, `skip`, `open`, `view_work`. Each is a string up to 180 characters. Fallback values are provided. Profile name/headline and map region labels remain fully data-driven. `scene_svg` is decorative; keep facts and labels in readable HTML.
+
+## Colors and themes
+
+`world.theme` can be **any lowercase-hyphenated string**; no theme whitelist. Starter scenes are fallback examples only. Supply a custom SVG for nonstarter themes to get genuinely distinctive imagery; otherwise a generic scene is used and the AI must disclose this. World background colors must be dark enough for the provided text palette.
+
+## Fact checking
+
+Run `scripts/verify_facts.py` with private extracted résumé text. It checks numbers, dates, explicit employer names, attributions and tags against source text, but **matching tokens does not prove the claim is true** and paraphrases may be flagged. Review the report; request owner confirmation before publishing.

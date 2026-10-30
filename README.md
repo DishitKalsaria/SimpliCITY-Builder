@@ -4,13 +4,13 @@
 
 Turn an uploaded résumé and an imaginative prompt into a downloadable, explorable portfolio. Invent any world—a miniature solar system, fairy-tale kingdom, graffiti universe, floating library, undersea metropolis, surreal museum, or something nobody has imagined yet.
 
-SimpliCITY Builder is a free, open-source **Agent Skill + small Python generator**. The result is a functional, responsive, offline `index.html` with discoverable places, search and detailed career stories—not just a rendered image.
+SimpliCITY Builder is a free, open-source **Agent Skill + small Python generator**. The result is a functional, responsive, offline `index.html` with labelled, clickable world hotspots, no-page-scroll navigation, a searchable location list and a recruiter view—not just a rendered image.
 
 > **Sample prompt:** “SimpliCITY, make me a city of planets in space.” *(Attach your résumé.)*
 
 **[Explore four live demo worlds](https://dishitkalsaria.github.io/SimpliCITY-Builder/)** · **[Use without installing](#option-1-paste-the-link-and-prompt)** · **[Install the skill](#option-2-install-the-skill)** · **[Run tests](#testing-locally)**
 
-> **Status: v0.2.0 hardening candidate.** The generator is validated with fictional inputs. Cross-app résumé-upload-to-site acceptance testing remains a launch requirement. The live demo link becomes available after the repository is created and GitHub Pages is enabled.
+> **Status: v0.1.2 release candidate.** All local generator, browser and unit tests pass; real résumé-to-website testing across target AI apps remains a release acceptance requirement.
 
 ## See what it builds
 
@@ -37,7 +37,7 @@ In an AI assistant with **web/repository retrieval, résumé reading, file execu
 Read https://github.com/dishitkalsaria/SimpliCITY-Builder and follow AI_START_HERE.md and the linked SKILL.md. Use the repository's generator and template, not just the README. I've attached my résumé. SimpliCITY Builder, make me a floating city of planets in space. Produce and validate the working interactive index.html and give me the download. Keep my career facts accurate and my private contact details off the website.
 ```
 
-Replace only the imaginative world phrase. **This is a best-effort entry point, not a universal one-click installation.** A text-only AI that cannot read a GitHub repository, run scripts or return files cannot complete the workflow from a link. If GitHub's page is blocked, a capable agent can use the [raw entry instructions](https://raw.githubusercontent.com/DishitKalsaria/SimpliCITY-Builder/main/AI_START_HERE.md) or clone the repo with `git clone https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. An inaccessible link still cannot grant execution rights. See [link-only limitations](docs/LINK_ONLY.md).
+Replace only the imaginative world phrase. **This is a best-effort entry point, not a universal one-click installation.** A text-only AI that cannot read a GitHub repository, run scripts or return files cannot complete the workflow from a link. Prefer cloning a **pinned release** after tagging: `git clone --branch v0.1.2 --depth 1 https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. Until that tag is published, clone `main` for development. A raw-file fetch is only a fallback, not a reliable installation method. An inaccessible link still cannot grant execution rights. See [link-only limitations](docs/LINK_ONLY.md).
 
 ### Option 2: Install the skill
 
@@ -84,9 +84,9 @@ python3 simplicity-builder/scripts/build_portfolio.py --input examples/clockwork
 
 ## What can I customize?
 
-The user controls the **world itself**. The AI extracts and verifies their real roles, skills, work, projects and education, then creates a thematic narrative, interactive region names, color scheme and optionally an original safe SVG scene with self-contained gradients. The generator supports any theme identifier, not a finite list of presets. It supports safe SVG linear/radial gradients and shape transforms; see [illustration rules](simplicity-builder/references/illustration-rules.md) and check standalone SVG with `simplicity-builder/scripts/check_artwork.py`. The baseline output is **interactive 2D / 2.5D**, not a fully navigable bespoke 3D game. The résumé facts stay legible and accurate behind imaginative location names.
+The user controls the **world itself**. The AI extracts and verifies their real roles, skills, work, projects and education, then creates a thematic narrative, interactive region names, color scheme and optionally an original safe SVG scene with self-contained gradients. The generator supports any theme identifier, not a finite list of presets. It supports safe SVG linear/radial gradients and shape transforms; see [illustration rules](simplicity-builder/references/illustration-rules.md) and check standalone SVG with `simplicity-builder/scripts/check_artwork.py`. The baseline output is a **clickable no-page-scroll 2D / 2.5D world** with SVG hotspots, consistent icons, gentle motion, optional quote entries and print-friendly recruiter view. Use `world.hotspots`, `world.copy`, entry `highlights[]` and `metrics[]`; see the [schema](simplicity-builder/references/portfolio-schema.md). The output is **interactive 2D / 2.5D**, not a fully navigable bespoke 3D game. The résumé facts stay legible and accurate behind imaginative location names.
 
-The generator uses verified JSON. A bundled local extraction helper reads TXT/DOCX directly and text-based PDFs with optional `pypdf`; an AI host must still map and verify career facts. Scanned PDFs require OCR or pasted text. The skill doesn't deploy a website automatically or provide cloud storage. The downloadable HTML is offline and has no analytics or external dependencies.
+The generator uses structured, reviewed JSON. Run the included `verify_facts.py` against privately extracted résumé text to flag unsupported numerical claims, dates, employers and skills. Matching source tokens does not prove semantic truth. The generated page prevents **document scrolling** at mobile and desktop sizes; lengthy detail content scrolls only inside accessible dialogs. A bundled local extraction helper reads TXT/DOCX directly and text-based PDFs with optional `pypdf`; an AI host must still map and verify career facts. Scanned PDFs require OCR or pasted text. The skill doesn't deploy a website automatically or provide cloud storage. The downloadable HTML is offline and has no analytics or external dependencies.
 
 ## Repository guide
 
@@ -98,9 +98,15 @@ The generator uses verified JSON. A bundled local extraction helper reads TXT/DO
 | `simplicity-builder/scripts/` | Generator and validator, standard-library Python |
 | `simplicity-builder/assets/template.html` | Responsive one-file website template |
 | `examples/` | Fictional test inputs, no personal résumés |
-| `tests/` | Automated unit, SVG and résumé-extraction checks |
+| `tests/` | Unit, schema, SVG, evidence and résumé-extraction tests |
 | `docs/` | GitHub Pages four-world demo gallery |
 | `.github/workflows/test.yml` | Tests run for pushes and pull requests |
+| [COMPATIBILITY.md](COMPATIBILITY.md) | AI host support matrix, including unverified paths |
+| [RELEASING.md](RELEASING.md) | v0.1.2 quality gates, tags and checksums |
+
+## Accessibility and visual quality
+
+On **all device sizes**, visitors can navigate the scene using clickable, keyboard-focusable named hotspots. The document stays within the viewport: no sideways or vertical page scrolling. The optional location list, career details and recruiter view scroll *inside* accessible modal panels as needed. The site respects reduced-motion settings and includes a print-friendly recruiter view. Screenshots require human review beyond the automated browser smoke test.
 
 ## Privacy, accuracy and security
 
@@ -115,3 +121,5 @@ Created and maintained by **[Dishit Kalsaria](https://github.com/dishitkalsaria)
 **SimpliCITY Builder** is the skill today. **SimpliCITY Studio** is a possible future self-service platform if interest, feedback and real usage justify it.
 
 Released under the [MIT License](LICENSE). © 2026 Dishit Kalsaria.
+
+**Distribution:** Pin the GitHub `v0.1.2` tag after testing and publish `SHA256SUMS.txt` with the release assets. The current skill works in any compatible agent with source retrieval, résumé reading and Python execution; real cross-agent end-to-end tests are not claimed until completed.

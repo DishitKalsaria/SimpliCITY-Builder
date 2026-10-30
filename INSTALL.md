@@ -31,9 +31,14 @@ Open `index.html` locally. You can publish this static file to any static hostin
 
 Never publish a résumé, its extracted JSON, or a generated site without the owner's review. By default, the skill excludes phone, email, and home address. Your AI host may process private résumé data under its own policy.
 
-## Optional local tools (v0.2.0)
+## Optional local tools (v0.1.2)
 
 - To extract TXT/DOCX résumé text: `python3 simplicity-builder/scripts/extract_resume.py resume.docx --output private/resume-extracted.txt`. For text-based PDF files, install `pypdf` first. This is extraction only; the AI must still interpret and verify facts.
 - To check original SVG artwork **before** generating a website: `python3 simplicity-builder/scripts/check_artwork.py scene.svg`. Internal SVG gradients, shape transforms and line caps are supported; external URLs are blocked.
 - To check HTML in Chromium: install `playwright` and its Chromium browser, then run `python3 scripts/browser_smoke.py index.html --screenshots private/screenshots`.
 - If GitHub browsing is blocked, try raw `AI_START_HERE.md` or `git clone`; see `docs/LINK_ONLY.md`.
+
+
+## v0.1.2 no-scroll world contract
+
+Once generated, a world opens full screen with labelled hotspots. On mobile, long résumé content stays in the internal detail/list/recruiter panels (not document scrolling). Run the browser suite at three viewport sizes before distributing. See [TESTING.md](TESTING.md).

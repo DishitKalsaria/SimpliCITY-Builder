@@ -1,9 +1,110 @@
 {
-  "profile": {"name": "Jordan Vega", "headline": "Software Engineer & Data Explorer", "summary": "An entirely fictional software engineer with a passion for building usable data products and delightful developer tools.", "links": [{"label": "Example Profile", "url": "https://example.com"}]},
-  "world": {"title": "The Vega Constellation", "tagline": "Every mission has a story. Explore the orbit of ideas, engineering and discovery.", "theme": "space", "description": "Travel between career planets, missions, learning stations and constellations of skills.", "symbol": "🪐"},
+  "profile": {
+    "name": "Jordan Vega",
+    "headline": "Software Engineer & Data Explorer",
+    "summary": "An entirely fictional software engineer with a passion for building usable data products and delightful developer tools.",
+    "links": [
+      {
+        "label": "Example Profile",
+        "url": "https://example.com"
+      }
+    ]
+  },
+  "world": {
+    "title": "The Vega Constellation",
+    "tagline": "Every mission has a story. Explore the orbit of ideas, engineering and discovery.",
+    "theme": "space",
+    "description": "Travel between career planets, missions, learning stations and constellations of skills.",
+    "symbol": "🪐",
+    "hotspots": [
+      {
+        "section_id": "experience",
+        "x": 28,
+        "y": 58,
+        "label": "Career Planets"
+      },
+      {
+        "section_id": "projects",
+        "x": 68,
+        "y": 42,
+        "label": "Space Missions"
+      },
+      {
+        "section_id": "skills",
+        "x": 50,
+        "y": 26,
+        "label": "Skills Constellation"
+      }
+    ],
+    "copy": {
+      "eyebrow": "Your career across the stars",
+      "hint": "Select an orbiting destination to discover a chapter",
+      "list": "Planet directory",
+      "recruiter": "Career overview"
+    }
+  },
   "sections": [
-    {"id": "experience", "name": "Career Planets", "symbol": "🌎", "eyebrow": "Explore the orbit", "intro": "Work chapters that shaped this fictional engineer's trajectory.", "entries": [{"title": "Software Engineer", "subtitle": "Imaginary Systems · 2022–2025", "description": "Developed fictional internal dashboard prototypes and helped improve developer documentation.", "tags": ["JavaScript", "Collaboration"]}, {"title": "Engineering Intern", "subtitle": "Prototype Works · 2021", "description": "Built a hypothetical workflow demonstration for team knowledge sharing.", "tags": ["APIs", "Research"]}]},
-    {"id": "projects", "name": "Space Missions", "symbol": "🚀", "eyebrow": "Original creations", "intro": "Demonstration projects orbiting this fictional profile.", "entries": [{"title": "Beacon Dashboard", "subtitle": "Sample project", "description": "An invented demo of a real-time data dashboard focused on clear information hierarchy.", "tags": ["UI", "Data visualization"]}]},
-    {"id": "skills", "name": "Skills Constellation", "symbol": "✨", "intro": "A star map of the example's technical interests.", "entries": [{"title": "Web Engineering", "description": "Illustrative experience with web interface development and component design.", "tags": ["HTML", "CSS", "JavaScript"]}]}
+    {
+      "id": "experience",
+      "name": "Career Planets",
+      "symbol": "🌎",
+      "eyebrow": "Explore the orbit",
+      "intro": "Work chapters that shaped this fictional engineer's trajectory.",
+      "entries": [
+        {
+          "title": "Software Engineer",
+          "subtitle": "Imaginary Systems · 2022–2025",
+          "description": "Developed fictional internal dashboard prototypes and helped improve developer documentation.",
+          "tags": [
+            "JavaScript",
+            "Collaboration"
+          ]
+        },
+        {
+          "title": "Engineering Intern",
+          "subtitle": "Prototype Works · 2021",
+          "description": "Built a hypothetical workflow demonstration for team knowledge sharing.",
+          "tags": [
+            "APIs",
+            "Research"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "Space Missions",
+      "symbol": "🚀",
+      "eyebrow": "Original creations",
+      "intro": "Demonstration projects orbiting this fictional profile.",
+      "entries": [
+        {
+          "title": "Beacon Dashboard",
+          "subtitle": "Sample project",
+          "description": "An invented demo of a real-time data dashboard focused on clear information hierarchy.",
+          "tags": [
+            "UI",
+            "Data visualization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skills",
+      "name": "Skills Constellation",
+      "symbol": "✨",
+      "intro": "A star map of the example's technical interests.",
+      "entries": [
+        {
+          "title": "Web Engineering",
+          "description": "Illustrative experience with web interface development and component design.",
+          "tags": [
+            "HTML",
+            "CSS",
+            "JavaScript"
+          ]
+        }
+      ]
+    }
   ]
 }

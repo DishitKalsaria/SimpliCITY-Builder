@@ -6,6 +6,7 @@ import argparse
 import html
 import json
 import re
+import math
 from pathlib import Path
 from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
@@ -84,14 +85,41 @@ def validate_model(data: object) -> dict:
     profile, world, sections = data.get('profile'), data.get('world'), data.get('sections')
     if not isinstance(profile, dict) or not isinstance(world, dict):
         fail('profile and world objects required')
-    for field in ('name', 'headline', 'summary'):
-        required(profile, field, 'profile')
-    for field in ('title', 'tagline', 'theme'):
-        required(world, field, 'world')
+    for field, limit in (('name', 100), ('headline', 180), ('summary', 2000)):
+        required(profile, field, 'profile', limit)
+    for field, limit in (('title', 95), ('tagline', 200), ('theme', 60)):
+        required(world, field, 'world', limit)
     if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', world['theme']):
         fail('world.theme must be a lowercase hyphenated identifier (any setting is allowed)')
     for field in ('description', 'symbol', 'accent', 'accent_secondary', 'background', 'background_secondary', 'visual_name'):
         optional(world, field, 'world')
+    copy = world.get('copy', {})
+    if not isinstance(copy, dict):
+        fail('world.copy must be an object')
+    allowed_copy = {'eyebrow', 'explore', 'hint', 'list', 'recruiter', 'about', 'close', 'search', 'empty', 'made_with', 'privacy', 'print', 'intro', 'locations', 'skip', 'open', 'view_work'}
+    for key, value in copy.items():
+        if key not in allowed_copy or not isinstance(value, str) or len(value) > 180:
+            fail(f'world.copy.{key}: unsupported key or text longer than 180 characters')
+    hotspots = world.get('hotspots', [])
+    if not isinstance(hotspots, list) or len(hotspots) > 8:
+        fail('world.hotspots must be an array of up to 8 locations')
+    hotspot_ids = set()
+    for i, spot in enumerate(hotspots):
+        if not isinstance(spot, dict):
+            fail(f'world.hotspots[{i}]: expected object')
+        sid = required(spot, 'section_id', f'world.hotspots[{i}]', 40)
+        required(spot, 'label', f'world.hotspots[{i}]', 42)
+        if sid in hotspot_ids:
+            fail('world.hotspots: section_id must be unique')
+        hotspot_ids.add(sid)
+        for axis, lower, upper in [('x', 8, 92), ('y', 10, 86)]:
+            v = spot.get(axis)
+            if isinstance(v, bool) or not isinstance(v, (int, float)) or not lower <= v <= upper:
+                fail(f'world.hotspots[{i}].{axis}: expected {lower}–{upper} percent')
+    for a, point in enumerate(hotspots):
+        for other in hotspots[a+1:]:
+            if math.hypot(point['x']-other['x'], point['y']-other['y']) < 13:
+                fail('world.hotspots: move nearby locations farther apart (13% minimum center distance)')
     artwork = optional(world, 'scene_svg', 'world', limit=25000)
     if artwork:
         sanitize_scene(artwork)
@@ -139,6 +167,25 @@ def validate_model(data: object) -> dict:
             tags = entry.get('tags', [])
             if not isinstance(tags, list) or len(tags) > 12 or any(not isinstance(t, str) or len(t) > 55 for t in tags):
                 fail(f'{item}.tags must contain up to 12 short strings')
+            if entry.get('type', 'standard') not in ('standard', 'quote'):
+                fail(f'{item}.type: must be standard or quote')
+            if entry.get('type') == 'quote':
+                required(entry, 'attribution', item, 180)
+            for fld in ('employer', 'dates', 'attribution'):
+                optional(entry, fld, item, 220)
+            highlights = entry.get('highlights', [])
+            if not isinstance(highlights, list) or len(highlights) > 12 or any(not isinstance(v, str) or not v.strip() or len(v) > 400 for v in highlights):
+                fail(f'{item}.highlights: expected up to 12 nonempty short strings')
+            metrics = entry.get('metrics', [])
+            if not isinstance(metrics, list) or len(metrics) > 6:
+                fail(f'{item}.metrics: expected up to 6 objects')
+            for m in metrics:
+                if not isinstance(m, dict):
+                    fail(f'{item}.metrics: expected objects')
+                required(m, 'value', f'{item}.metrics', 48)
+                required(m, 'label', f'{item}.metrics', 85)
+    if hotspots and hotspot_ids != seen:
+        fail('world.hotspots: provide exactly one labelled location for each section ID')
     return data
 
 
@@ -326,16 +373,45 @@ def scene_svg(theme: str) -> str:
     return start + scenes[theme] + '</svg>'
 
 
-def entry_html(entry: dict) -> str:
-    tags = entry.get('tags', [])
-    tags_html = ''.join(f'<span class="tag">{e(tag)}</span>' for tag in tags if tag)
-    subtitle = f'<p class="entry-subtitle">{e(entry["subtitle"])}</p>' if entry.get('subtitle') else ''
-    link_html = ''
-    if entry.get('url'):
-        href = e(safe_url(entry['url']))
-        link_html = f'<a class="entry-link" href="{href}" target="_blank" rel="noopener noreferrer">Visit project <span aria-hidden="true">↗</span></a>'
-    return f'''<article class="entry"><div class="entry-top"><h4>{e(entry['title'])}</h4>{subtitle}</div>
-      <p>{e(entry['description'])}</p><div class="tags">{tags_html}</div>{link_html}</article>'''
+ICON_PATHS = {
+    'briefcase': '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
+    'sparkles': '<path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3ZM19 18l.7 1.3L21 20l-1.3.7L19 22l-.7-1.3L17 20l1.3-.7L19 18Z"/>',
+    'rocket': '<path d="M4 16c0-5 6-11 14-12l2 2c-1 8-7 14-12 14l-4-4Z"/><path d="m9 15-4 4M5 10H2l2-4 5-2M14 19v3l4-2 2-5"/><circle cx="15" cy="9" r="2"/>',
+    'star': '<path d="m12 2 3 7 7 .5-5.5 4.6 1.7 7-6.2-3.8-6.2 3.8 1.7-7L2 9.5 9 9Z"/>',
+    'book': '<path d="M12 6c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v15"/>',
+    'compass': '<circle cx="12" cy="12" r="9"/><path d="m15 9-2 5-5 2 2-5 5-2Z"/>',
+    'quotes': '<path d="M4 11h6v9H3v-9c0-4 2-6 6-7M14 11h6v9h-7v-9c0-4 2-6 6-7"/>',
+    'heart': '<path d="M20 5c-3-3-6-2-8 1-2-3-5-4-8-1-4 4 0 9 8 16 8-7 12-12 8-16Z"/>',
+    'globe': '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18"/>',
+    'map': '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/>',
+    'list': '<path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+    'user': '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/>',
+    'close': '<path d="M5 5 19 19M19 5 5 19"/>',
+    'print': '<path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/>',
+}
+
+
+def icon(name: str) -> str:
+    return f'<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{ICON_PATHS.get(name, ICON_PATHS["compass"])}</svg>'
+
+
+DEFAULT_POINTS = [(28, 57), (70, 43), (50, 24), (49, 77), (17, 30), (82, 72), (82, 20), (17, 78)]
+
+
+def entry_html(entry: dict, work_label: str = 'View project') -> str:
+    title = e(entry['title'])
+    subtitle = e(entry.get('subtitle') or '')
+    desc = e(entry['description'])
+    if entry.get('type') == 'quote':
+        return f'<figure class="entry quote-entry">{icon("quotes")}<blockquote>{desc}</blockquote><figcaption>— {e(entry["attribution"])}</figcaption></figure>'
+    highlights = ''.join(f'<li>{e(text)}</li>' for text in entry.get('highlights', []))
+    highlights_html = f'<ul class="highlights">{highlights}</ul>' if highlights else ''
+    metrics = ''.join(f'<div class="metric"><strong>{e(m["value"])}</strong><span>{e(m["label"])}</span></div>' for m in entry.get('metrics', []))
+    metrics_html = f'<div class="metrics">{metrics}</div>' if metrics else ''
+    tags = ''.join(f'<span class="tag">{e(t)}</span>' for t in entry.get('tags', []) if t)
+    tags_html = f'<div class="tags">{tags}</div>' if tags else ''
+    link_html = f'<a class="entry-link" href="{e(safe_url(entry["url"]))}" target="_blank" rel="noopener noreferrer">{e(work_label)} ↗</a>' if entry.get('url') else ''
+    return f'<article class="entry"><h3>{title}</h3>{f"<p class=entry-subtitle>{subtitle}</p>" if subtitle else ""}<p class="entry-description">{desc}</p>{highlights_html}{metrics_html}{tags_html}{link_html}</article>'
 
 
 def generate(data: dict) -> str:
@@ -345,42 +421,61 @@ def generate(data: dict) -> str:
     theme = THEMES.get(theme_name, THEMES['custom'])
     accent = safe_color(world.get('accent') or '', theme['accent'])
     secondary = safe_color(world.get('accent_secondary') or '', theme['secondary'])
-    symbol = world.get('symbol') or theme['icon']
-    links_html = ''.join(f'<a class="social" href="{e(link["url"])}" target="_blank" rel="noopener noreferrer">{e(link["label"])} <span aria-hidden="true">↗</span></a>' for link in profile.get('links', []))
-    nodes = []
-    dialogs = []
-    for i, section in enumerate(sections):
+    copy = world.get('copy') or {}
+    def c(key: str, default: str) -> str:
+        return e(copy.get(key) or default)
+
+    points = world.get('hotspots') or [
+        {'section_id': section['id'], 'x': DEFAULT_POINTS[i][0], 'y': DEFAULT_POINTS[i][1], 'label': section['name'][:37] + ('…' if len(section['name']) > 37 else '')}
+        for i, section in enumerate(sections)
+    ]
+    lookup = {point['section_id']: point for point in points}
+    hotspots, list_items, dialogs, recruiter_items = [], [], [], []
+    for index, section in enumerate(sections):
         sid = section['id']
-        glyph = section.get('symbol') or ('✦', '✧', '✺', '◈', '◆', '✷', '⬡', '✹')[i]
-        eyebrow = section.get('eyebrow') or f'Chapter {i + 1:02}'
-        search_text = ' '.join([section['name'], section['intro']] + [f'{item["title"]} {item.get("subtitle", "")} {item["description"]} {" ".join(item.get("tags", []))}' for item in section['entries']])
-        nodes.append(f'''<button class="landmark" type="button" data-dialog="detail-{e(sid)}" data-search="{e(search_text.casefold())}" aria-haspopup="dialog" aria-label="Explore {e(section['name'])}">
-            <span class="landmark-top"><span class="landmark-number">{i+1:02}</span><span class="landmark-glyph" aria-hidden="true">{e(glyph)}</span></span>
-            <span class="landmark-eyebrow">{e(eyebrow)}</span>
-            <span class="landmark-name">{e(section['name'])}</span>
-            <span class="landmark-description">{e(section['intro'])}</span>
-            <span class="landmark-bottom"><span>{len(section['entries'])} {'story' if len(section['entries']) == 1 else 'stories'}</span><span class="view-arrow" aria-hidden="true">↗</span></span>
-          </button>''')
-        dialogs.append(f'''<dialog id="detail-{e(sid)}" class="detail-dialog" aria-labelledby="title-{e(sid)}">
-          <div class="dialog-inner"><div class="dialog-heading"><div><p class="eyebrow">{e(eyebrow)}</p><h3 id="title-{e(sid)}">{e(glyph)} {e(section['name'])}</h3><p class="dialog-intro">{e(section['intro'])}</p></div><button type="button" class="close-dialog" aria-label="Close details">✕</button></div>
-          <div class="entries">{''.join(entry_html(item) for item in section['entries'])}</div><p class="dialog-footer">Part of {e(world['title'])}</p></div></dialog>''')
+        point = lookup[sid]
+        name = e(section['name'])
+        label = e(point['label'])
+        eyebrow = e(section.get('eyebrow') or f'Chapter {index + 1:02}')
+        section_icon = icon(('briefcase','sparkles','rocket','star','book','compass','globe','heart')[index])
+        search_text = ' '.join([section['name'],section['intro']]+[f'{item["title"]} {item.get("description", "")} {" ".join(item.get("highlights", []))} {" ".join(item.get("tags", []))}' for item in section['entries']])
+        hotspots.append(f'<button type="button" class="hotspot motion-float" style="--x:{point["x"]}%;--y:{point["y"]}%;--delay:{index * -0.8}s" data-dialog="detail-{e(sid)}" aria-haspopup="dialog" aria-label="{c("open", "Explore")} {name}"><span class="spot-dot">{section_icon}</span><span class="spot-label">{label}</span></button>')
+        list_items.append(f'<button type="button" class="landmark" data-dialog="detail-{e(sid)}" data-search="{e(search_text.casefold())}" aria-haspopup="dialog" aria-label="{c("open", "Explore")} {name}"><span class="landmark-icon">{section_icon}</span><span class="landmark-text"><strong>{name}</strong><small>{e(section["intro"])}</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>')
+        details = ''.join(entry_html(item, copy.get('view_work') or 'View project') for item in section['entries'])
+        dialogs.append(f'<dialog class="detail-dialog" id="detail-{e(sid)}" aria-labelledby="label-{e(sid)}"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">{eyebrow}</p><h2 id="label-{e(sid)}">{name}</h2><p>{e(section["intro"])}</p></div><button type="button" class="close-dialog" aria-label="{c("close", "Close details")}">{icon("close")}</button></header><div class="entries">{details}</div></div></dialog>')
+        recruiter_items.append(f'<section class="recruiter-section"><h3>{name}</h3>{details}</section>')
+    links = ''.join(f'<a href="{e(safe_url(link["url"]))}" target="_blank" rel="noopener noreferrer">{e(link["label"])} ↗</a>' for link in profile.get('links', []))
+    scene = sanitize_scene(world['scene_svg']) if world.get('scene_svg') else scene_svg(theme_name if theme_name in THEMES else 'custom')
     result = TEMPLATE.read_text(encoding='utf-8')
     replacements = {
-        'TITLE': e(world['title']), 'TAGLINE': e(world['tagline']), 'DESCRIPTION': e(world.get('description') or world['tagline']),
-        'PROFILE_NAME': e(profile['name']), 'PROFILE_HEADLINE': e(profile['headline']), 'PROFILE_SUMMARY': e(profile['summary']),
-        'ACCENT': accent, 'ACCENT2': secondary, 'BG': safe_background(world.get('background') or '', theme['background']), 'BG2': safe_background(world.get('background_secondary') or '', theme['background2']),
-        'THEME': e(theme_name), 'THEME_LABEL': e(world.get('visual_name') or theme['label']), 'WORLD_SYMBOL': e(symbol),
-        'LINKS': links_html, 'SCENE': sanitize_scene(world['scene_svg']) if world.get('scene_svg') else scene_svg(theme_name if theme_name in THEMES else 'custom'), 'LANDMARKS': '\n'.join(nodes), 'DIALOGS': '\n'.join(dialogs),
-        'SECTION_COUNT': str(len(sections)), 'ENTRY_COUNT': str(sum(len(section['entries']) for section in sections)),
+        'TITLE':e(world['title']), 'TAGLINE':e(world['tagline']), 'DESCRIPTION':e(world.get('description') or world['tagline']),
+        'PROFILE_NAME':e(profile['name']), 'PROFILE_HEADLINE':e(profile['headline']), 'PROFILE_SUMMARY':e(profile['summary']),
+        'ACCENT':accent, 'ACCENT2':secondary,
+        'BG':safe_background(world.get('background') or '', theme['background']),
+        'BG2':safe_background(world.get('background_secondary') or '', theme['background2']),
+        'THEME':e(theme_name), 'THEME_LABEL':e(world.get('visual_name') or theme['label']),
+        'SCENE':scene, 'HOTSPOTS':'\n'.join(hotspots), 'LANDMARKS':'\n'.join(list_items),
+        'DIALOGS':'\n'.join(dialogs), 'RECRUITER_ENTRIES':'\n'.join(recruiter_items),
+        'LINKS':links, 'COUNT':str(len(sections)), 'ENTRY_COUNT':str(sum(len(s['entries']) for s in sections)),
+        'ICON_MAP':icon('map'), 'ICON_LIST':icon('list'), 'ICON_USER':icon('user'), 'ICON_PRINT':icon('print'), 'ICON_CLOSE':icon('close'),
+        'COPY_EYEBROW':c('eyebrow', 'An explorable career world'),
+        'COPY_EXPLORE':c('explore', 'Explore the world'), 'COPY_HINT':c('hint', 'Select a landmark to discover its story'),
+        'COPY_LIST':c('list', 'All locations'), 'COPY_RECRUITER':c('recruiter', 'Recruiter view'),
+        'COPY_ABOUT':c('about', 'About the creator'), 'COPY_CLOSE':c('close', 'Close'),
+        'COPY_SEARCH':c('search', 'Search locations'), 'COPY_EMPTY':c('empty', 'No matching locations'),
+        'COPY_MADE_WITH':c('made_with', 'Made with SimpliCITY Builder'),
+        'COPY_PRIVACY':c('privacy', 'Review facts and privacy before sharing'),
+        'COPY_PRINT':c('print', 'Print résumé'),
+        'COPY_INTRO':c('intro', 'Discover the person behind the world'),
+        'COPY_LOCATIONS':c('locations', 'Locations'),
+        'COPY_SKIP':c('skip', 'Skip to locations'),
     }
-    # Single-pass replacement: user-provided text cannot become a template directive.
-    def replace_placeholder(match):
-        key = match.group(1)
+    def replace(match):
+        key=match.group(1)
         if key not in replacements:
             fail(f'Template has unresolved placeholder {key}')
         return replacements[key]
-    result = re.sub(r'%%([A-Z0-9_]+)%%', replace_placeholder, result)
-    return result
+    return re.sub(r'%%([A-Z0-9_]+)%%', replace, result)
 
 
 def main() -> None:

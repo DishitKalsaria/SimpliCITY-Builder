@@ -1,4 +1,4 @@
-# Original SVG artwork — accepted syntax (v0.2.0)
+# Original SVG artwork — accepted syntax (v0.1.2)
 
 Create original **decorative** SVG for the user's *arbitrary* imaginative world and store it as a JSON string in `world.scene_svg`. The generator validates and sanitizes the artwork before embedding it.
 

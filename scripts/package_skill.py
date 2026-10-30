@@ -5,7 +5,7 @@ import zipfile
 
 root = Path(__file__).resolve().parents[1]
 skill = root / 'simplicity-builder'
-out = root / 'SimpliCITY-Builder-Skill.zip'
+out = root / 'SimpliCITY-Builder-Skill-v0.1.2.zip'
 with zipfile.ZipFile(out, 'w', compression=zipfile.ZIP_DEFLATED) as z:
     for path in sorted(skill.rglob('*')):
         if path.is_file() and '__pycache__' not in path.parts and path.suffix != '.pyc':

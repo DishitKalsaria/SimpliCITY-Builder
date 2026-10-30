@@ -1,4 +1,4 @@
-name: Verify SimpliCITY Builder
+name: Verify SimpliCITY Builder v0.1.2
 
 on:
   push:
@@ -24,10 +24,8 @@ jobs:
             python3 simplicity-builder/scripts/build_portfolio.py --input "examples/${theme}-sample.json" --output "/tmp/${theme}.html"
             python3 simplicity-builder/scripts/validate.py "examples/${theme}-sample.json" "/tmp/${theme}.html"
           done
-      - name: Validate skill metadata (Agent Skills reference)
-        run: |
-          python3 -m pip install 'skills-ref==0.1.1'
-          agentskills validate simplicity-builder
+      - name: Build installable skill archive
+        run: python3 scripts/package_skill.py
 
   browser:
     runs-on: ubuntu-latest

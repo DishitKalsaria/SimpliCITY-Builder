@@ -1,13 +1,23 @@
-# SimpliCITY Builder — instructions for AI assistants opening this repository link
+# SimpliCITY Builder v0.1.2 — AI-agent entry point
 
-**User intent:** They have attached a résumé and asked "SimpliCITY, make me [their imaginative world]." Your job is to create an actual downloadable interactive portfolio website, with arbitrary world aesthetics and verified career facts.
+**Intent:** The user attached a résumé and requested an imaginative, **full-screen no-scroll** portfolio world. Produce a real downloadable website, not an image or design plan.
 
-1. Read [`simplicity-builder/SKILL.md`](simplicity-builder/SKILL.md) completely, then its [schema](simplicity-builder/references/portfolio-schema.md), [visual rules](simplicity-builder/references/illustration-rules.md) and [world mapping](simplicity-builder/references/world-rules.md).
-2. Obtain the repo's *source files*. If the GitHub HTML page refuses retrieval, first try the plain-text entry point: `https://raw.githubusercontent.com/DishitKalsaria/SimpliCITY-Builder/main/AI_START_HERE.md`. For executable files, prefer `git clone https://github.com/DishitKalsaria/SimpliCITY-Builder.git` in your workspace, or download the GitHub archive `https://github.com/DishitKalsaria/SimpliCITY-Builder/archive/refs/heads/main.zip` if available. If none are accessible, ask for the skill ZIP; **do not invent missing code**. You need the repo's source files, particularly `simplicity-builder/scripts/build_portfolio.py` and `simplicity-builder/assets/template.html` (clone/download to a filesystem you can execute). Reading a README alone is not enough to construct the site.
-3. Read the attached résumé with native tools or the local `simplicity-builder/scripts/extract_resume.py` fallback (TXT/DOCX directly, text-based PDF with optional `pypdf`). Follow `simplicity-builder/references/resume-review.md`; create truthful `portfolio.json` describing the user's **chosen world**. Do not use example résumé contents. Provide original `world.scene_svg` artwork when the theme isn't a starter scene. Preflight it with `simplicity-builder/scripts/check_artwork.py` before full generation; gradients and shape transforms are supported by the allowlist.
-4. Run `python3 simplicity-builder/scripts/build_portfolio.py --input portfolio.json --output index.html`, then `python3 simplicity-builder/scripts/validate.py portfolio.json index.html`.
-5. When Playwright/Chromium are available, run `python3 scripts/browser_smoke.py index.html --screenshots private/screenshots` from the repo root and inspect the screenshots. Deliver `index.html` and optionally `portfolio.json`; state whether the browser test was performed. Before publishing, require review of résumé facts and contact privacy. Do not publish the résumé or site without explicit approval.
+1. **Get a trusted pinned copy of the source.** After the `v0.1.2` GitHub tag exists, run `git clone --depth 1 --branch v0.1.2 https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. For pre-release development only, clone `main`. If a clone isn't possible, use the matching release ZIP. Raw GitHub web pages are a last-resort text fallback and are not a runtime substitute. Verify the release SHA256 checksum when using a downloaded ZIP. Don't run arbitrary code from a mutable, unreviewed branch without user approval.
+2. Read `simplicity-builder/SKILL.md` and all referenced schema/artwork/resume/world rules. The scene must have *clickable labelled hotspots* for each section, with an accessible list fallback and recruiter view. **The body must not scroll** on mobile or desktop, while long panel content may scroll internally.
+3. Read résumé with host tools or local helper `simplicity-builder/scripts/extract_resume.py`. Create a truthful structured `portfolio.json` from actual qualifications and any theme prompt. Keep private contact details out unless expressly approved. Don't copy example identities.
+4. Generate original inert SVG for custom themes; allow supported gradients and transforms. Handle branded IP requests via original genre-level art, not trademarked characters or replicas.
+5. Run local fact-evidence review, generator and validator:
 
-This link-only route works only if your environment can actually retrieve the repository, read the uploaded résumé, execute Python and return files. **Never claim that pasting a link installs a skill or makes code execution possible.** If those capabilities aren't available, say what is missing.
+   ```bash
+   python3 simplicity-builder/scripts/verify_facts.py --input portfolio.json --resume-text private/resume.txt --strict --report private/review.json
+   python3 simplicity-builder/scripts/build_portfolio.py --input portfolio.json --output index.html
+   python3 simplicity-builder/scripts/validate.py portfolio.json index.html
+   ```
 
-**Publisher:** [Dishit Kalsaria](https://github.com/dishitkalsaria). Original flagship portfolio: [Simpli-City](https://dishitkalsaria.github.io/Simpli-City/).
+   Strict token matches are conservative and can flag paraphrases; review rather than suppress them. They are not proof of truth.
+6. Run `python3 scripts/browser_smoke.py index.html --screenshots private/screenshots` if Chromium/Playwright are available. Inspect desktop and mobile screenshots manually, verify no page scroll, accessible hotspots, and actual distinct world artwork. If tools are unavailable, report the limitation.
+7. Provide `index.html` and optionally `portfolio.json`. Do not publish automatically, store or transmit the résumé, or claim successful tests that were not run.
+
+**Important:** Pasting the link does not install a skill or grant an AI app file/code execution. The AI must be able to read attachments, retrieve code, run Python and return files.
+
+Creator: [Dishit Kalsaria](https://github.com/DishitKalsaria). Original flagship portfolio: https://dishitkalsaria.github.io/Simpli-City/

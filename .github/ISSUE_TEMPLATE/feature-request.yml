@@ -1,0 +1,16 @@
+name: Suggest a world-building improvement
+description: Propose an accessible interaction, original theme or feature
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Describe the feature
+    validations:
+      required: true
+  - type: textarea
+    id: benefit
+    attributes:
+      label: What user problem does it solve?
+    validations:
+      required: true
