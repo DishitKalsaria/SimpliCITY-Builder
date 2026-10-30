@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real-browser no-scroll, hotspot, accessibility and clipping checks.
+"""Real-browser no-scroll, SVG landmark object, accessibility and clipping checks.
 
 Screenshots require human visual review; basic geometry is not a design critique.
 Optional: pip install playwright && python -m playwright install chromium
@@ -19,28 +19,36 @@ def check(path:Path,browser,screenshots:Path|None=None):
         page.on('pageerror',lambda err:errors.append(str(err)))
         page.set_content(path.read_text(encoding='utf-8'),wait_until='load')
         page.emulate_media(reduced_motion='reduce')
-        if page.locator('.hotspot').count()<1: raise AssertionError(f'{label}: missing map hotspots')
-        if page.locator('button.landmark').count()!=page.locator('.hotspot').count(): raise AssertionError(f'{label}: hotspot/list mismatch')
+        if page.locator('.scene-landmark').count()<1: raise AssertionError(f'{label}: missing map SVG landmark objects')
+        if page.locator('button.landmark').count()!=page.locator('.scene-landmark').count(): raise AssertionError(f'{label}: SVG landmark object/list mismatch')
         metrics=page.evaluate('''() => ({
           docW:document.documentElement.scrollWidth,docH:document.documentElement.scrollHeight,
           winW:innerWidth,winH:innerHeight,bodyScroll:getComputedStyle(document.body).overflow,
-          offscreen:[...document.querySelectorAll('.hotspot')].filter(e=>{const r=e.getBoundingClientRect();return r.left<0||r.right>innerWidth||r.top<0||r.bottom>innerHeight}).length,
+          offscreen:[...document.querySelectorAll('.scene-landmark')].filter(e=>{const r=e.getBoundingClientRect();return r.left<0||r.right>innerWidth||r.top<0||r.bottom>innerHeight}).length,
           unnamed:[...document.querySelectorAll('button')].filter(e=>!((e.getAttribute('aria-label')||e.textContent).trim())).length,
-          tiny:[...document.querySelectorAll('.hotspot')].filter(e=>{const r=e.getBoundingClientRect();return r.width<40||r.height<40}).length
+          tiny:[...document.querySelectorAll('.scene-landmark')].filter(e=>{const r=e.getBoundingClientRect();return r.width<40||r.height<40}).length
         })''')
         if metrics['docW']>width+2 or metrics['docH']>height+2 or metrics['bodyScroll']!='hidden':
             raise AssertionError(f'{path.name} {label}: viewport scroll/overflow: {metrics}')
         if metrics['offscreen'] or metrics['unnamed'] or metrics['tiny']:
-            raise AssertionError(f'{path.name} {label}: hotspot visibility or labels: {metrics}')
+            raise AssertionError(f'{path.name} {label}: SVG landmark object visibility or labels: {metrics}')
         if screenshots:
             screenshots.mkdir(parents=True,exist_ok=True)
             page.screenshot(path=str(screenshots/f'{path.stem}-{label}.png'))
-        page.locator('.hotspot').first.click()
+        page.locator('.scene-landmark').first.hover()
+        tip=page.locator('#scene-tooltip')
+        if not tip.is_visible() or 'Explore' not in tip.inner_text():
+            raise AssertionError(f'{path.name} {label}: landmark hover did not expose its label')
+        page.locator('.scene-landmark').first.click()
         detail=page.locator('dialog.detail-dialog[open]')
         if detail.count()!=1 or detail.locator('.entry').count()<1:
-            raise AssertionError(f'{path.name} {label}: hotspot failed to open details')
+            raise AssertionError(f'{path.name} {label}: SVG landmark object failed to open details')
         page.keyboard.press('Escape')
         if page.locator('dialog[open]').count():raise AssertionError(f'{label}: Escape failed')
+        page.locator('.scene-landmark').first.focus()
+        page.keyboard.press('Enter')
+        if page.locator('dialog.detail-dialog[open]').count()!=1:raise AssertionError(f'{label}: SVG keyboard Enter failed')
+        page.keyboard.press('Escape')
         page.locator('[data-dialog="list-dialog"]').last.click()
         if page.locator('#list-dialog[open]').count()!=1:raise AssertionError(f'{label}: location fallback missing')
         search=page.locator('#world-search');search.fill('thisshouldnotexist123')
@@ -52,7 +60,7 @@ def check(path:Path,browser,screenshots:Path|None=None):
         if page.locator('#recruiter-dialog[open] .recruiter-section').count()<1:
             raise AssertionError(f'{label}: recruiter fallback missing')
         if errors:raise AssertionError(f'{label}: JavaScript errors {errors}')
-        print(f'PASS {path.name} {label} — no page scroll, hotspots, labels, fallback, search, recruiter view')
+        print(f'PASS {path.name} {label} — no page scroll, SVG landmark objects, labels, fallback, search, recruiter view')
         page.close()
 
 

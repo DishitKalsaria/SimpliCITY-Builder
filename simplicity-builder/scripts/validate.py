@@ -13,7 +13,8 @@ def validate(json_path: Path, html_path: Path) -> None:
     output=html_path.read_text(encoding='utf-8')
     checks={
         'HTML document':'<!doctype html>' in output.lower(),
-        'one hotspot per section':output.count('class="hotspot motion-float"')==len(data['sections']),
+        'one named SVG object per section':output.count('class="scene-landmark"')==len(data['sections']),
+        'no HTML pin overlays':'class="hotspot' not in output and 'spot-dot' not in output,
         'accessible list fallback':output.count('class="landmark"')==len(data['sections']),
         'accessible dialogs':output.count('class="detail-dialog"')==len(data['sections']),
         'no document scroll':'height:100dvh' in output and 'overflow:hidden' in output,

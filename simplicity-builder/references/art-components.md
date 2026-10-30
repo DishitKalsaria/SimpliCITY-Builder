@@ -1,6 +1,6 @@
 # Reusable safe SVG composition pieces
 
-Place these snippets **inside** `<svg viewBox="0 0 620 520">` and adapt their numeric geometry and fill colors. A full final scene should be meaningful for the user's exact prompt. Everything below is inert and accepted by the sanitizer. Do not use CSS, foreign images, scripts, text elements, external URLs, or filter nodes.
+Place these snippets **inside** `<svg viewBox="0 0 620 520">` and adapt their numeric geometry and fill colors. A full final scene should be meaningful for the user's exact prompt. These snippets are inert and accepted by the sanitizer. **Wrap the complete artwork for each career section in a `<g id="landmark-SECTION-ID">` group**; the group itself becomes the clickable object, not an icon pin. Use readable silhouettes, layered backgrounds and original scenery. Never draw invisible hit rectangles. Do not use CSS, foreign images, scripts, text elements, external URLs, or filter nodes.
 
 ## Star / beacon
 
@@ -43,3 +43,16 @@ Place these snippets **inside** `<svg viewBox="0 0 620 520">` and adapt their nu
 ```
 
 Use only sanitized SVG tags and attributes documented in `illustration-rules.md`; run `scripts/check_artwork.py` on the full scene. Use gradients for depth, readable contrasts for UI, and a coherent visual focal point. Do not add motion elements in SVG. Motion is provided by the host CSS `motion-float`, `motion-twinkle`, `motion-drift`, `motion-pulse` with reduced-motion support.
+
+
+## Complete landmark example
+
+```svg
+<g id="landmark-projects">
+  <rect x="210" y="250" width="142" height="150" rx="10" fill="#a893c5"/>
+  <path d="M194 250 L282 155 L368 250Z" fill="#e9caee"/>
+  <rect x="267" y="322" width="31" height="78" rx="14" fill="#26394b"/>
+</g>
+```
+
+This is the actual painted shape users click, hover and keyboard-focus. Assign `world.landmarks: [{"section_id":"projects", "label":"Crystal Workshop"}]` to give it an accessible, discoverable name. Build several **different object silhouettes** for a world; don't copy the same house for every section.

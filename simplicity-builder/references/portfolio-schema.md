@@ -1,44 +1,59 @@
-# Portfolio JSON schema — SimpliCITY Builder v0.1.2
+# SimpliCITY Builder v0.1.3 — portfolio JSON contract
 
-The generator takes `profile`, `world`, and `sections`; text is HTML-escaped. Career facts must be grounded in the supplied résumé. See `examples/fairytale-sample.json` for an entirely fictional example.
+Provide verified `profile`, `world`, and `sections` objects. The generated HTML is offline, with no tracker or external runtime dependencies. Career information must be grounded in the résumé. Section IDs use lowercase hyphens and must be unique.
+
+## Example (abridged)
 
 ```json
 {
-  "profile": {"name":"Verified person","headline":"Verified profession","summary":"Verified introduction","links":[]},
+  "profile": {"name":"Verified person","headline":"Product Designer","summary":"Verified background", "links":[]},
   "world": {
-    "theme":"flying-library", "title":"The Floating Library", "tagline":"Explore a story among the clouds",
-    "description":"Navigate landmarks to find professional chapters", "visual_name":"Floating islands",
-    "accent":"#f1d498", "accent_secondary":"#b1a6fa", "background":"#101525", "background_secondary":"#242642",
-    "scene_svg":"<svg viewBox=\"0 0 620 520\"><circle cx=\"300\" cy=\"250\" r=\"95\" fill=\"#b1a6fa\"/></svg>",
-    "hotspots":[{"section_id":"projects","x":36,"y":56,"label":"Sky Library"}],
-    "copy":{"eyebrow":"The story among the clouds","list":"Explore islands","hint":"Select a floating landmark","recruiter":"Career at a glance"}
+    "theme":"clockwork-harbor", "title":"The Clockwork Harbor", "tagline":"Enter an invented landscape",
+    "scene_svg":"<svg viewBox=\"0 0 620 520\"><g id=\"landmark-projects\"><rect x=\"200\" y=\"180\" width=\"180\" height=\"120\" fill=\"#aabbcc\"/></g></svg>",
+    "landmarks":[{"section_id":"projects","label":"The Airship Workshop"}],
+    "copy":{"hint":"Choose an illustrated location"},
+    "share":{"url":"https://example.com/my-portfolio/","image":"https://example.com/my-portfolio/preview.jpg","image_alt":"Clockwork harbor illustration"}
   },
-  "sections":[{"id":"projects","name":"Sky Library","intro":"Verified projects and outcomes","eyebrow":"Featured work","entries":[
-    {"title":"A verified project","subtitle":"Verified team / timeframe","description":"Factual summary","highlights":["Actual task or outcome"],"metrics":[{"value":"97%","label":"Less manual effort (verified)"}],"tags":["Verified skill"]},
-    {"type":"quote","title":"Endorsement","description":"Exact authorized quotation","attribution":"Verified source"}
-  ]}]
+  "sections":[{"id":"projects", "name":"Projects", "intro":"Verified project overview", "entries":[{"title":"Verified project", "description":"A factual account", "highlights":["Grounded outcome"], "metrics":[{"value":"97%", "label":"Less manual effort"}]}]}]
 }
 ```
 
-## Sections and entries
+## Limits actually enforced by the generator
 
-- `sections`: 1–8 sections, unique lowercase-hyphen `id`, with `name`, `intro`, and 1–20 entries each. `eyebrow` optional.
-- Entry required `title`, `description`. Optional `type: standard|quote` (default standard), `subtitle`, `highlights` (up to 12 bullet strings, 400 chars each), `metrics` (up to 6 `{value,label}` objects), `tags` (up to 12 strings), `employer`, `dates`, `url` (public http(s) only).
-- A `quote` entry requires `attribution`, which must come from an authentic user-approved source. Never invent testimonials.
-- Section names, thematic titles and descriptions may use imaginative *metaphors*; hard facts may not be fictionalized.
+| Field | Limit |
+|---|---|
+| `profile.name` | Required, 100 characters |
+| `profile.headline` | Required, 180 characters |
+| `profile.summary` | Required, 2,000 characters |
+| `profile.links[]` | Maximum 8 absolute HTTP(S) URLs, label max 60, URL max 600 |
+| `world.title` / `tagline` / `theme` | Required, 95 / 200 / 60 characters |
+| `world.description` | Optional, 3,000 characters |
+| `world.scene_svg` | Optional only if using fallback art; max 25,000 characters, 180 SVG nodes |
+| `world.landmarks[]` | Up to 8 records, `section_id` max 40, `label` max 60 characters |
+| `world.copy` | Documented supported keys, up to 180 characters each |
+| `world.share` | Optional `url` and `image` (max 600 each), `image_alt` max 160 |
+| `sections[]` | 1–8, each with 1–20 entries |
+| `sections[].id` / `name` / `intro` | 40 / 110 / 650 characters |
+| Entry `title` / `description` / `subtitle` | 220 / 2,500 / 250 characters |
+| Entry `highlights[]` | Max 12, each 400 characters |
+| Entry `metrics[]` | Max 6 objects, value max 48, label max 85 characters |
+| Entry `tags[]` | Max 12, each 55 characters |
+| Entry `url` | Optional absolute HTTP(S), max 600 characters |
 
-## Hotspots and no-scroll design
+Each entry may use `type: "standard"` or `"quote"`; quotes require an authentic `attribution`. Entries also allow `employer` and `dates`. Do not invent testimonials, credentials, metrics or names.
 
-`world.hotspots` should have exactly one location for each section: `section_id`, `x` (8–92% of SVG frame), `y` (10–86%), and visible `label` (up to 42 characters). Distinct hotspots must be separated by at least 13 percentage points; avoid placing them over creature faces or important visual features. If omitted, the renderer uses stable default coordinates. Labels are accessible by keyboard and screen readers. The world scene fills the viewport without *page* scrolling; detailed panels can scroll internally. Reserve the interface header and footer **outside** the SVG area and keep landmarks visible at mobile width. For large detailed résumés, use recruiter view and internal scrolling; never truncate actual career facts to fit a scene.
+## Navigation is the illustration, not an overlay
 
-## Editable UI text
+When `world.scene_svg` is supplied, **every section must own exactly one painted SVG object**, represented by a `<g id="landmark-SECTION-ID">...</g>` or a geometry element with that ID. The SVG viewBox is exactly `0 0 620 520`. Interactive IDs must match section IDs exactly and be unique. The generator attaches keyboard/pointer interaction and accessible labels to those actual objects. A label shown on hover/focus is dynamically positioned using the object's bounding box; there are **no coordinate pins**.
 
-`world.copy` optional keys: `eyebrow`, `explore`, `hint`, `list`, `recruiter`, `about`, `close`, `search`, `empty`, `made_with`, `privacy`, `print`, `intro`, `locations`, `skip`, `open`, `view_work`. Each is a string up to 180 characters. Fallback values are provided. Profile name/headline and map region labels remain fully data-driven. `scene_svg` is decorative; keep facts and labels in readable HTML.
+Use `world.landmarks` for human-readable labels (one per section). A previous `world.hotspots` array is accepted for migration but its `x/y` values are **ignored**. Do not create new `x/y` coordinates. Missing or duplicated SVG objects fail validation. If `scene_svg` is omitted, a safe illustrative fallback produces named landmarks automatically; off-preset custom worlds should always supply an original scene.
 
-## Colors and themes
+Aim for visibly separated, generously sized shapes that remain hittable on narrow phones. Avoid large opaque foreground elements covering landmark objects. Keep copy and résumé facts as HTML outside SVG. The document does not scroll; long text in a dialog may scroll. A searchable list and recruiter view are always offered.
 
-`world.theme` can be **any lowercase-hyphenated string**; no theme whitelist. Starter scenes are fallback examples only. Supply a custom SVG for nonstarter themes to get genuinely distinctive imagery; otherwise a generic scene is used and the AI must disclose this. World background colors must be dark enough for the provided text palette.
+## Social preview and privacy
 
-## Fact checking
+`world.share.url` and `world.share.image` are optional public HTTPS/HTTP URLs; when supplied, they produce `og:url`, `og:image`, `og:image:alt`, `twitter:card`, `twitter:image`, and related metadata. An offline file without a **publicly reachable image** cannot show a social preview. Never auto-publish or upload sensitive résumé content. Source text and private extraction reports should remain outside Git.
 
-Run `scripts/verify_facts.py` with private extracted résumé text. It checks numbers, dates, explicit employer names, attributions and tags against source text, but **matching tokens does not prove the claim is true** and paraphrases may be flagged. Review the report; request owner confirmation before publishing.
+## Custom copy and aesthetics
+
+`world.copy` supported keys: `eyebrow`, `explore`, `hint`, `list`, `recruiter`, `about`, `close`, `search`, `empty`, `made_with`, `privacy`, `print`, `intro`, `locations`, `skip`, `open`, `view_work` (max 180 characters each). `world.theme` can be any lowercase-hyphenated setting. Color values use `#RGB` or `#RRGGBB`; world backgrounds must remain dark enough for accessible text. Refer to `illustration-rules.md` and `world-rules.md` for original artwork, motion, and IP guidelines.

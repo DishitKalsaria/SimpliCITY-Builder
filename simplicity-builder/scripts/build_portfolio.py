@@ -100,26 +100,20 @@ def validate_model(data: object) -> dict:
     for key, value in copy.items():
         if key not in allowed_copy or not isinstance(value, str) or len(value) > 180:
             fail(f'world.copy.{key}: unsupported key or text longer than 180 characters')
-    hotspots = world.get('hotspots', [])
-    if not isinstance(hotspots, list) or len(hotspots) > 8:
-        fail('world.hotspots must be an array of up to 8 locations')
-    hotspot_ids = set()
-    for i, spot in enumerate(hotspots):
-        if not isinstance(spot, dict):
-            fail(f'world.hotspots[{i}]: expected object')
-        sid = required(spot, 'section_id', f'world.hotspots[{i}]', 40)
-        required(spot, 'label', f'world.hotspots[{i}]', 42)
-        if sid in hotspot_ids:
-            fail('world.hotspots: section_id must be unique')
-        hotspot_ids.add(sid)
-        for axis, lower, upper in [('x', 8, 92), ('y', 10, 86)]:
-            v = spot.get(axis)
-            if isinstance(v, bool) or not isinstance(v, (int, float)) or not lower <= v <= upper:
-                fail(f'world.hotspots[{i}].{axis}: expected {lower}–{upper} percent')
-    for a, point in enumerate(hotspots):
-        for other in hotspots[a+1:]:
-            if math.hypot(point['x']-other['x'], point['y']-other['y']) < 13:
-                fail('world.hotspots: move nearby locations farther apart (13% minimum center distance)')
+    # v0.1.3: labels refer to real SVG objects, never coordinates or icon pins.
+    # v0.1.2 hotspot records are accepted for migration; x/y are ignored.
+    landmarks = world.get('landmarks', world.get('hotspots', []))
+    if not isinstance(landmarks, list) or len(landmarks) > 8:
+        fail('world.landmarks must be an array of up to 8 labelled objects')
+    landmark_ids = set()
+    for i, item in enumerate(landmarks):
+        if not isinstance(item, dict):
+            fail(f'world.landmarks[{i}]: expected object')
+        sid = required(item, 'section_id', f'world.landmarks[{i}]', 40)
+        required(item, 'label', f'world.landmarks[{i}]', 60)
+        if sid in landmark_ids:
+            fail('world.landmarks: section_id must be unique')
+        landmark_ids.add(sid)
     artwork = optional(world, 'scene_svg', 'world', limit=25000)
     if artwork:
         sanitize_scene(artwork)
@@ -184,8 +178,21 @@ def validate_model(data: object) -> dict:
                     fail(f'{item}.metrics: expected objects')
                 required(m, 'value', f'{item}.metrics', 48)
                 required(m, 'label', f'{item}.metrics', 85)
-    if hotspots and hotspot_ids != seen:
-        fail('world.hotspots: provide exactly one labelled location for each section ID')
+    if landmarks and landmark_ids != seen:
+        fail('world.landmarks: provide exactly one labelled object for each section ID')
+    if artwork:
+        sanitize_scene(artwork, section_ids=seen)
+    share = world.get('share', {})
+    if not isinstance(share, dict):
+        fail('world.share: expected object')
+    for key in share:
+        if key not in {'url','image','image_alt'}:
+            fail(f'world.share.{key}: unsupported field')
+    for key in ('url','image'):
+        value = optional(share, key, 'world.share', 600)
+        if value:
+            safe_url(value)
+    optional(share, 'image_alt', 'world.share', 160)
     return data
 
 
@@ -194,21 +201,21 @@ def validate_model(data: object) -> dict:
 # are not accepted. This artwork is decorative; career facts remain HTML text.
 SVG_TAGS = {'svg', 'defs', 'linearGradient', 'radialGradient', 'stop',
             'g', 'circle', 'ellipse', 'rect', 'line', 'path', 'polygon', 'polyline'}
-SVG_COMMON = {'transform', 'opacity', 'fill', 'stroke', 'stroke-width',
+SVG_COMMON = {'transform', 'opacity', 'fill', 'stroke', 'stroke-width', 'class',
               'stroke-linecap', 'stroke-linejoin'}
 SVG_GEOMETRY = {
     'svg': {'viewBox'}, 'defs': set(),
     'linearGradient': {'id', 'x1', 'y1', 'x2', 'y2'},
     'radialGradient': {'id', 'cx', 'cy', 'r', 'fx', 'fy'},
     'stop': {'offset', 'stop-color', 'stop-opacity'},
-    'g': SVG_COMMON,
-    'circle': {'cx', 'cy', 'r'} | SVG_COMMON,
-    'ellipse': {'cx', 'cy', 'rx', 'ry'} | SVG_COMMON,
-    'rect': {'x', 'y', 'width', 'height', 'rx', 'ry'} | SVG_COMMON,
-    'line': {'x1', 'y1', 'x2', 'y2'} | SVG_COMMON,
-    'path': {'d'} | SVG_COMMON,
-    'polygon': {'points'} | SVG_COMMON,
-    'polyline': {'points'} | SVG_COMMON,
+    'g': SVG_COMMON | {'id'},
+    'circle': {'cx', 'cy', 'r'} | SVG_COMMON | {'id'},
+    'ellipse': {'cx', 'cy', 'rx', 'ry'} | SVG_COMMON | {'id'},
+    'rect': {'x', 'y', 'width', 'height', 'rx', 'ry'} | SVG_COMMON | {'id'},
+    'line': {'x1', 'y1', 'x2', 'y2'} | SVG_COMMON | {'id'},
+    'path': {'d'} | SVG_COMMON | {'id'},
+    'polygon': {'points'} | SVG_COMMON | {'id'},
+    'polyline': {'points'} | SVG_COMMON | {'id'},
 }
 SVG_NUMERIC = {'cx','cy','r','rx','ry','x','y','width','height','x1','y1','x2','y2',
                'stroke-width','opacity','stop-opacity'}
@@ -244,7 +251,7 @@ def _fraction(value: str, attribute: str, percent: bool = False) -> None:
             fail(f'world.scene_svg: {attribute} must be between 0 and 1')
 
 
-def sanitize_scene(markup: str) -> str:
+def sanitize_scene(markup: str, section_ids: set[str] | None = None, labels: dict[str, str] | None = None) -> str:
     """Allow inert decorative SVG and self-contained gradients, never active resources.
 
     This is intentionally restrictive. New SVG features must be added to the
@@ -264,6 +271,7 @@ def sanitize_scene(markup: str) -> str:
     count = 0
     gradient_ids: set[str] = set()
     gradient_refs: set[str] = set()
+    landmark_ids: set[str] = set()
 
     def clean(node: ET.Element, parent: str = '') -> str:
         nonlocal count
@@ -305,15 +313,28 @@ def sanitize_scene(markup: str) -> str:
                 if ref:
                     gradient_refs.add(ref.group(1))
             if key == 'id':
-                if not SVG_ID.fullmatch(val) or val in gradient_ids:
-                    fail(f'world.scene_svg: invalid or duplicate gradient id {val!r}')
-                gradient_ids.add(val)
+                if not SVG_ID.fullmatch(val):
+                    fail(f'world.scene_svg: invalid ID {val!r}')
+                if tag in {'linearGradient','radialGradient'}:
+                    if val in gradient_ids or val in landmark_ids:
+                        fail(f'world.scene_svg: duplicate ID {val!r}')
+                    gradient_ids.add(val)
+                else:
+                    if not val.startswith('landmark-'):
+                        fail(f'world.scene_svg: interactive object id must begin landmark- ({val!r})')
+                    if val in landmark_ids or val in gradient_ids:
+                        fail(f'world.scene_svg: duplicate landmark {val!r}')
+                    if parent in {'defs','linearGradient','radialGradient'}:
+                        fail('world.scene_svg: landmarks must be visible shapes, not definitions')
+                    landmark_ids.add(val)
             if key == 'viewBox' and val != '0 0 620 520':
                 fail('world.scene_svg: viewBox must be 0 0 620 520')
             if key == 'd' and not SVG_PATH.fullmatch(val):
                 fail('world.scene_svg: invalid path data')
             if key == 'points' and not re.fullmatch(r'[0-9eE+.,\s-]{1,3500}', val):
                 fail('world.scene_svg: invalid points')
+            if key == 'class' and val not in {'motion-twinkle','motion-float','motion-drift','motion-pulse'}:
+                fail('world.scene_svg: only predefined motion classes are permitted')
             if key == 'transform' and not SVG_TRANSFORM.fullmatch(val):
                 fail('world.scene_svg: invalid transform; use translate, rotate, scale, matrix or skewX/skewY')
             if key == 'stroke-linecap' and val not in {'round', 'square', 'butt'}:
@@ -321,13 +342,28 @@ def sanitize_scene(markup: str) -> str:
             if key == 'stroke-linejoin' and val not in {'round', 'bevel', 'miter'}:
                 fail('world.scene_svg: stroke-linejoin must be round, bevel or miter')
             pieces.append(f' {key}="{e(val)}"')
+        landmark_id = node.attrib.get('id', '') if tag not in {'linearGradient','radialGradient'} else ''
+        if landmark_id.startswith('landmark-'):
+            section_id = landmark_id.removeprefix('landmark-')
+            if section_ids is not None and section_id not in section_ids:
+                fail(f'world.scene_svg: landmark {section_id!r} is not a section id')
+            if any(child.attrib.get('id', '').startswith('landmark-') for child in node.iter() if child is not node):
+                fail('world.scene_svg: landmarks cannot be nested')
+            if labels is not None:
+                human_label = labels[section_id]
+                attrs = f' role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore {e(human_label)}" data-dialog="detail-{e(section_id)}" class="scene-landmark"'
+                return f'<{tag}{"".join(pieces)}{attrs}><title>{e(human_label)}</title>' + ''.join(clean(child, tag) for child in node) + f'</{tag}>'
         return f'<{tag}{"".join(pieces)}>' + ''.join(clean(child, tag) for child in node) + f'</{tag}>'
 
     interior = ''.join(clean(child, 'svg') for child in root)
     missing = gradient_refs - gradient_ids
     if missing:
         fail(f'world.scene_svg: paint refers to undefined gradient id(s): {", ".join(sorted(missing))}')
-    return '<svg class="scene-svg" viewBox="0 0 620 520" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' + interior + '</svg>'
+    if section_ids is not None:
+        expected = {'landmark-' + sid for sid in section_ids}
+        if landmark_ids != expected:
+            fail('world.scene_svg: each section needs exactly one named SVG object (landmark-<section-id>); missing: ' + ', '.join(sorted(expected-landmark_ids)))
+    return '<svg class="scene-svg" viewBox="0 0 620 520" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg">' + interior + '</svg>'
 
 
 def scene_svg(theme: str) -> str:
@@ -372,6 +408,84 @@ def scene_svg(theme: str) -> str:
     }
     return start + scenes[theme] + '</svg>'
 
+
+
+def share_meta(world: dict, profile: dict) -> str:
+    """Optional share cards: only advertise images that have public HTTPS URLs."""
+    share = world.get('share') or {}
+    url = safe_url(share.get('url', ''))
+    image = safe_url(share.get('image', ''))
+    title = e(world['title'] + ' — ' + profile['name'])
+    description = e(world.get('description') or world['tagline'])
+    tags = [f'<meta name="twitter:card" content="{("summary_large_image" if image else "summary")}">',
+            f'<meta name="twitter:title" content="{title}">',
+            f'<meta name="twitter:description" content="{description}">']
+    if url:
+        tags += [f'<meta property="og:url" content="{e(url)}">', f'<link rel="canonical" href="{e(url)}">']
+    if image:
+        tags += [f'<meta property="og:image" content="{e(image)}">',
+                 f'<meta name="twitter:image" content="{e(image)}">',
+                 f'<meta property="og:image:alt" content="{e(share.get("image_alt") or world["title"])}">']
+    return '\n  '.join(tags)
+
+
+def object_scene(theme: str, sections: list[dict]) -> str:
+    """Fallback for when an agent doesn't supply original named art.
+
+    The interactive shapes ARE the illustrated objects. No percentage pin positions
+    or artificial overlay hit targets are generated.
+    """
+    n = len(sections)
+    if n == 1: positions = [(310, 275)]
+    elif n == 2: positions = [(186, 300), (438, 277)]
+    elif n == 3: positions = [(154, 322), (463, 322), (313, 170)]
+    elif n == 4: positions = [(153, 187), (455, 191), (156, 372), (456, 371)]
+    else:
+        positions = [(x, y) for y in (185, 365) for x in (95, 235, 385, 525)][:n]
+    top = ('<svg viewBox="0 0 620 520"><defs>'
+           '<radialGradient id="glow"><stop stop-color="var(--accent2)" stop-opacity=".33"/><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"/></radialGradient>'
+           '<linearGradient id="roof" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient>'
+           '</defs><ellipse cx="310" cy="255" rx="285" ry="230" fill="url(#glow)"/>')
+    if theme == 'space':
+        top += '<path d="M0 484 Q170 455 340 487 T620 476 V520 H0Z" fill="#131e39" opacity=".6"/>'
+        top += ''.join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#cbd8f7" opacity=".75"/>' for x,y,r in [(68,90,2),(470,65,3),(558,400,2),(94,425,2),(340,63,2),(540,168,2),(260,465,2)])
+    elif theme == 'fairytale':
+        top += '''<circle cx="490" cy="104" r="42" fill="#f4dfc1" opacity=".82"/><circle cx="490" cy="104" r="77" fill="url(#glow)"/>
+          <g class="motion-twinkle" fill="#fbe3b7" opacity=".7"><circle cx="112" cy="81" r="3"/><circle cx="378" cy="105" r="3"/><circle cx="540" cy="242" r="4"/><circle cx="282" cy="56" r="2"/><circle cx="588" cy="142" r="2"/></g>
+          <path d="M0 383 Q95 280 197 361 T421 357 T620 340 V520 H0Z" fill="#4b467a" opacity=".5"/>
+          <path d="M0 439 Q116 375 222 412 T455 399 T620 414 V520 H0Z" fill="#315461" opacity=".85"/>
+          <path d="M0 479 Q186 440 310 480 T620 457 V520 H0Z" fill="#27444d"/>
+          <path d="M204 474 Q282 441 308 394 T401 354" fill="none" stroke="#eac48c" stroke-width="16" opacity=".22"/>
+          <path d="M55 425 Q65 368 81 334 M74 423 Q91 379 111 356 M526 414 Q538 364 550 341 M542 419 Q566 378 585 362" fill="none" stroke="#b0a7c3" stroke-width="13" stroke-linecap="round" opacity=".65"/>'''
+    elif theme == 'ocean':
+        top += '<path d="M0 470 Q135 420 286 462 T620 445 V520 H0Z" fill="#34486c" opacity=".44"/>'
+    elif theme in ('graffiti','custom'):
+        top += '<path d="M0 456 Q180 413 310 448 T620 437 V520 H0Z" fill="#514468" opacity=".42"/>'
+    parts = []
+    for i,(section,(x,y)) in enumerate(zip(sections, positions)):
+        sid = e(section['id'])
+        if theme == 'space':
+            if i % 3 == 1:
+                # A spacecraft, not a circular marker.
+                parts.append(f'<g id="landmark-{sid}"><path d="M{x} {y-86} Q{x+49} {y-25} {x+38} {y+52} L{x-38} {y+52} Q{x-49} {y-25} {x} {y-86}Z" fill="url(#roof)"/><path d="M{x-35} {y+20} L{x-65} {y+65} L{x-15} {y+52}Z" fill="#b2b1e3"/><path d="M{x+35} {y+20} L{x+65} {y+65} L{x+15} {y+52}Z" fill="#b2b1e3"/><circle cx="{x}" cy="{y-7}" r="19" fill="#253559" stroke="#e4effe" stroke-width="6"/><path d="M{x-20} {y+52} L{x} {y+94} L{x+20} {y+52}Z" fill="#f9c68d" opacity=".87"/></g>')
+            else:
+                r = 61 if n <= 4 else 40
+                parts.append(f'<g id="landmark-{sid}"><circle cx="{x}" cy="{y}" r="{r}" fill="url(#roof)"/><path d="M{x-r*.77:.1f} {y+6} Q{x-8} {y-r*.5:.1f} {x+r*.60:.1f} {y+3}" fill="none" stroke="#d1dafa" stroke-width="13" opacity=".34"/><circle cx="{x-14}" cy="{y-16}" r="{r*.37:.1f}" fill="#fff8f2" opacity=".18"/><ellipse cx="{x}" cy="{y+4}" rx="{r+14}" ry="{r*.33:.1f}" transform="rotate(-23 {x} {y+4})" fill="none" stroke="var(--accent2)" stroke-width="8" opacity=".85"/></g>')
+        elif theme == 'fairytale' and i % 2 == 1:
+            # Windmill with painted sails and a true figure outline.
+            parts.append(f'<g id="landmark-{sid}"><path d="M{x-42} {y+70} L{x-30} {y-25} L{x+30} {y-25} L{x+42} {y+70}Z" fill="#a792b1"/><path d="M{x-36} {y-25} L{x} {y-68} L{x+36} {y-25}Z" fill="url(#roof)"/><rect x="{x-9}" y="{y+18}" width="18" height="52" rx="8" fill="#342844"/><g transform="rotate(-15 {x} {y-19})"><path d="M{x-9} {y-17} L{x-25} {y-110} L{x+8} {y-110} L{x+10} {y-20}Z" fill="#edcee9"/><path d="M{x+8} {y-24} L{x+98} {y-42} L{x+105} {y-10} L{x+10} {y-11}Z" fill="#f5ce91"/><path d="M{x+10} {y-15} L{x+28} {y+82} L{x-5} {y+84} L{x-9} {y-12}Z" fill="#edcee9"/><path d="M{x-10} {y-17} L{x-98} {y+1} L{x-104} {y-29} L{x-12} {y-26}Z" fill="#f5ce91"/></g><circle cx="{x}" cy="{y-18}" r="13" fill="#4c345d" stroke="#ffe0b4" stroke-width="5"/></g>')
+        elif theme == 'fairytale':
+            parts.append(f'<g id="landmark-{sid}"><rect x="{x-51}" y="{y-46}" width="102" height="111" rx="4" fill="#9687b7"/><rect x="{x-74}" y="{y-70}" width="42" height="137" fill="#b4a1c5"/><rect x="{x+32}" y="{y-70}" width="42" height="137" fill="#b4a1c5"/><path d="M{x-84} {y-68} L{x-53} {y-123} L{x-22} {y-68}Z" fill="url(#roof)"/><path d="M{x+22} {y-68} L{x+53} {y-123} L{x+84} {y-68}Z" fill="url(#roof)"/><path d="M{x-25} {y-48} L{x} {y-100} L{x+25} {y-48}Z" fill="#dfbce4"/><path d="M{x-18} {y+65} V{y+10} Q{x} {y-13} {x+18} {y+10} V{y+65}Z" fill="#312944"/><rect x="{x-61}" y="{y-34}" width="15" height="25" rx="6" fill="#ffe1a5"/><rect x="{x+46}" y="{y-34}" width="15" height="25" rx="6" fill="#ffe1a5"/></g>')
+        elif theme in ('custom', 'graffiti'):
+            if i % 2 == 0:
+                parts.append(f'<g id="landmark-{sid}"><rect x="{x-65}" y="{y-55}" width="130" height="117" rx="9" fill="#755478"/><path d="M{x-90} {y-53} L{x} {y-113} L{x+90} {y-53}Z" fill="url(#roof)"/><rect x="{x-48}" y="{y-36}" width="96" height="80" rx="5" fill="#262342"/><path d="M{x-85} {y-48} L{x-58} {y+68} M{x+85} {y-48} L{x+58} {y+68}" fill="none" stroke="#f7bb9c" stroke-width="9"/><circle cx="{x}" cy="{y-2}" r="21" fill="#a68cc3"/><rect x="{x-38}" y="{y+34}" width="76" height="13" rx="4" fill="#e7bd95"/></g>')
+            else:
+                parts.append(f'<g id="landmark-{sid}"><path d="M{x-77} {y+60} L{x-62} {y-39} L{x+60} {y-39} L{x+77} {y+60}Z" fill="#5c7490"/><path d="M{x-87} {y-42} Q{x} {y-138} {x+87} {y-42}Z" fill="url(#roof)"/><rect x="{x-57}" y="{y-26}" width="114" height="66" rx="8" fill="#40364f"/><circle cx="{x-28}" cy="{y+4}" r="12" fill="#e6b1ce"/><circle cx="{x+28}" cy="{y+4}" r="12" fill="#e6b1ce"/><path d="M{x-34} {y+36} Q{x} {y+6} {x+34} {y+36}" fill="none" stroke="#f9cf92" stroke-width="8"/></g>')
+        elif theme == 'ocean':
+            parts.append(f'<g id="landmark-{sid}"><path d="M{x-51} {y+40} Q{x-58} {y-40} {x-13} {y-49} Q{x+44} {y-65} {x+49} {y+40} Z" fill="#62aab1"/><path d="M{x-40} {y+37} Q{x-46} {y-23} {x-13} {y-29} Q{x+33} {y-40} {x+37} {y+37}Z" fill="url(#roof)" opacity=".55"/><circle cx="{x}" cy="{y-3}" r="16" fill="#1d526e"/></g>')
+        else:
+            parts.append(f'<g id="landmark-{sid}"><rect x="{x-42}" y="{y-43}" width="84" height="88" rx="14" fill="url(#roof)"/><path d="M{x-16} {y+42} L{x-16} {y+3} Q{x} {y-15} {x+16} {y+3} V{y+42}Z" fill="#20304a"/></g>')
+    return top + ''.join(parts) + '</svg>'
 
 ICON_PATHS = {
     'briefcase': '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
@@ -425,36 +539,31 @@ def generate(data: dict) -> str:
     def c(key: str, default: str) -> str:
         return e(copy.get(key) or default)
 
-    points = world.get('hotspots') or [
-        {'section_id': section['id'], 'x': DEFAULT_POINTS[i][0], 'y': DEFAULT_POINTS[i][1], 'label': section['name'][:37] + ('…' if len(section['name']) > 37 else '')}
-        for i, section in enumerate(sections)
-    ]
-    lookup = {point['section_id']: point for point in points}
-    hotspots, list_items, dialogs, recruiter_items = [], [], [], []
+    list_items, dialogs, recruiter_items = [], [], []
     for index, section in enumerate(sections):
         sid = section['id']
-        point = lookup[sid]
         name = e(section['name'])
-        label = e(point['label'])
         eyebrow = e(section.get('eyebrow') or f'Chapter {index + 1:02}')
         section_icon = icon(('briefcase','sparkles','rocket','star','book','compass','globe','heart')[index])
         search_text = ' '.join([section['name'],section['intro']]+[f'{item["title"]} {item.get("description", "")} {" ".join(item.get("highlights", []))} {" ".join(item.get("tags", []))}' for item in section['entries']])
-        hotspots.append(f'<button type="button" class="hotspot motion-float" style="--x:{point["x"]}%;--y:{point["y"]}%;--delay:{index * -0.8}s" data-dialog="detail-{e(sid)}" aria-haspopup="dialog" aria-label="{c("open", "Explore")} {name}"><span class="spot-dot">{section_icon}</span><span class="spot-label">{label}</span></button>')
         list_items.append(f'<button type="button" class="landmark" data-dialog="detail-{e(sid)}" data-search="{e(search_text.casefold())}" aria-haspopup="dialog" aria-label="{c("open", "Explore")} {name}"><span class="landmark-icon">{section_icon}</span><span class="landmark-text"><strong>{name}</strong><small>{e(section["intro"])}</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>')
         details = ''.join(entry_html(item, copy.get('view_work') or 'View project') for item in section['entries'])
         dialogs.append(f'<dialog class="detail-dialog" id="detail-{e(sid)}" aria-labelledby="label-{e(sid)}"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">{eyebrow}</p><h2 id="label-{e(sid)}">{name}</h2><p>{e(section["intro"])}</p></div><button type="button" class="close-dialog" aria-label="{c("close", "Close details")}">{icon("close")}</button></header><div class="entries">{details}</div></div></dialog>')
         recruiter_items.append(f'<section class="recruiter-section"><h3>{name}</h3>{details}</section>')
     links = ''.join(f'<a href="{e(safe_url(link["url"]))}" target="_blank" rel="noopener noreferrer">{e(link["label"])} ↗</a>' for link in profile.get('links', []))
-    scene = sanitize_scene(world['scene_svg']) if world.get('scene_svg') else scene_svg(theme_name if theme_name in THEMES else 'custom')
+    scene_source = world.get('scene_svg') or object_scene(theme_name, sections)
+    label_map = {section['id']: next((p['label'] for p in world.get('landmarks', world.get('hotspots', [])) if p['section_id'] == section['id']), section['name']) for section in sections}
+    scene = sanitize_scene(scene_source, section_ids=set(label_map), labels=label_map)
     result = TEMPLATE.read_text(encoding='utf-8')
     replacements = {
         'TITLE':e(world['title']), 'TAGLINE':e(world['tagline']), 'DESCRIPTION':e(world.get('description') or world['tagline']),
+        'SHARE_META': share_meta(world, profile),
         'PROFILE_NAME':e(profile['name']), 'PROFILE_HEADLINE':e(profile['headline']), 'PROFILE_SUMMARY':e(profile['summary']),
         'ACCENT':accent, 'ACCENT2':secondary,
         'BG':safe_background(world.get('background') or '', theme['background']),
         'BG2':safe_background(world.get('background_secondary') or '', theme['background2']),
         'THEME':e(theme_name), 'THEME_LABEL':e(world.get('visual_name') or theme['label']),
-        'SCENE':scene, 'HOTSPOTS':'\n'.join(hotspots), 'LANDMARKS':'\n'.join(list_items),
+        'SCENE':scene, 'LANDMARKS':'\n'.join(list_items),
         'DIALOGS':'\n'.join(dialogs), 'RECRUITER_ENTRIES':'\n'.join(recruiter_items),
         'LINKS':links, 'COUNT':str(len(sections)), 'ENTRY_COUNT':str(sum(len(s['entries']) for s in sections)),
         'ICON_MAP':icon('map'), 'ICON_LIST':icon('list'), 'ICON_USER':icon('user'), 'ICON_PRINT':icon('print'), 'ICON_CLOSE':icon('close'),

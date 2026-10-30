@@ -16,3 +16,8 @@ out/
 dist/
 private/
 resume-extracted*.txt
+
+# Release artifacts are distributed through GitHub Releases, not committed as source
+SimpliCITY-Builder-Skill-v*.zip
+SimpliCITY-Builder-v*-Complete-GitHub-Source.zip
+SimpliCITY-Builder-v*-Update.zip

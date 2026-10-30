@@ -8,6 +8,14 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="The Vega Constellation — Jordan Vega">
   <meta property="og:description" content="Travel between career planets, missions, learning stations and constellations of skills.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Vega Constellation — Jordan Vega">
+  <meta name="twitter:description" content="Travel between career planets, missions, learning stations and constellations of skills.">
+  <meta property="og:url" content="https://dishitkalsaria.github.io/SimpliCITY-Builder/space.html">
+  <link rel="canonical" href="https://dishitkalsaria.github.io/SimpliCITY-Builder/space.html">
+  <meta property="og:image" content="https://dishitkalsaria.github.io/SimpliCITY-Builder/assets/space-social.jpg">
+  <meta name="twitter:image" content="https://dishitkalsaria.github.io/SimpliCITY-Builder/assets/space-social.jpg">
+  <meta property="og:image:alt" content="SimpliCITY Builder fictional space portfolio world">
   <title>The Vega Constellation — Jordan Vega</title>
   <style>
     :root{--bg:#070c20;--bg2:#171d46;--accent:#9de6ff;--accent2:#bf96ff;--white:#fdf9ff;--muted:#d6d1dc;--stroke:rgba(255,255,255,.23);color-scheme:dark}
@@ -31,13 +39,14 @@
     .stage{display:grid;place-items:center;flex:1;min-height:0;position:relative;isolation:isolate}
     .scene-world{width:min(100%,calc((100dvh - 256px)*1.1923),1040px);aspect-ratio:620/520;position:relative;min-height:0;max-height:100%;filter:drop-shadow(0 24px 32px rgba(0,0,0,.17))}
     .scene-svg{display:block;width:100%;height:100%;overflow:visible}
-    .scene-world::before{content:"";position:absolute;inset:12% 18%;border:1px solid color-mix(in srgb,var(--accent2) 34%,transparent);border-radius:50%;opacity:.5;pointer-events:none}
-    .hotspot{position:absolute;z-index:2;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;min-width:44px;min-height:44px;border:0;border-radius:20px;background:transparent;color:var(--white);padding:0;filter:drop-shadow(0 5px 9px rgba(0,0,0,.75))}
-    .spot-dot{position:relative;display:grid;place-items:center;width:45px;height:45px;flex:none;border:2px solid var(--accent);border-radius:50%;color:var(--bg);background:linear-gradient(155deg,var(--accent),var(--accent2));box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 17%,transparent);transition:scale .2s,box-shadow .2s}
-    .hotspot .ui-icon{height:21px;width:21px}
-    .spot-label{display:block;font-size:12px;line-height:1.15;font-weight:750;letter-spacing:.01em;padding:8px 11px;border-radius:11px;background:rgba(6,8,20,.86);border:1px solid var(--stroke);white-space:normal;text-align:center;max-width:178px;overflow-wrap:break-word}
-    .hotspot:hover .spot-dot,.hotspot:focus-visible .spot-dot{scale:1.14;box-shadow:0 0 0 9px color-mix(in srgb,var(--accent) 31%,transparent)}
-    .hotspot:focus-visible{outline:none}.hotspot:focus-visible .spot-label{outline:2px solid var(--accent)}
+    .scene-world::before{content:"";position:absolute;inset:12% 18%;border:1px solid color-mix(in srgb,var(--accent2) 13%,transparent);border-radius:50%;opacity:.23;pointer-events:none}
+    /* The scene objects themselves are the hit targets: no icon pins or overlaid badges. */
+    .scene-landmark{cursor:pointer;pointer-events:visiblePainted;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
+    .scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
+    .scene-landmark:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
+    .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
+    .scene-tooltip[hidden]{display:none}
     .toolbar{display:flex;flex:none;justify-content:space-between;align-items:center;gap:12px;min-height:74px;border-top:1px solid var(--stroke)}
     .hint{color:var(--muted);font-size:12px;max-width:34ch}.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
     .tool{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--stroke);border-radius:13px;padding:10px 12px;background:rgba(255,255,255,.065);color:var(--white);font-size:12px;font-weight:750;white-space:nowrap;min-height:42px}
@@ -65,11 +74,11 @@
     @keyframes twinkle{0%,100%{opacity:.6}50%{opacity:1}}
     @keyframes drift{0%,100%{translate:0 0}50%{translate:8px -4px}}
     @keyframes pulse{0%,100%{opacity:.82}50%{opacity:1}}
-    .motion-float .spot-dot{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
+    .motion-float{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
     .motion-twinkle{animation:twinkle 5s ease-in-out infinite}.motion-drift{animation:drift 9s ease-in-out infinite}.motion-pulse{animation:pulse 4s ease-in-out infinite}
-    @media(max-width:680px){.app{padding:0 11px env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(23px,6.1vw,31px)}.tagline{font-size:11px;max-width:31ch}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:min(100%,calc((100dvh - 226px)*1.1923))}.spot-dot{width:40px;height:40px;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 19%,transparent)}.hotspot{min-width:44px;min-height:44px}.spot-label{position:absolute;top:calc(100% + 3px);left:50%;transform:translateX(-50%);font-size:10px;padding:4px 6px;min-width:72px;max-width:112px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:9px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
-    @media(max-width:380px){.tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.hotspot .spot-label{font-size:9px;max-width:92px}.overview{display:none}}
-    @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:min(100%,calc((100dvh - 155px)*1.1923))}.spot-label{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
+    @media(max-width:680px){.app{padding:0 11px env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(23px,6.1vw,31px)}.tagline{font-size:11px;max-width:31ch}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:min(100%,calc((100dvh - 226px)*1.1923))}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:9px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
+    @media(max-width:380px){.tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.overview{display:none}}
+    @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:min(100%,calc((100dvh - 155px)*1.1923))}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
     @media print{html,body{height:auto!important;overflow:visible!important;background:white!important;color:black!important}.app,.detail-dialog,.list-dialog,.about-dialog{display:none!important}#recruiter-dialog{display:block!important;position:static!important;border:0!important;box-shadow:none!important;width:100%!important;max-height:none!important;color:black!important;background:white!important;margin:0;padding:0}#recruiter-dialog .dialog-inner{overflow:visible!important;max-height:none!important;padding:0!important}#recruiter-dialog .close-dialog,#recruiter-dialog .print-action{display:none!important}#recruiter-dialog .dialog-heading h2,#recruiter-dialog .entry h3,#recruiter-dialog .recruiter-section>h3{color:black!important}#recruiter-dialog .entry,#recruiter-dialog .metric{break-inside:avoid;border-color:#ccc;background:white!important}#recruiter-dialog .entry *{color:black!important}#recruiter-dialog .eyebrow{color:#333!important}#recruiter-dialog .entry{padding:10px}#recruiter-dialog .tag{border-color:#bbb;color:#333!important}}
   </style>
@@ -79,19 +88,7 @@
     <button type="button" class="skip" data-dialog="list-dialog">Skip to locations</button>
     <header class="topbar"><div class="brand"><span class="brand-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg></span><span>SimpliCITY Builder</span></div><span class="owner">Jordan Vega · Software Engineer &amp; Data Explorer</span></header>
     <div class="intro"><div><p class="eyebrow">Your career across the stars · The cosmic realm</p><h1>The Vega Constellation</h1><p class="tagline">Every mission has a story. Explore the orbit of ideas, engineering and discovery.</p></div><div class="overview"><strong>3</strong>Locations</div></div>
-    <main class="stage" id="world" aria-label="Explore the world"><div class="scene-world" role="group" aria-label="Select an orbiting destination to discover a chapter"><svg class="scene-svg" viewBox="0 0 620 520" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
-      <radialGradient id="halo"><stop stop-color="var(--accent)" stop-opacity=".36"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></radialGradient>
-      <linearGradient id="earth" x1="0" x2="0" y1="0" y2="1"><stop stop-color="var(--accent2)" stop-opacity=".8"/><stop offset="1" stop-color="var(--accent)" stop-opacity=".3"/></linearGradient>
-      </defs><circle cx="315" cy="253" r="235" fill="url(#halo)"/>
-      <g fill="var(--accent)" opacity=".65"><circle cx="107" cy="96" r="3"/><circle cx="500" cy="83" r="3"/><circle cx="472" cy="147" r="2"/><circle cx="160" cy="198" r="2"/><circle cx="530" cy="304" r="3"/><circle cx="78" cy="338" r="2"/><circle cx="375" cy="64" r="2"/></g><circle cx="322" cy="259" r="145" fill="#7c72b3"/><circle cx="289" cy="220" r="134" fill="#464c93"/>
-          <circle cx="289" cy="220" r="134" fill="url(#earth)" opacity=".5"/>
-          <ellipse cx="321" cy="268" rx="226" ry="64" transform="rotate(-25 321 268)" fill="none" stroke="#eac9f0" stroke-width="27" opacity=".66"/>
-          <ellipse cx="321" cy="268" rx="226" ry="64" transform="rotate(-25 321 268)" fill="none" stroke="#fcdfb6" stroke-width="7" opacity=".8"/>
-          <circle cx="95" cy="353" r="42" fill="#f6aa8d"/><circle cx="493" cy="105" r="30" fill="#a1d8e8"/>
-          <path d="M174 178 q65-80 155-20" fill="none" stroke="#c1b4ff" stroke-width="9" opacity=".25"/>
-          <g fill="var(--accent)"><path d="M520 326 l5 15 15 5-15 5-5 15-5-15-15-5 15-5Z"/><path d="M132 96 l3 11 11 3-11 3-3 11-3-11-11-3 11-3Z"/></g></svg><div class="hotspots"><button type="button" class="hotspot motion-float" style="--x:28%;--y:58%;--delay:-0.0s" data-dialog="detail-experience" aria-haspopup="dialog" aria-label="Explore Career Planets"><span class="spot-dot"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><span class="spot-label">Career Planets</span></button>
-<button type="button" class="hotspot motion-float" style="--x:68%;--y:42%;--delay:-0.8s" data-dialog="detail-projects" aria-haspopup="dialog" aria-label="Explore Space Missions"><span class="spot-dot"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3ZM19 18l.7 1.3L21 20l-1.3.7L19 22l-.7-1.3L17 20l1.3-.7L19 18Z"/></svg></span><span class="spot-label">Space Missions</span></button>
-<button type="button" class="hotspot motion-float" style="--x:50%;--y:26%;--delay:-1.6s" data-dialog="detail-skills" aria-haspopup="dialog" aria-label="Explore Skills Constellation"><span class="spot-dot"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c0-5 6-11 14-12l2 2c-1 8-7 14-12 14l-4-4Z"/><path d="m9 15-4 4M5 10H2l2-4 5-2M14 19v3l4-2 2-5"/><circle cx="15" cy="9" r="2"/></svg></span><span class="spot-label">Skills Constellation</span></button></div></div></main>
+    <main class="stage" id="world" aria-label="Explore the world"><div class="scene-world" role="group" aria-label="Select an orbiting destination to discover a chapter"><svg class="scene-svg" viewBox="0 0 620 520" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="glow"><stop stop-color="var(--accent2)" stop-opacity=".33"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient><linearGradient id="roof" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--accent)"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient></defs><ellipse cx="310" cy="255" rx="285" ry="230" fill="url(#glow)"></ellipse><path d="M0 484 Q170 455 340 487 T620 476 V520 H0Z" fill="#131e39" opacity=".6"></path><circle cx="68" cy="90" r="2" fill="#cbd8f7" opacity=".75"></circle><circle cx="470" cy="65" r="3" fill="#cbd8f7" opacity=".75"></circle><circle cx="558" cy="400" r="2" fill="#cbd8f7" opacity=".75"></circle><circle cx="94" cy="425" r="2" fill="#cbd8f7" opacity=".75"></circle><circle cx="340" cy="63" r="2" fill="#cbd8f7" opacity=".75"></circle><circle cx="540" cy="168" r="2" fill="#cbd8f7" opacity=".75"></circle><circle cx="260" cy="465" r="2" fill="#cbd8f7" opacity=".75"></circle><g id="landmark-experience" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Career Planets" data-dialog="detail-experience" class="scene-landmark"><title>Career Planets</title><circle cx="154" cy="322" r="61" fill="url(#roof)"></circle><path d="M107.0 328 Q146 291.5 190.6 325" fill="none" stroke="#d1dafa" stroke-width="13" opacity=".34"></path><circle cx="140" cy="306" r="22.6" fill="#fff8f2" opacity=".18"></circle><ellipse cx="154" cy="326" rx="75" ry="20.1" transform="rotate(-23 154 326)" fill="none" stroke="var(--accent2)" stroke-width="8" opacity=".85"></ellipse></g><g id="landmark-projects" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Space Missions" data-dialog="detail-projects" class="scene-landmark"><title>Space Missions</title><path d="M463 236 Q512 297 501 374 L425 374 Q414 297 463 236Z" fill="url(#roof)"></path><path d="M428 342 L398 387 L448 374Z" fill="#b2b1e3"></path><path d="M498 342 L528 387 L478 374Z" fill="#b2b1e3"></path><circle cx="463" cy="315" r="19" fill="#253559" stroke="#e4effe" stroke-width="6"></circle><path d="M443 374 L463 416 L483 374Z" fill="#f9c68d" opacity=".87"></path></g><g id="landmark-skills" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Skills Constellation" data-dialog="detail-skills" class="scene-landmark"><title>Skills Constellation</title><circle cx="313" cy="170" r="61" fill="url(#roof)"></circle><path d="M266.0 176 Q305 139.5 349.6 173" fill="none" stroke="#d1dafa" stroke-width="13" opacity=".34"></path><circle cx="299" cy="154" r="22.6" fill="#fff8f2" opacity=".18"></circle><ellipse cx="313" cy="174" rx="75" ry="20.1" transform="rotate(-23 313 174)" fill="none" stroke="var(--accent2)" stroke-width="8" opacity=".85"></ellipse></g></svg><div class="scene-tooltip" id="scene-tooltip" hidden></div></div></main>
     <div class="toolbar"><span class="hint">Select an orbiting destination to discover a chapter</span><nav class="tools" aria-label="World navigation"><button type="button" class="tool tool-primary" data-dialog="list-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> Planet directory</button><button type="button" class="tool" data-dialog="about-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/></svg> About the creator</button><button type="button" class="tool" data-dialog="recruiter-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/></svg> Career overview</button></nav></div>
     <footer class="credits"><span>Made with SimpliCITY Builder</span><span>Review facts and privacy before sharing</span></footer>
   </div>
@@ -109,7 +106,7 @@
     (()=>{
       'use strict';
       document.addEventListener('click',event=>{
-        const button=event.target.closest('button[data-dialog]');
+        const button=event.target.closest('[data-dialog]');
         if(!button)return;
         const dialog=document.getElementById(button.dataset.dialog);
         if(dialog && !dialog.open){
@@ -121,6 +118,36 @@
         dialog.querySelector('.close-dialog')?.addEventListener('click',()=>dialog.close());
         dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
       });
+
+      // Keyboard operation for SVG landmarks. Their real painted outlines accept clicks.
+      document.querySelectorAll('.scene-landmark').forEach(object=>{
+        object.addEventListener('keydown',event=>{
+          if(event.key==='Enter' || event.key===' '){event.preventDefault();object.dispatchEvent(new MouseEvent('click',{bubbles:true}));}
+        });
+      });
+      const world=document.querySelector('.scene-world');
+      const tooltip=document.getElementById('scene-tooltip');
+      function labelObject(object){
+        if(!object || !world || !tooltip) return;
+        const box=object.getBoundingClientRect();
+        const frame=world.getBoundingClientRect();
+        const x=Math.max(68,Math.min(frame.width-68,(box.left+box.right)/2-frame.left));
+        const y=Math.max(37,box.top-frame.top-10);
+        tooltip.textContent=object.getAttribute('aria-label') || '';
+        tooltip.style.left=`${x}px`;tooltip.style.top=`${y}px`;
+        tooltip.hidden=false;
+      }
+      world?.addEventListener('pointerover',event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object)labelObject(object);
+      });
+      world?.addEventListener('pointerout',event=>{
+        if(event.target.closest?.('.scene-landmark') && !event.relatedTarget?.closest?.('.scene-landmark'))tooltip.hidden=true;
+      });
+      world?.addEventListener('focusin',event=>{
+        const object=event.target.closest?.('.scene-landmark');if(object)labelObject(object);
+      });
+      world?.addEventListener('focusout',()=>{tooltip.hidden=true});
       const search=document.getElementById('world-search');
       const items=Array.from(document.querySelectorAll('.landmark'));
       const count=document.getElementById('result-count');

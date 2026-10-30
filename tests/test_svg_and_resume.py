@@ -42,7 +42,7 @@ class SvgContractTests(unittest.TestCase):
         rules = (ROOT / 'simplicity-builder' / 'references' / 'illustration-rules.md').read_text(encoding='utf-8')
         sample = rules.split('```xml\n', 1)[1].split('\n```', 1)[0]
         result = builder.sanitize_scene(sample)
-        self.assertIn('url(#planetGlow)', result)
+        self.assertIn('url(#towerLight)', result)
         self.assertIn('transform="rotate(', result)
 
     def test_svg_default_namespace_is_accepted(self):

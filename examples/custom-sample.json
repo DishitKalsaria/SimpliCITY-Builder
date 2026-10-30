@@ -16,25 +16,26 @@
     "background": "#101324",
     "background_secondary": "#342341",
     "visual_name": "The nocturnal concert grounds",
-    "scene_svg": "<svg viewBox=\"0 0 620 520\"><circle cx=\"480\" cy=\"93\" r=\"40\" fill=\"#f6ca8e\" opacity=\"0.86\"/><path d=\"M0 425 L620 425 L620 520 L0 520 Z\" fill=\"#2a254b\"/><path d=\"M120 398 L200 215 L420 215 L503 398 Z\" fill=\"#653d76\"/><path d=\"M154 410 L200 230 L420 230 L467 410 Z\" fill=\"#7d537a\"/><rect x=\"226\" y=\"258\" width=\"168\" height=\"125\" rx=\"9\" fill=\"#1c1b35\"/><path d=\"M205 235 L308 159 L417 235 Z\" fill=\"#e09bba\"/><path d=\"M305 150 L305 104\" stroke=\"#ffd48e\" stroke-width=\"7\"/><circle cx=\"305\" cy=\"93\" r=\"10\" fill=\"#ffd48e\"/><path d=\"M226 255 L172 410\" stroke=\"#ffd48e\" stroke-width=\"9\" opacity=\"0.65\"/><path d=\"M395 255 L451 410\" stroke=\"#ffd48e\" stroke-width=\"9\" opacity=\"0.65\"/><circle cx=\"310\" cy=\"300\" r=\"24\" fill=\"#e6a0b8\"/><path d=\"M288 348 Q310 304 334 348 L334 378 L288 378 Z\" fill=\"#f4d092\"/><path d=\"M70 430 Q110 390 149 430 Q200 393 240 430 Q280 392 320 431 Q370 390 425 430 Q480 391 552 430 L620 520 L0 520 Z\" fill=\"#171831\"/><circle cx=\"80\" cy=\"155\" r=\"9\" fill=\"#e2a7ed\"/><circle cx=\"552\" cy=\"216\" r=\"6\" fill=\"#e2a7ed\"/><circle cx=\"130\" cy=\"90\" r=\"4\" fill=\"#f1c385\"/></svg>",
-    "hotspots": [
-      {
-        "section_id": "roles",
-        "x": 28,
-        "y": 58,
-        "label": "The Main Stage"
-      },
-      {
-        "section_id": "projects",
-        "x": 68,
-        "y": 42,
-        "label": "The Mixtape Lounge"
-      }
-    ],
+    "scene_svg": "<svg viewBox=\"0 0 620 520\"><defs><radialGradient id=\"moonGlow\"><stop stop-color=\"#f6ca8e\" stop-opacity=\".35\"/><stop offset=\"1\" stop-color=\"#f6ca8e\" stop-opacity=\"0\"/></radialGradient><linearGradient id=\"velvet\" x1=\"0\" x2=\"1\" y1=\"0\" y2=\"1\"><stop stop-color=\"#ae719f\"/><stop offset=\"1\" stop-color=\"#533e76\"/></linearGradient></defs><circle cx=\"477\" cy=\"91\" r=\"89\" fill=\"url(#moonGlow)\"/><circle cx=\"477\" cy=\"91\" r=\"32\" fill=\"#f6ca8e\"/><path d=\"M0 443 Q120 391 235 432 T435 435 T620 414 V520 H0Z\" fill=\"#2a254b\"/><g id=\"landmark-roles\"><rect x=\"100\" y=\"251\" width=\"252\" height=\"164\" rx=\"9\" fill=\"#63466f\"/><path d=\"M75 252 L226 141 L377 252Z\" fill=\"url(#velvet)\"/><rect x=\"145\" y=\"268\" width=\"165\" height=\"122\" rx=\"5\" fill=\"#26243e\"/><path d=\"M112 270 L92 411 M343 270 L362 411\" fill=\"none\" stroke=\"#fad99b\" stroke-width=\"9\"/><circle cx=\"228\" cy=\"321\" r=\"31\" fill=\"#f5b9b9\"/><path d=\"M196 391 Q227 329 260 391\" fill=\"#e8d49c\"/><circle cx=\"226\" cy=\"151\" r=\"12\" fill=\"#ffe4b4\"/></g><g id=\"landmark-projects\"><rect x=\"393\" y=\"299\" width=\"166\" height=\"119\" rx=\"12\" fill=\"#554f83\"/><path d=\"M382 299 Q472 205 570 299 Z\" fill=\"#ecb5c9\"/><rect x=\"413\" y=\"323\" width=\"127\" height=\"74\" rx=\"8\" fill=\"#292544\"/><circle cx=\"440\" cy=\"346\" r=\"11\" fill=\"#facb95\"/><circle cx=\"511\" cy=\"346\" r=\"11\" fill=\"#facb95\"/><path d=\"M436 380 Q475 348 518 380\" fill=\"none\" stroke=\"#d993b9\" stroke-width=\"7\"/><path d=\"M401 305 L402 410 M558 305 L559 410\" stroke=\"#eccd99\" stroke-width=\"7\"/></g><path d=\"M0 461 Q150 420 310 457 T620 447 V520 H0Z\" fill=\"#171831\"/><circle cx=\"85\" cy=\"121\" r=\"6\" fill=\"#e2a7ed\"/><circle cx=\"560\" cy=\"195\" r=\"4\" fill=\"#e2a7ed\"/></svg>",
     "copy": {
       "eyebrow": "Follow the sound",
       "hint": "Select a stage to explore the story",
       "list": "Festival stages"
+    },
+    "landmarks": [
+      {
+        "section_id": "roles",
+        "label": "The Main Stage"
+      },
+      {
+        "section_id": "projects",
+        "label": "The Mixtape Lounge"
+      }
+    ],
+    "share": {
+      "url": "https://dishitkalsaria.github.io/SimpliCITY-Builder/festival.html",
+      "image": "https://dishitkalsaria.github.io/SimpliCITY-Builder/assets/festival-social.jpg",
+      "image_alt": "SimpliCITY Builder fictional festival portfolio world"
     }
   },
   "sections": [

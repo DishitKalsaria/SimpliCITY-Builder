@@ -8,6 +8,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="%%TITLE%% — %%PROFILE_NAME%%">
   <meta property="og:description" content="%%DESCRIPTION%%">
+  %%SHARE_META%%
   <title>%%TITLE%% — %%PROFILE_NAME%%</title>
   <style>
     :root{--bg:%%BG%%;--bg2:%%BG2%%;--accent:%%ACCENT%%;--accent2:%%ACCENT2%%;--white:#fdf9ff;--muted:#d6d1dc;--stroke:rgba(255,255,255,.23);color-scheme:dark}
@@ -31,13 +32,14 @@
     .stage{display:grid;place-items:center;flex:1;min-height:0;position:relative;isolation:isolate}
     .scene-world{width:min(100%,calc((100dvh - 256px)*1.1923),1040px);aspect-ratio:620/520;position:relative;min-height:0;max-height:100%;filter:drop-shadow(0 24px 32px rgba(0,0,0,.17))}
     .scene-svg{display:block;width:100%;height:100%;overflow:visible}
-    .scene-world::before{content:"";position:absolute;inset:12% 18%;border:1px solid color-mix(in srgb,var(--accent2) 34%,transparent);border-radius:50%;opacity:.5;pointer-events:none}
-    .hotspot{position:absolute;z-index:2;left:var(--x);top:var(--y);transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;min-width:44px;min-height:44px;border:0;border-radius:20px;background:transparent;color:var(--white);padding:0;filter:drop-shadow(0 5px 9px rgba(0,0,0,.75))}
-    .spot-dot{position:relative;display:grid;place-items:center;width:45px;height:45px;flex:none;border:2px solid var(--accent);border-radius:50%;color:var(--bg);background:linear-gradient(155deg,var(--accent),var(--accent2));box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 17%,transparent);transition:scale .2s,box-shadow .2s}
-    .hotspot .ui-icon{height:21px;width:21px}
-    .spot-label{display:block;font-size:12px;line-height:1.15;font-weight:750;letter-spacing:.01em;padding:8px 11px;border-radius:11px;background:rgba(6,8,20,.86);border:1px solid var(--stroke);white-space:normal;text-align:center;max-width:178px;overflow-wrap:break-word}
-    .hotspot:hover .spot-dot,.hotspot:focus-visible .spot-dot{scale:1.14;box-shadow:0 0 0 9px color-mix(in srgb,var(--accent) 31%,transparent)}
-    .hotspot:focus-visible{outline:none}.hotspot:focus-visible .spot-label{outline:2px solid var(--accent)}
+    .scene-world::before{content:"";position:absolute;inset:12% 18%;border:1px solid color-mix(in srgb,var(--accent2) 13%,transparent);border-radius:50%;opacity:.23;pointer-events:none}
+    /* The scene objects themselves are the hit targets: no icon pins or overlaid badges. */
+    .scene-landmark{cursor:pointer;pointer-events:visiblePainted;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
+    .scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
+    .scene-landmark:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
+    .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
+    .scene-tooltip[hidden]{display:none}
     .toolbar{display:flex;flex:none;justify-content:space-between;align-items:center;gap:12px;min-height:74px;border-top:1px solid var(--stroke)}
     .hint{color:var(--muted);font-size:12px;max-width:34ch}.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
     .tool{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--stroke);border-radius:13px;padding:10px 12px;background:rgba(255,255,255,.065);color:var(--white);font-size:12px;font-weight:750;white-space:nowrap;min-height:42px}
@@ -65,11 +67,11 @@
     @keyframes twinkle{0%,100%{opacity:.6}50%{opacity:1}}
     @keyframes drift{0%,100%{translate:0 0}50%{translate:8px -4px}}
     @keyframes pulse{0%,100%{opacity:.82}50%{opacity:1}}
-    .motion-float .spot-dot{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
+    .motion-float{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
     .motion-twinkle{animation:twinkle 5s ease-in-out infinite}.motion-drift{animation:drift 9s ease-in-out infinite}.motion-pulse{animation:pulse 4s ease-in-out infinite}
-    @media(max-width:680px){.app{padding:0 11px env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(23px,6.1vw,31px)}.tagline{font-size:11px;max-width:31ch}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:min(100%,calc((100dvh - 226px)*1.1923))}.spot-dot{width:40px;height:40px;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 19%,transparent)}.hotspot{min-width:44px;min-height:44px}.spot-label{position:absolute;top:calc(100% + 3px);left:50%;transform:translateX(-50%);font-size:10px;padding:4px 6px;min-width:72px;max-width:112px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:9px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
-    @media(max-width:380px){.tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.hotspot .spot-label{font-size:9px;max-width:92px}.overview{display:none}}
-    @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:min(100%,calc((100dvh - 155px)*1.1923))}.spot-label{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
+    @media(max-width:680px){.app{padding:0 11px env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(23px,6.1vw,31px)}.tagline{font-size:11px;max-width:31ch}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:min(100%,calc((100dvh - 226px)*1.1923))}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:9px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
+    @media(max-width:380px){.tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.overview{display:none}}
+    @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:min(100%,calc((100dvh - 155px)*1.1923))}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
     @media print{html,body{height:auto!important;overflow:visible!important;background:white!important;color:black!important}.app,.detail-dialog,.list-dialog,.about-dialog{display:none!important}#recruiter-dialog{display:block!important;position:static!important;border:0!important;box-shadow:none!important;width:100%!important;max-height:none!important;color:black!important;background:white!important;margin:0;padding:0}#recruiter-dialog .dialog-inner{overflow:visible!important;max-height:none!important;padding:0!important}#recruiter-dialog .close-dialog,#recruiter-dialog .print-action{display:none!important}#recruiter-dialog .dialog-heading h2,#recruiter-dialog .entry h3,#recruiter-dialog .recruiter-section>h3{color:black!important}#recruiter-dialog .entry,#recruiter-dialog .metric{break-inside:avoid;border-color:#ccc;background:white!important}#recruiter-dialog .entry *{color:black!important}#recruiter-dialog .eyebrow{color:#333!important}#recruiter-dialog .entry{padding:10px}#recruiter-dialog .tag{border-color:#bbb;color:#333!important}}
   </style>
@@ -79,7 +81,7 @@
     <button type="button" class="skip" data-dialog="list-dialog">%%COPY_SKIP%%</button>
     <header class="topbar"><div class="brand"><span class="brand-icon">%%ICON_MAP%%</span><span>SimpliCITY Builder</span></div><span class="owner">%%PROFILE_NAME%% · %%PROFILE_HEADLINE%%</span></header>
     <div class="intro"><div><p class="eyebrow">%%COPY_EYEBROW%% · %%THEME_LABEL%%</p><h1>%%TITLE%%</h1><p class="tagline">%%TAGLINE%%</p></div><div class="overview"><strong>%%COUNT%%</strong>%%COPY_LOCATIONS%%</div></div>
-    <main class="stage" id="world" aria-label="%%COPY_EXPLORE%%"><div class="scene-world" role="group" aria-label="%%COPY_HINT%%">%%SCENE%%<div class="hotspots">%%HOTSPOTS%%</div></div></main>
+    <main class="stage" id="world" aria-label="%%COPY_EXPLORE%%"><div class="scene-world" role="group" aria-label="%%COPY_HINT%%">%%SCENE%%<div class="scene-tooltip" id="scene-tooltip" hidden></div></div></main>
     <div class="toolbar"><span class="hint">%%COPY_HINT%%</span><nav class="tools" aria-label="World navigation"><button type="button" class="tool tool-primary" data-dialog="list-dialog">%%ICON_LIST%% %%COPY_LIST%%</button><button type="button" class="tool" data-dialog="about-dialog">%%ICON_USER%% %%COPY_ABOUT%%</button><button type="button" class="tool" data-dialog="recruiter-dialog">%%ICON_PRINT%% %%COPY_RECRUITER%%</button></nav></div>
     <footer class="credits"><span>%%COPY_MADE_WITH%%</span><span>%%COPY_PRIVACY%%</span></footer>
   </div>
@@ -91,7 +93,7 @@
     (()=>{
       'use strict';
       document.addEventListener('click',event=>{
-        const button=event.target.closest('button[data-dialog]');
+        const button=event.target.closest('[data-dialog]');
         if(!button)return;
         const dialog=document.getElementById(button.dataset.dialog);
         if(dialog && !dialog.open){
@@ -103,6 +105,36 @@
         dialog.querySelector('.close-dialog')?.addEventListener('click',()=>dialog.close());
         dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
       });
+
+      // Keyboard operation for SVG landmarks. Their real painted outlines accept clicks.
+      document.querySelectorAll('.scene-landmark').forEach(object=>{
+        object.addEventListener('keydown',event=>{
+          if(event.key==='Enter' || event.key===' '){event.preventDefault();object.dispatchEvent(new MouseEvent('click',{bubbles:true}));}
+        });
+      });
+      const world=document.querySelector('.scene-world');
+      const tooltip=document.getElementById('scene-tooltip');
+      function labelObject(object){
+        if(!object || !world || !tooltip) return;
+        const box=object.getBoundingClientRect();
+        const frame=world.getBoundingClientRect();
+        const x=Math.max(68,Math.min(frame.width-68,(box.left+box.right)/2-frame.left));
+        const y=Math.max(37,box.top-frame.top-10);
+        tooltip.textContent=object.getAttribute('aria-label') || '';
+        tooltip.style.left=`${x}px`;tooltip.style.top=`${y}px`;
+        tooltip.hidden=false;
+      }
+      world?.addEventListener('pointerover',event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object)labelObject(object);
+      });
+      world?.addEventListener('pointerout',event=>{
+        if(event.target.closest?.('.scene-landmark') && !event.relatedTarget?.closest?.('.scene-landmark'))tooltip.hidden=true;
+      });
+      world?.addEventListener('focusin',event=>{
+        const object=event.target.closest?.('.scene-landmark');if(object)labelObject(object);
+      });
+      world?.addEventListener('focusout',()=>{tooltip.hidden=true});
       const search=document.getElementById('world-search');
       const items=Array.from(document.querySelectorAll('.landmark'));
       const count=document.getElementById('result-count');

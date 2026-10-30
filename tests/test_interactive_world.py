@@ -19,7 +19,7 @@ class InteractiveWorldTests(unittest.TestCase):
         page=generate(self.data)
         self.assertIn('height:100dvh',page)
         self.assertIn('overflow:hidden;overscroll-behavior:none',page)
-        self.assertEqual(page.count('class="hotspot motion-float"'),len(self.data['sections']))
+        self.assertEqual(page.count('class="scene-landmark"'),len(self.data['sections']))
         self.assertIn('aria-haspopup="dialog"',page)
         self.assertIn('id="recruiter-dialog"',page)
         self.assertIn('prefers-reduced-motion:reduce',page)
@@ -40,16 +40,38 @@ class InteractiveWorldTests(unittest.TestCase):
         self.assertIn('class="entry quote-entry"',page)
         self.assertIn('Imaginary character',page)
 
-    def test_reject_duplicate_and_crowded_hotspots(self):
+    def test_missing_landmark_label_rejected(self):
         data=copy.deepcopy(self.data)
-        data['world']['hotspots'][1]['x']=data['world']['hotspots'][0]['x']+2
-        data['world']['hotspots'][1]['y']=data['world']['hotspots'][0]['y']+2
-        with self.assertRaisesRegex(ValueError,'farther apart'):validate_model(data)
-
-    def test_reject_missing_hotspot_target(self):
-        data=copy.deepcopy(self.data)
-        data['world']['hotspots'][1]['section_id']='not-a-section'
+        data['world']['landmarks'][1]['section_id']='not-a-section'
         with self.assertRaisesRegex(ValueError,'exactly one'):validate_model(data)
+
+    def test_scene_objects_are_real_svg_geometry(self):
+        data=copy.deepcopy(self.data)
+        data['world']['scene_svg']='<svg viewBox="0 0 620 520"><g id="landmark-experience"><rect x="50" y="80" width="100" height="100" fill="#aabbcc"/></g><g id="landmark-projects"><path d="M200 120 L300 150 L250 220Z" fill="#aabbcc"/></g></svg>'
+        page=generate(data)
+        self.assertEqual(page.count('class="scene-landmark"'), 2)
+        self.assertNotIn('class="hotspot motion-float"',page)
+        self.assertIn('aria-label="Explore The Castle"',page)
+        self.assertIn('role="button" tabindex="0"',page)
+
+    def test_rejects_unmapped_svg_landmark(self):
+        data=copy.deepcopy(self.data)
+        data['world']['scene_svg']='<svg viewBox="0 0 620 520"><g id="landmark-experience"><rect x="50" y="80" width="100" height="100" fill="#aabbcc"/></g></svg>'
+        with self.assertRaisesRegex(ValueError,'each section needs exactly one'):generate(data)
+
+    def test_rejects_duplicate_svg_landmarks_and_unsafe_ids(self):
+        data=copy.deepcopy(self.data)
+        data['world']['scene_svg']='<svg viewBox="0 0 620 520"><g id="landmark-experience"><circle cx="100" cy="100" r="35" fill="#aabbcc"/></g><rect id="landmark-experience" x="350" y="90" width="90" height="90" fill="#aabbcc"/><g id="landmark-projects"><rect x="150" y="250" width="90" height="90" fill="#aabbcc"/></g></svg>'
+        with self.assertRaisesRegex(ValueError,'duplicate'):generate(data)
+
+    def test_complete_open_graph_metadata_when_image_given(self):
+        data=copy.deepcopy(self.data)
+        data['world']['share']={'url':'https://example.com/city/','image':'https://example.com/cover.jpg','image_alt':'Fairytale scene'}
+        html=generate(data)
+        for frag in ('property="og:image"','property="og:url"','name="twitter:card" content="summary_large_image"','name="twitter:image"'):
+            self.assertIn(frag,html)
+        data['world']['share']['image']='javascript:alert(1)'
+        with self.assertRaises(ValueError):generate(data)
 
     def test_reject_false_quote_attribution(self):
         data=copy.deepcopy(self.data)

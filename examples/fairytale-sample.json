@@ -11,20 +11,6 @@
     "theme": "fairytale",
     "description": "Explore a fictional designer's journey through quests, guilds, and discoveries.",
     "symbol": "🏰",
-    "hotspots": [
-      {
-        "section_id": "experience",
-        "x": 28,
-        "y": 58,
-        "label": "The Castle"
-      },
-      {
-        "section_id": "projects",
-        "x": 68,
-        "y": 41,
-        "label": "The Quest Tower"
-      }
-    ],
     "copy": {
       "eyebrow": "A kingdom built from curiosity",
       "hint": "Choose a glowing landmark to enter its chapter",
@@ -32,6 +18,21 @@
       "recruiter": "Read career facts",
       "about": "Meet the adventurer",
       "explore": "Explore the realm"
+    },
+    "landmarks": [
+      {
+        "section_id": "experience",
+        "label": "The Castle"
+      },
+      {
+        "section_id": "projects",
+        "label": "The Quest Tower"
+      }
+    ],
+    "share": {
+      "url": "https://dishitkalsaria.github.io/SimpliCITY-Builder/fairytale.html",
+      "image": "https://dishitkalsaria.github.io/SimpliCITY-Builder/assets/fairytale-social.jpg",
+      "image_alt": "SimpliCITY Builder fictional fairytale portfolio world"
     }
   },
   "sections": [

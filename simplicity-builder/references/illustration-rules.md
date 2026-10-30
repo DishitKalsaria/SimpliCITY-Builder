@@ -1,40 +1,24 @@
-# Original SVG artwork — accepted syntax (v0.1.2)
+# Illustrated landmark rules — SimpliCITY Builder v0.1.3
 
-Create original **decorative** SVG for the user's *arbitrary* imaginative world and store it as a JSON string in `world.scene_svg`. The generator validates and sanitizes the artwork before embedding it.
+The illustration is the navigation. **Do not draw icon pins, badges or clickable circles over an unrelated background.** A saloon, windmill, planet, bridge, train, creature or crystal spire is itself a safe clickable SVG object.
 
-## Canvas and composition
+- Root must be `<svg viewBox="0 0 620 520">`. Max 25,000 characters and 180 SVG nodes.
+- Each career section `id` must have exactly one **named, painted** scene object: `<g id="landmark-experience">...</g>` or a shape with that ID. No nesting of interactive landmark IDs. The ID must match the section and must not be repeated.
+- Compose each landmark as a coherent group of colored geometry. Groups can contain multiple shapes; the actual filled/stroked geometry is the clickable outline. Never create invisible overlay rectangles or percentage-coordinate pins to simulate interactions.
+- Allowed geometry: `g`, `circle`, `ellipse`, `rect`, `line`, `path`, `polygon`, `polyline`, plus `defs`, `linearGradient`, `radialGradient`, `stop`. Allowed shape style attributes: `fill`, `stroke`, `stroke-width`, `stroke-linecap`, `stroke-linejoin`, `opacity`, `transform` and `class`. The `id` attribute is allowed only on landmarks and self-contained gradients. No scripts, external resources, foreignObject, SVG text, event handlers, external links or arbitrary CSS.
+- Allowed paint: hex `#RGB` / `#RRGGBB`, `white`, `black`, `none`, `var(--accent)`, `var(--accent2)`, `url(#localGradient)`. Linear/radial gradient stops stay local. Only preset animation class names `motion-twinkle`, `motion-drift`, `motion-float`, `motion-pulse` may be specified; there is no arbitrary SVG/CSS animation input.
+- Keep distinct object silhouettes with ample space. Aim for solid painted objects at least ~80 SVG units wide for phone usability. Use layers, muted background color, light, shadow, safe gradients, and scenery—but ensure landmarks remain readable and foreground art does not intercept taps.
+- A landmark gets a title, hover glow, and keyboard focus by the generator. The label tooltip is positioned from its **real rendered bounding box**, not guessed coordinates. Keyboard Enter/Space and touch open details. Screen reader labels are generated from `world.landmarks`.
+- `prefers-reduced-motion` disables decorative animation and transitions. Never animate important career text.
+- Automated smoke tests cannot judge illustrative taste. Inspect desktop, mobile portrait, small mobile, and landscape screenshots before publishing.
 
-- Root: `<svg viewBox="0 0 620 520"> ... </svg>`. The ordinary SVG `xmlns="http://www.w3.org/2000/svg"` is also accepted. No `width`/`height` needed.
-- Allowed elements: `svg`, `defs`, `linearGradient`, `radialGradient`, `stop`, `g`, `circle`, `ellipse`, `rect`, `line`, `path`, `polygon`, `polyline`.
-- `defs` must be directly under `svg`, can hold only gradients; gradients can hold only `stop` elements; every gradient needs a unique simple `id` (`[A-Za-z][A-Za-z0-9_-]*`, 40 characters max).
-- Artwork uses a maximum of 180 elements and 25,000 characters. Keep most scenes to 12–60 elements.
-
-## Supported attributes
-
-- Geometry: `cx`, `cy`, `r`, `rx`, `ry`, `x`, `y`, `width`, `height`, `x1`, `y1`, `x2`, `y2`, `d`, `points` on their relevant primitive.
-- Shape and group styling: `fill`, `stroke`, `stroke-width`, `opacity`, `stroke-linecap`, `stroke-linejoin`, **`transform` on shapes and groups**.
-- Stroke caps: `round`, `square`, `butt`; stroke joins: `round`, `bevel`, `miter`.
-- Transform: `translate(...)`, `rotate(...)`, `scale(...)`, `matrix(...)`, `skewX(...)`, `skewY(...)` with numeric arguments. For example `transform="rotate(-25 320 260)"` on an ellipse is valid.
-- Paint values: `#abc`, `#aabbcc`, `none`, `white`, `black`, `var(--accent)`, `var(--accent2)`, and an **internal gradient reference** `url(#glow)` in `fill` or `stroke` when gradient `glow` exists in `<defs>`.
-- Gradients: `linearGradient` (`id`, `x1`, `y1`, `x2`, `y2`), `radialGradient` (`id`, `cx`, `cy`, `r`, `fx`, `fy`), with numeric or percentage coordinates. `stop` accepts `offset` (0–1 or 0%–100%), `stop-color` (safe solid paint), `stop-opacity` (0–1).
-
-## Safe example — glowing planet with a ring
+Example minimal scene:
 
 ```xml
 <svg viewBox="0 0 620 520">
-  <defs>
-    <radialGradient id="planetGlow">
-      <stop offset="0%" stop-color="#c1e9ff" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#34478b" stop-opacity="0.2"/>
-    </radialGradient>
-  </defs>
-  <circle cx="310" cy="250" r="130" fill="url(#planetGlow)"/>
-  <ellipse cx="310" cy="250" rx="210" ry="50" transform="rotate(-22 310 250)" fill="none" stroke="#f8cfab" stroke-width="12" stroke-linecap="round"/>
+  <defs><linearGradient id="towerLight"><stop stop-color="#f4daaf"/><stop offset="1" stop-color="#a790c5"/></linearGradient></defs>
+  <g id="landmark-projects"><rect x="230" y="210" width="140" height="170" rx="12" fill="url(#towerLight)"/><path d="M215 210 L300 135 L385 210Z" fill="#b48fce" transform="rotate(-7 300 190)"/></g>
 </svg>
 ```
 
-**Never use** `script`, event handlers, CSS, `style`, filters, images, foreignObject, embedded text, HTML, href/xlink, network URLs, remote fonts, animation, or unlisted SVG elements/attributes. `url(#id)` is only supported for references to gradients defined in the same artwork, never external URLs.
-
-**Preflight SVG** before full generation: `python3 simplicity-builder/scripts/check_artwork.py your-scene.svg` (no résumé needed). If generation reports an invalid attribute, correct that exact error; do not downgrade the artwork to a generic theme without first checking the rules.
-
-All career facts must remain regular selectable HTML text. The SVG is an optional visual narrative, not a substitute for the user's projects, dates or qualifications. The generator produces a responsive 2D/2.5D portfolio, not a bespoke 3D game.
+Preflight the SVG with `scripts/check_artwork.py`, then run the full builder, validator, and browser smoke test. Preflight alone checks SVG safety; **full build** checks that every section has a matching named landmark.

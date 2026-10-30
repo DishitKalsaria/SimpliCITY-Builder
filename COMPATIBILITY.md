@@ -1,4 +1,4 @@
-# Compatibility and tested status — v0.1.2
+# Compatibility and tested status — v0.1.3
 
 | Host | Skill installation path documented | Full live résumé-to-world acceptance test |
 |---|---|---|
