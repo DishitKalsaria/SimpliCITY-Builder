@@ -31,6 +31,8 @@ Create UTF-8 `portfolio.json` with `profile`, `world`, and `sections`. See `refe
 
 The `world.theme` field may be **any lowercase, hyphenated identifier** (`a-z`, digits, hyphen). There are starter visual scenes for fairytale, space, graffiti, ocean and custom; other names fall back to a generic scene **unless** you supply `scene_svg`, which is recommended for truly custom worlds. This is deliberately not a preset-only theme system. `visual_name`, `accent`, `accent_secondary`, `background`, `background_secondary`, and `scene_svg` are optional. Dark backgrounds required to maintain readable text.
 
-The hero SVG must follow `illustration-rules.md`; it is strictly sanitized. Sections: 1–8. Each section: unique lowercase-hyphenated id; name, intro, 1–20 entries. Entry: title, description, optional subtitle, tags, verified public http(s) URL. No email/phone/address are output by default. Public profile links only when user-approved.
+The hero SVG must follow `illustration-rules.md`; it is strictly sanitized. Original artwork can use local linear/radial gradients with `url(#id)`, shape transforms and stroke caps; preflight using `scripts/check_artwork.py`. Sections: 1–8. Each section: unique lowercase-hyphenated id; name, intro, 1–20 entries. Entry: title, description, optional subtitle, tags, verified public http(s) URL. No email/phone/address are output by default. Public profile links only when user-approved.
 
 Static content will be HTML escaped. Do not put raw HTML, JavaScript, or markup in text fields. If an unusual career fact is unclear or conflicting, omit it and flag for review.
+
+For résumé extraction and evidence-based mapping, see `resume-review.md`. A valid schema does not prove that the résumé facts are correct.

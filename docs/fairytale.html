@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Explore a fictional designer&#x27;s journey through quests, guilds, and discoveries.">
+  <title>The Kingdom of Curious Ideas — Alex Rivers</title>
+  <style>
+    :root{--bg:#100d20;--bg2:#291e3e;--accent:#f6cd8e;--accent2:#c4a7f8;--text:#f9f5fa;--muted:#c2bfd3;--soft:rgba(255,255,255,.075);--stroke:rgba(255,255,255,.18);--blur:0 18px 60px rgba(0,0,0,.22)}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    body::before{content:"";position:absolute;z-index:-1;inset:0 0 auto;height:1200px;background:radial-gradient(ellipse 65% 45% at 78% 14%,color-mix(in srgb,var(--accent2) 20%,transparent),transparent 85%),radial-gradient(ellipse 60% 38% at 0% 50%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 80%),linear-gradient(165deg,var(--bg2),var(--bg) 70%)}
+    a{color:inherit}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+    .skip{position:absolute;left:15px;top:-100px;z-index:100;background:var(--accent);color:var(--bg);padding:10px 16px;border-radius:10px}.skip:focus{top:16px}
+    .container{width:min(1170px,calc(100% - 48px));margin-inline:auto}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:27px 0;position:relative;z-index:3}
+    .logo{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;text-decoration:none}
+    .brand-icon{display:grid;place-items:center;width:37px;height:37px;border-radius:12px;background:linear-gradient(145deg,var(--accent),var(--accent2));color:var(--bg);font-size:20px;box-shadow:0 6px 25px color-mix(in srgb,var(--accent) 25%,transparent)}
+    .navlinks{display:flex;align-items:center;gap:28px}.navlinks a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:650}.navlinks a:hover{color:white}
+    .nav-pill{padding:9px 15px!important;border:1px solid var(--stroke);border-radius:40px;color:var(--text)!important;background:rgba(255,255,255,.06)}
+    .hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:600px;gap:25px;padding:55px 0 85px}
+    .eyebrow{margin:0 0 16px;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    h1,h2,h3,h4,p{margin-top:0}
+    h1,h2,h3{letter-spacing:-.044em;line-height:1.08}
+    h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(3.35rem,6.8vw,6.3rem);font-weight:500;max-width:730px;margin:0 0 20px;text-wrap:balance}
+    .hero-tagline{font-size:clamp(1.08rem,2vw,1.28rem);color:#e8dfea;max-width:490px;line-height:1.6;margin:0 0 30px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;border-radius:100px;padding:13px 24px;text-decoration:none;font-weight:750;font-size:14px;transition:transform .2s,background .2s}
+    .btn:hover{transform:translateY(-2px)}.btn-primary{background:var(--accent);color:#1b1b24}.btn-secondary{border:1px solid var(--stroke);color:white;background:rgba(255,255,255,.05)}
+    .hero-art{position:relative;min-height:515px;display:grid;place-items:center}
+    .hero-art::before{content:"";position:absolute;width:72%;aspect-ratio:1;border:1px dashed color-mix(in srgb,var(--accent2) 45%,transparent);border-radius:50%;transform:rotate(-20deg)}
+    .hero-art::after{content:"";position:absolute;width:92%;aspect-ratio:1;border:1px solid rgba(255,255,255,.045);border-radius:50%}
+    .scene-svg{position:relative;width:min(100%,620px);filter:drop-shadow(0 27px 36px rgba(0,0,0,.2));animation:float 9s ease-in-out infinite;z-index:1}
+    .scene-ribbon{position:absolute;top:8%;right:1%;z-index:2;border:1px solid var(--stroke);padding:8px 14px;border-radius:30px;background:rgba(19,18,31,.6);backdrop-filter:blur(12px);color:#f0eaf7;font-size:12px;transform:rotate(7deg)}
+    .scene-token{position:absolute;bottom:10%;left:0;z-index:2;border:1px solid var(--stroke);background:rgba(24,22,36,.75);backdrop-filter:blur(16px);padding:11px 16px;border-radius:16px;box-shadow:var(--blur);display:flex;gap:10px;align-items:center;color:#f5edf3;font-size:12px;transform:rotate(-6deg)}
+    .scene-token span:first-child{font-size:23px}
+    .profile-strip{border:1px solid var(--stroke);background:rgba(255,255,255,.045);border-radius:23px;padding:27px 30px;display:flex;gap:24px;justify-content:space-between;align-items:center;backdrop-filter:blur(15px);box-shadow:var(--blur)}
+    .profile-badge{display:flex;gap:16px;align-items:center;min-width:0}.avatar{flex:0 0 56px;width:56px;height:56px;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);border-radius:18px;background:linear-gradient(130deg,color-mix(in srgb,var(--accent) 22%,transparent),color-mix(in srgb,var(--accent2) 35%,transparent));display:grid;place-items:center;font-family:Georgia,serif;font-size:26px;color:var(--accent)}
+    .profile-name{font-size:17px;font-weight:800;margin:0}.profile-headline{color:var(--muted);font-size:13px;margin:1px 0 0}
+    .profile-meta{display:flex;gap:13px;flex-wrap:wrap;justify-content:flex-end}.mini-stat{padding-left:18px;border-left:1px solid var(--stroke);min-width:95px}.mini-stat strong{display:block;font-size:21px;line-height:1.2}.mini-stat span{font-size:11px;color:var(--muted)}
+    .world{padding:110px 0 80px;position:relative}
+    .section-heading{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:31px}
+    h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.65rem,5vw,4.4rem);font-weight:500;margin:0 0 9px;max-width:800px}
+    .section-summary{color:var(--muted);font-size:15px;max-width:650px;margin:0}
+    .world-search{border:1px solid var(--stroke);border-radius:100px;background:rgba(255,255,255,.06);color:white;padding:13px 17px;min-width:245px;max-width:100%;outline-offset:3px}
+    .world-search::placeholder{color:#c0b9cd}
+    .map-panel{position:relative;border:1px solid rgba(255,255,255,.13);background:radial-gradient(ellipse at 35% 0%,color-mix(in srgb,var(--accent2) 13%,transparent),transparent 60%),linear-gradient(150deg,rgba(255,255,255,.07),rgba(255,255,255,.018));border-radius:30px;padding:49px 38px 40px;overflow:hidden;isolation:isolate}
+    .map-panel::before{content:"";position:absolute;inset:0;opacity:.25;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.4) .6px,transparent .7px);background-size:24px 24px;z-index:-1}
+    .map-top{display:flex;align-items:center;gap:10px;margin:0 0 37px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--muted)}.map-top::before{content:"✦";color:var(--accent)}
+    .landmarks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;position:relative}
+    .landmark{text-align:left;color:var(--text);min-width:0;min-height:250px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(150deg,rgba(255,255,255,.11),rgba(255,255,255,.035));border-radius:22px;padding:23px;display:flex;flex-direction:column;align-items:stretch;box-shadow:0 13px 45px rgba(0,0,0,.10);transition:transform .2s,border-color .2s,background .2s;backdrop-filter:blur(12px)}
+    .landmark:hover,.landmark:focus-visible{transform:translateY(-5px);border-color:color-mix(in srgb,var(--accent) 65%,white 10%);background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 13%,transparent),rgba(255,255,255,.07))}
+    .landmark-top{display:flex;align-items:start;justify-content:space-between;margin-bottom:19px}.landmark-number{font-size:12px;font-weight:750;color:var(--muted)}.landmark-glyph{font-size:34px;line-height:1;filter:drop-shadow(0 7px 12px rgba(0,0,0,.2))}
+    .landmark-eyebrow{color:var(--accent);font-size:10px;text-transform:uppercase;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+    .landmark-name{font-family:Georgia,serif;font-size:25px;line-height:1.16;letter-spacing:-.025em;margin-bottom:9px}
+    .landmark-description{font-size:13px;line-height:1.55;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .landmark-bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.12);margin-top:auto;padding-top:14px;font-size:11px;color:var(--muted)}
+    .view-arrow{display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--accent) 17%,transparent);color:var(--accent);width:30px;height:30px;font-size:18px}
+    #empty-search{padding:40px 0;color:var(--muted);text-align:center}.hidden,[hidden]{display:none!important}
+    .about{padding:70px 0 95px;display:grid;grid-template-columns:1fr 1.1fr;gap:50px;border-top:1px solid var(--stroke);align-items:center}
+    .about h2{font-size:clamp(2.4rem,4vw,3.6rem)}.about p{color:#ded7e3;max-width:680px}
+    .socials{display:flex;gap:9px;flex-wrap:wrap;margin-top:27px}.social{border:1px solid var(--stroke);padding:10px 15px;border-radius:40px;font-size:12px;text-decoration:none;background:rgba(255,255,255,.07)}.social:hover{border-color:var(--accent)}
+    .about-stamp{position:relative;border-radius:26px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 19%,transparent),color-mix(in srgb,var(--accent2) 11%,transparent));min-height:230px;border:1px solid var(--stroke);display:grid;place-items:center;padding:35px;text-align:center;overflow:hidden}
+    .about-stamp::before{content:"";position:absolute;border:1px solid rgba(255,255,255,.17);width:260px;height:260px;border-radius:50%;transform:translate(100px,-110px)}
+    .about-stamp strong{position:relative;font-family:Georgia,serif;font-weight:500;font-size:34px;line-height:1.2;max-width:340px}.about-stamp span{font-size:28px;display:block;margin-bottom:15px}
+    footer{border-top:1px solid var(--stroke);padding:28px 0 34px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;color:var(--muted);font-size:12px}
+    .detail-dialog{border:1px solid rgba(255,255,255,.2);border-radius:24px;color:var(--text);background:linear-gradient(145deg,var(--bg2),var(--bg));width:min(730px,calc(100% - 32px));max-height:min(86vh,1000px);padding:0;box-shadow:0 30px 100px rgba(0,0,0,.65)}
+    .detail-dialog::backdrop{background:rgba(2,3,14,.78);backdrop-filter:blur(9px)}.dialog-inner{padding:33px;overflow:auto;max-height:85vh}
+    .dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding-bottom:25px;border-bottom:1px solid var(--stroke)}
+    .dialog-heading h3{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3rem);font-weight:500;margin:0 0 11px}.dialog-heading .eyebrow{margin-bottom:10px}
+    .dialog-intro{color:var(--muted);margin:0;font-size:14px;max-width:550px}.close-dialog{flex:none;width:37px;height:37px;border:1px solid var(--stroke);border-radius:50%;background:rgba(255,255,255,.1);color:white;font-size:16px}.close-dialog:hover{background:rgba(255,255,255,.2)}
+    .entries{display:grid;gap:16px;padding:23px 0}.entry{border:1px solid var(--stroke);border-radius:16px;padding:22px;background:rgba(255,255,255,.055)}
+    .entry h4{font-size:19px;line-height:1.3;margin:0 0 4px;letter-spacing:-.01em}.entry-subtitle{color:var(--accent);font-size:13px;margin:0}.entry>p{font-size:14px;color:#e4dce9;white-space:pre-line;line-height:1.7;margin:14px 0}
+    .tags{display:flex;flex-wrap:wrap;gap:7px}.tag{padding:4px 9px;border:1px solid var(--stroke);background:rgba(255,255,255,.04);border-radius:30px;font-size:11px;color:#ede2f4}.entry-link{display:inline-flex;gap:8px;margin-top:16px;font-size:13px;color:var(--accent);font-weight:700;text-decoration:none}.entry-link:hover{text-decoration:underline}
+    .dialog-footer{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin:0}
+    .print-note{display:none}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    @media(max-width:920px){.hero{grid-template-columns:1fr;gap:0;padding-top:45px}.hero-art{min-height:360px;max-width:580px;width:100%;margin:auto}.scene-svg{width:min(100%,490px)}.landmarks{grid-template-columns:repeat(2,minmax(0,1fr))}.about{grid-template-columns:1fr;gap:26px}.about-stamp{min-height:180px}.world{padding-top:85px}}
+    @media(max-width:620px){.container{width:min(100% - 30px,1170px)}.nav{padding:17px 0}.navlinks{gap:10px}.navlinks .nav-hide{display:none}.nav-pill{padding:7px 11px!important;font-size:11px!important}.hero{padding-top:43px;padding-bottom:38px;min-height:0}.hero h1{font-size:clamp(3rem,13vw,4.1rem)}.hero-art{min-height:300px}.scene-ribbon{right:0;top:4%}.scene-token{left:0;bottom:2%}.profile-strip{padding:19px;align-items:flex-start;flex-direction:column;gap:16px;border-radius:19px}.profile-meta{justify-content:flex-start}.mini-stat:first-child{padding-left:0;border-left:0}.section-heading{display:block}.world-search{margin-top:20px;width:100%}.world{padding-top:65px;padding-bottom:48px}.map-panel{padding:24px 15px;border-radius:21px}.landmarks{grid-template-columns:1fr;gap:14px}.landmark{min-height:220px;padding:20px}.map-top{margin-bottom:19px}.about{padding:50px 0}.about-stamp{padding:25px}.about-stamp strong{font-size:29px}.dialog-inner{padding:21px}.dialog-heading h3{font-size:2rem}.entry{padding:17px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.scene-svg{animation:none}.btn,.landmark{transition:none}.btn:hover,.landmark:hover{transform:none}}
+    @media print{body{background:white!important;color:black!important}body::before,.hero-art,.nav,.hero-actions,.world-search,.profile-meta,.map-top,.scene-ribbon,.scene-token,.print-note{display:none!important}.hero{display:block;min-height:0;padding:10px 0}.hero h1,.profile-name,.about h2{color:black}.container{width:100%}.profile-strip,.map-panel,.landmark,.about-stamp{box-shadow:none;background:white!important;color:black!important;border-color:#bbb}.landmarks{grid-template-columns:1fr 1fr}.landmark-name,.landmark-eyebrow,.landmark-description,.landmark-bottom,.section-summary{color:black!important}.detail-dialog{position:static!important;display:block!important;width:100%!important;max-height:none!important;color:black;box-shadow:none;background:white;border:1px solid #aaa;margin:12px auto}.dialog-inner{max-height:none}.dialog-heading h3,.entry h4,.dialog-intro,.entry p,.entry-subtitle{color:black!important}.close-dialog,.dialog-footer{display:none!important}.entry{border-color:#aaa}.about{display:block}.about-stamp{display:none}}
+  </style>
+</head>
+<body data-theme="fairytale">
+  <a href="#main" class="skip">Skip to content</a>
+  <div class="container">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="logo" href="#top"><span class="brand-icon" aria-hidden="true">✦</span> SimpliCITY <span style="color:var(--accent);font-size:9px;letter-spacing:0;margin-left:3px">WORLD</span></a>
+      <div class="navlinks"><a href="#world" class="nav-hide">Explore the world</a><a href="#about" class="nav-hide">About the creator</a><a href="#world" class="nav-pill">Enter world ↗</a></div>
+    </nav>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">✦ An interactive storyworld · The enchanted realm</p>
+          <h1 id="hero-title">The Kingdom of Curious Ideas</h1>
+          <p class="hero-tagline">Every great solution begins with a little wonder.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="#world">Explore the world <span aria-hidden="true">↗</span></a><a class="btn btn-secondary" href="#about">Meet the creator</a></div>
+        </div>
+        <div class="hero-art">
+          <svg class="scene-svg" viewBox="0 0 620 520" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+      <radialGradient id="halo"><stop stop-color="var(--accent)" stop-opacity=".36"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></radialGradient>
+      <linearGradient id="earth" x1="0" x2="0" y1="0" y2="1"><stop stop-color="var(--accent2)" stop-opacity=".8"/><stop offset="1" stop-color="var(--accent)" stop-opacity=".3"/></linearGradient>
+      </defs><circle cx="315" cy="253" r="235" fill="url(#halo)"/>
+      <g fill="var(--accent)" opacity=".65"><circle cx="107" cy="96" r="3"/><circle cx="500" cy="83" r="3"/><circle cx="472" cy="147" r="2"/><circle cx="160" cy="198" r="2"/><circle cx="530" cy="304" r="3"/><circle cx="78" cy="338" r="2"/><circle cx="375" cy="64" r="2"/></g><path d="M22 398 Q150 320 282 389 T607 382 L607 522 H22Z" fill="#405071" opacity=".65"/>
+          <path d="M0 441 Q175 369 320 430 T620 409 V522 H0Z" fill="#244e4a"/>
+          <path d="M180 397 L180 248 L227 248 L227 197 L261 175 L296 197 L296 247 L351 247 L351 170 L387 129 L425 170 L425 250 L453 250 L453 397 Z" fill="#9780b4"/>
+          <path d="M205 248 L205 219 L237 187 L269 219 L269 248 M342 170 L387 103 L433 170" fill="#dfb8e8"/>
+          <path d="M286 398 V320 Q318 279 348 320 V398" fill="#2c2243"/><path d="M226 286 H249 V319 H226ZM370 213 H395 V244 H370Z" fill="#ffd994"/>
+          <path d="M182 403 Q322 372 460 406" fill="none" stroke="#f8d7a3" stroke-width="7" stroke-linecap="round" opacity=".6"/>
+          <circle cx="457" cy="136" r="30" fill="#f9dcac" opacity=".85"/>
+          <g fill="#f9dba8"><path d="M110 236 l4 13 13 4-13 4-4 13-4-13-13-4 13-4Z"/><path d="M490 284 l3 9 9 3-9 3-3 9-3-9-9-3 9-3Z"/></g></svg>
+          <span class="scene-ribbon">✧ The journey begins here</span>
+          <span class="scene-token"><span aria-hidden="true">🏰</span><span>One story.<br><strong>A world of possibilities.</strong></span></span>
+        </div>
+      </section>
+      <div class="profile-strip" aria-label="Professional profile overview">
+        <div class="profile-badge"><span class="avatar" aria-hidden="true">✧</span><div><p class="profile-name">Alex Rivers</p><p class="profile-headline">Product Designer &amp; Creative Technologist</p></div></div>
+        <div class="profile-meta"><div class="mini-stat"><strong>2</strong><span>Landmarks</span></div><div class="mini-stat"><strong>2</strong><span>Stories to discover</span></div></div>
+      </div>
+      <section class="world" id="world" aria-labelledby="world-title">
+        <div class="section-heading"><div><p class="eyebrow">01 / The adventure map</p><h2 id="world-title">Choose your path.</h2><p class="section-summary">Explore a fictional designer&#x27;s journey through quests, guilds, and discoveries.</p></div><div><label for="world-search" class="hidden">Search the world</label><input id="world-search" class="world-search" type="search" placeholder="⌕ Search this world…" autocomplete="off" aria-label="Search landmarks and stories"></div></div>
+        <div class="map-panel"><p class="map-top"><span id="result-count">2 places to discover</span></p><div class="landmarks" id="landmarks"><button class="landmark" type="button" data-dialog="detail-experience" data-search="castles of experience places where products were designed and teams worked together. product designer fictional studio · 2023–2025 worked on interface prototypes and usability research for a fictional digital product. product design research" aria-haspopup="dialog" aria-label="Explore Castles of Experience">
+            <span class="landmark-top"><span class="landmark-number">01</span><span class="landmark-glyph" aria-hidden="true">🏯</span></span>
+            <span class="landmark-eyebrow">Chapter 01</span>
+            <span class="landmark-name">Castles of Experience</span>
+            <span class="landmark-description">Places where products were designed and teams worked together.</span>
+            <span class="landmark-bottom"><span>1 story</span><span class="view-arrow" aria-hidden="true">↗</span></span>
+          </button>
+<button class="landmark" type="button" data-dialog="detail-projects" data-search="quests &amp; creations ideas turned into something people could explore. the storybook app  built a fictional reading interface concept with an interactive prototype. prototyping" aria-haspopup="dialog" aria-label="Explore Quests &amp; Creations">
+            <span class="landmark-top"><span class="landmark-number">02</span><span class="landmark-glyph" aria-hidden="true">🗝️</span></span>
+            <span class="landmark-eyebrow">Chapter 02</span>
+            <span class="landmark-name">Quests &amp; Creations</span>
+            <span class="landmark-description">Ideas turned into something people could explore.</span>
+            <span class="landmark-bottom"><span>1 story</span><span class="view-arrow" aria-hidden="true">↗</span></span>
+          </button></div><p id="empty-search" class="hidden" role="status">No landmarks match that search. Try a different word.</p></div>
+      </section>
+      <section class="about" id="about" aria-labelledby="about-title">
+        <div><p class="eyebrow">02 / The person behind the world</p><h2 id="about-title">Meet the storyteller.</h2><p>A fictional example who turns research and prototypes into playful digital products.</p><div class="socials"></div></div>
+        <div class="about-stamp"><div><span aria-hidden="true">🏰</span><strong>Every professional journey deserves a world of its own.</strong></div></div>
+      </section>
+    </main>
+    <footer><span>Created for Alex Rivers · Made with SimpliCITY Builder</span><span>Built to explore offline · Review personal details before sharing publicly</span></footer>
+  </div>
+  <dialog id="detail-experience" class="detail-dialog" aria-labelledby="title-experience">
+          <div class="dialog-inner"><div class="dialog-heading"><div><p class="eyebrow">Chapter 01</p><h3 id="title-experience">🏯 Castles of Experience</h3><p class="dialog-intro">Places where products were designed and teams worked together.</p></div><button type="button" class="close-dialog" aria-label="Close details">✕</button></div>
+          <div class="entries"><article class="entry"><div class="entry-top"><h4>Product Designer</h4><p class="entry-subtitle">Fictional Studio · 2023–2025</p></div>
+      <p>Worked on interface prototypes and usability research for a fictional digital product.</p><div class="tags"><span class="tag">Product design</span><span class="tag">Research</span></div></article></div><p class="dialog-footer">Part of The Kingdom of Curious Ideas</p></div></dialog>
+<dialog id="detail-projects" class="detail-dialog" aria-labelledby="title-projects">
+          <div class="dialog-inner"><div class="dialog-heading"><div><p class="eyebrow">Chapter 02</p><h3 id="title-projects">🗝️ Quests &amp; Creations</h3><p class="dialog-intro">Ideas turned into something people could explore.</p></div><button type="button" class="close-dialog" aria-label="Close details">✕</button></div>
+          <div class="entries"><article class="entry"><div class="entry-top"><h4>The Storybook App</h4></div>
+      <p>Built a fictional reading interface concept with an interactive prototype.</p><div class="tags"><span class="tag">Prototyping</span></div></article></div><p class="dialog-footer">Part of The Kingdom of Curious Ideas</p></div></dialog>
+  <script>
+    (() => {
+      'use strict';
+      const search = document.getElementById('world-search');
+      const landmarks = Array.from(document.querySelectorAll('.landmark'));
+      const count = document.getElementById('result-count');
+      const empty = document.getElementById('empty-search');
+      landmarks.forEach(button => {
+        button.addEventListener('click', () => {
+          const dialog = document.getElementById(button.dataset.dialog);
+          if (dialog && !dialog.open) dialog.showModal();
+        });
+      });
+      document.querySelectorAll('.detail-dialog').forEach(dialog => {
+        dialog.querySelector('.close-dialog').addEventListener('click', () => dialog.close());
+        dialog.addEventListener('click', event => {if (event.target === dialog) dialog.close();});
+      });
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLocaleLowerCase();
+        let visible = 0;
+        landmarks.forEach(button => {
+          const isMatch = button.dataset.search.includes(query);
+          button.hidden = !isMatch;
+          if (isMatch) visible++;
+        });
+        count.textContent = `${visible} ${visible === 1 ? 'place' : 'places'} to discover`;
+        empty.classList.toggle('hidden', visible !== 0);
+      });
+    })();
+  </script>
+</body>
+</html>

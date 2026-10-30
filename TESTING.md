@@ -1,4 +1,4 @@
-# Acceptance tests — SimpliCITY Builder v0.1.0
+# Acceptance tests — SimpliCITY Builder v0.2.0
 
 Use fictional résumés for public screenshots. For full acceptance use a résumé you have permission to process, then **do not publish its raw content**. Never post sensitive files in GitHub Issues.
 
@@ -34,3 +34,23 @@ Start a **new chat** in an AI app that can read GitHub, the résumé and run scr
 - [ ] Another person follows the installation instructions without extra guidance.
 
 A passing unit suite does not establish cross-app reliability. Record tested host versions, prompt, error and remediation in release notes.
+
+## SVG and résumé regression tests (v0.2.0)
+
+Run the unit suite and preflight custom artwork before building:
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 simplicity-builder/scripts/check_artwork.py examples/gradient-scene.svg
+python3 simplicity-builder/scripts/extract_resume.py your-resume.docx --output private/resume-extracted.txt
+```
+
+For PDF input, install optional `pypdf`; scanned files require OCR. After generation run real Chromium tests:
+
+```bash
+python3 -m pip install playwright
+python3 -m playwright install chromium
+python3 scripts/browser_smoke.py index.html --screenshots private/screenshots
+```
+
+Screenshot inspection is still a **human visual-review step**: smoke tests can catch layout overflow and broken interactions but cannot decide whether the fictional world is beautiful or sufficiently distinctive. Never publish unreviewed résumé details.

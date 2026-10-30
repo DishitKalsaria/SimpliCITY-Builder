@@ -28,3 +28,27 @@ jobs:
         run: |
           python3 -m pip install 'skills-ref==0.1.1'
           agentskills validate simplicity-builder
+
+  browser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Chromium browser test dependency
+        run: |
+          python3 -m pip install 'playwright==1.57.0'
+          python3 -m playwright install --with-deps chromium
+      - name: Test actual HTML in desktop and mobile Chromium
+        run: |
+          python3 scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html --screenshots private/screenshots
+      - name: Save screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-review-screenshots
+          path: private/screenshots/
+          if-no-files-found: ignore

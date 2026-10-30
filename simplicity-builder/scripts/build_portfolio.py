@@ -145,68 +145,141 @@ def validate_model(data: object) -> dict:
 # Optional original hero illustration for truly open-ended prompts. SVG is parsed and
 # re-serialized through a strict allowlist; scripts, links, CSS and external resources
 # are not accepted. This artwork is decorative; career facts remain HTML text.
-SVG_TAGS = {'svg', 'g', 'circle', 'ellipse', 'rect', 'line', 'path', 'polygon', 'polyline'}
-SVG_ATTRIBUTES = {
-    'svg': {'viewBox'},
-    'g': {'transform', 'opacity', 'fill', 'stroke', 'stroke-width'},
-    'circle': {'cx', 'cy', 'r', 'fill', 'stroke', 'stroke-width', 'opacity'},
-    'ellipse': {'cx', 'cy', 'rx', 'ry', 'fill', 'stroke', 'stroke-width', 'opacity'},
-    'rect': {'x', 'y', 'width', 'height', 'rx', 'fill', 'stroke', 'stroke-width', 'opacity'},
-    'line': {'x1', 'y1', 'x2', 'y2', 'stroke', 'stroke-width', 'opacity'},
-    'path': {'d', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'opacity'},
-    'polygon': {'points', 'fill', 'stroke', 'stroke-width', 'opacity'},
-    'polyline': {'points', 'fill', 'stroke', 'stroke-width', 'opacity'},
+SVG_TAGS = {'svg', 'defs', 'linearGradient', 'radialGradient', 'stop',
+            'g', 'circle', 'ellipse', 'rect', 'line', 'path', 'polygon', 'polyline'}
+SVG_COMMON = {'transform', 'opacity', 'fill', 'stroke', 'stroke-width',
+              'stroke-linecap', 'stroke-linejoin'}
+SVG_GEOMETRY = {
+    'svg': {'viewBox'}, 'defs': set(),
+    'linearGradient': {'id', 'x1', 'y1', 'x2', 'y2'},
+    'radialGradient': {'id', 'cx', 'cy', 'r', 'fx', 'fy'},
+    'stop': {'offset', 'stop-color', 'stop-opacity'},
+    'g': SVG_COMMON,
+    'circle': {'cx', 'cy', 'r'} | SVG_COMMON,
+    'ellipse': {'cx', 'cy', 'rx', 'ry'} | SVG_COMMON,
+    'rect': {'x', 'y', 'width', 'height', 'rx', 'ry'} | SVG_COMMON,
+    'line': {'x1', 'y1', 'x2', 'y2'} | SVG_COMMON,
+    'path': {'d'} | SVG_COMMON,
+    'polygon': {'points'} | SVG_COMMON,
+    'polyline': {'points'} | SVG_COMMON,
 }
-SVG_NUMERIC = {'cx','cy','r','rx','ry','x','y','width','height','x1','y1','x2','y2','stroke-width','opacity'}
-COLOR_PATTERN = re.compile(r'(?:#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?|none|white|black|var\(--accent2?\))\Z')
-PATH_PATTERN = re.compile(r'[MmLlHhVvCcSsQqTtAaZzEe0-9.,+\-\s]*\Z')
-TRANSFORM_PATTERN = re.compile(r'(?:translate|rotate|scale|matrix)\([0-9eE+.,\s-]+\)(?:\s+(?:translate|rotate|scale|matrix)\([0-9eE+.,\s-]+\))*\Z')
+SVG_NUMERIC = {'cx','cy','r','rx','ry','x','y','width','height','x1','y1','x2','y2',
+               'stroke-width','opacity','stop-opacity'}
+SVG_GRADIENT_COORDS = {'cx','cy','r','fx','fy','x1','y1','x2','y2'}
+SVG_ID = re.compile(r'[A-Za-z][A-Za-z0-9_-]{0,39}\Z')
+SVG_PAINT = re.compile(r'(?:#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?|none|white|black|var\(--accent2?\)|url\(#[A-Za-z][A-Za-z0-9_-]{0,39}\))\Z')
+SVG_REF = re.compile(r'url\(#([A-Za-z][A-Za-z0-9_-]{0,39})\)\Z')
+SVG_PATH = re.compile(r'[MmLlHhVvCcSsQqTtAaZzEe0-9.,+\-\s]*\Z')
+SVG_TRANSFORM = re.compile(r'(?:translate|rotate|scale|matrix|skewX|skewY)\([0-9eE+.,\s-]+\)(?:\s+(?:translate|rotate|scale|matrix|skewX|skewY)\([0-9eE+.,\s-]+\))*\Z')
+SVG_NUMBER = re.compile(r'[+\-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+\-]?\d+)?\Z')
+SVG_NS = 'http://www.w3.org/2000/svg'
+
+
+def _svg_name(name: str) -> str:
+    # Standard SVG xmlns is allowed, other namespaces, including xlink, are not.
+    if name.startswith('{'):
+        prefix, _, local = name[1:].partition('}')
+        if prefix != SVG_NS:
+            fail(f'world.scene_svg: forbidden XML namespace {prefix}')
+        return local
+    return name
+
+
+def _fraction(value: str, attribute: str, percent: bool = False) -> None:
+    raw = value[:-1] if percent and value.endswith('%') else value
+    if not SVG_NUMBER.fullmatch(raw):
+        fail(f'world.scene_svg: invalid {attribute}={value!r} (expected a number{ " or percentage" if percent else ""})')
+    if attribute in ('opacity', 'stop-opacity', 'offset'):
+        number = float(raw)
+        if value.endswith('%'):
+            number /= 100
+        if not 0 <= number <= 1:
+            fail(f'world.scene_svg: {attribute} must be between 0 and 1')
 
 
 def sanitize_scene(markup: str) -> str:
+    """Allow inert decorative SVG and self-contained gradients, never active resources.
+
+    This is intentionally restrictive. New SVG features must be added to the
+    allowlist, documented, and covered by tests at the same time.
+    """
     if len(markup) > 25000 or '<!' in markup or '<?' in markup:
-        fail('world.scene_svg: illegal or oversized SVG')
+        fail('world.scene_svg: illegal or oversized SVG (25,000 characters max)')
     try:
         root = ET.fromstring(markup)
     except ET.ParseError as exc:
         fail(f'world.scene_svg: malformed SVG ({exc})')
+    if _svg_name(root.tag) != 'svg' or root.attrib.get('viewBox') != '0 0 620 520':
+        fail('world.scene_svg: root must be <svg viewBox="0 0 620 520">')
+    if set(root.attrib) != {'viewBox'}:
+        fail('world.scene_svg: root attributes other than viewBox are not supported')
+
     count = 0
-    def clean(node: ET.Element) -> str:
+    gradient_ids: set[str] = set()
+    gradient_refs: set[str] = set()
+
+    def clean(node: ET.Element, parent: str = '') -> str:
         nonlocal count
         count += 1
-        if count > 160:
-            fail('world.scene_svg: too many elements')
-        tag = node.tag
+        if count > 180:
+            fail('world.scene_svg: exceeds 180 elements')
+        tag = _svg_name(node.tag)
         if tag not in SVG_TAGS:
-            fail(f'world.scene_svg: forbidden tag {tag}')
+            fail(f'world.scene_svg: forbidden tag <{tag}>')
         if (node.text or '').strip() or (node.tail or '').strip():
             fail('world.scene_svg: text nodes are not supported')
+        if tag == 'defs' and parent != 'svg':
+            fail('world.scene_svg: <defs> must be a direct child of <svg>')
+        if tag in {'linearGradient', 'radialGradient'} and parent != 'defs':
+            fail(f'world.scene_svg: <{tag}> must be inside <defs>')
+        if tag == 'stop' and parent not in {'linearGradient', 'radialGradient'}:
+            fail('world.scene_svg: <stop> must be inside a gradient')
+        if parent == 'defs' and tag not in {'linearGradient', 'radialGradient'}:
+            fail('world.scene_svg: <defs> may only contain gradients')
+        if parent in {'linearGradient', 'radialGradient'} and tag != 'stop':
+            fail('world.scene_svg: gradients may only contain <stop>')
+        if tag in {'linearGradient', 'radialGradient'} and not node.attrib.get('id'):
+            fail('world.scene_svg: every gradient needs an id')
         pieces = []
-        for key, val in node.attrib.items():
-            if key not in SVG_ATTRIBUTES[tag] or len(val) > 3500:
-                fail(f'world.scene_svg: forbidden or oversized attribute {key}')
-            if key in SVG_NUMERIC and not re.fullmatch(r'[0-9eE+.-]{1,30}', val):
-                fail(f'world.scene_svg: invalid numeric attribute {key}')
-            if key in {'fill','stroke'} and not COLOR_PATTERN.fullmatch(val):
-                fail(f'world.scene_svg: invalid paint value {key}')
-            if key == 'viewBox' and not re.fullmatch(r'[0-9eE+.,\s-]{1,80}', val):
-                fail('world.scene_svg: invalid viewBox')
-            if key == 'd' and not PATH_PATTERN.fullmatch(val):
+        for raw_key, val in node.attrib.items():
+            key = _svg_name(raw_key)
+            if key not in SVG_GEOMETRY[tag] or len(val) > 3500:
+                fail(f'world.scene_svg: <{tag}> does not allow attribute {key!r}')
+            if key in SVG_NUMERIC:
+                _fraction(val, key, percent=tag in ('linearGradient', 'radialGradient') or key == 'offset')
+            if tag in {'linearGradient', 'radialGradient'} and key in SVG_GRADIENT_COORDS:
+                _fraction(val, key, percent=True)
+            if key == 'offset':
+                _fraction(val, key, percent=True)
+            if key in {'fill', 'stroke', 'stop-color'}:
+                if not SVG_PAINT.fullmatch(val) or (key == 'stop-color' and val.startswith('url(')):
+                    fail(f'world.scene_svg: invalid paint for {key}: {val!r}')
+                ref = SVG_REF.fullmatch(val)
+                if ref:
+                    gradient_refs.add(ref.group(1))
+            if key == 'id':
+                if not SVG_ID.fullmatch(val) or val in gradient_ids:
+                    fail(f'world.scene_svg: invalid or duplicate gradient id {val!r}')
+                gradient_ids.add(val)
+            if key == 'viewBox' and val != '0 0 620 520':
+                fail('world.scene_svg: viewBox must be 0 0 620 520')
+            if key == 'd' and not SVG_PATH.fullmatch(val):
                 fail('world.scene_svg: invalid path data')
             if key == 'points' and not re.fullmatch(r'[0-9eE+.,\s-]{1,3500}', val):
                 fail('world.scene_svg: invalid points')
-            if key == 'transform' and not TRANSFORM_PATTERN.fullmatch(val):
-                fail('world.scene_svg: invalid transform')
-            if key in {'stroke-linecap','stroke-linejoin'} and val not in {'round','square','butt','miter','bevel'}:
-                fail('world.scene_svg: invalid line style')
+            if key == 'transform' and not SVG_TRANSFORM.fullmatch(val):
+                fail('world.scene_svg: invalid transform; use translate, rotate, scale, matrix or skewX/skewY')
+            if key == 'stroke-linecap' and val not in {'round', 'square', 'butt'}:
+                fail('world.scene_svg: stroke-linecap must be round, square or butt')
+            if key == 'stroke-linejoin' and val not in {'round', 'bevel', 'miter'}:
+                fail('world.scene_svg: stroke-linejoin must be round, bevel or miter')
             pieces.append(f' {key}="{e(val)}"')
-        return f'<{tag}{"".join(pieces)}>' + ''.join(clean(child) for child in node) + f'</{tag}>'
-    if root.tag != 'svg':
-        fail('world.scene_svg: root must be svg')
-    # Keep a fixed layout so arbitrary prompt art fits consistently.
-    if root.attrib.get('viewBox') != '0 0 620 520':
-        fail('world.scene_svg: viewBox must be 0 0 620 520')
-    interior = ''.join(clean(child) for child in root)
+        return f'<{tag}{"".join(pieces)}>' + ''.join(clean(child, tag) for child in node) + f'</{tag}>'
+
+    interior = ''.join(clean(child, 'svg') for child in root)
+    missing = gradient_refs - gradient_ids
+    if missing:
+        fail(f'world.scene_svg: paint refers to undefined gradient id(s): {", ".join(sorted(missing))}')
     return '<svg class="scene-svg" viewBox="0 0 620 520" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' + interior + '</svg>'
 
 

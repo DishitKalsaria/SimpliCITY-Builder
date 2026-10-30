@@ -1,0 +1,5 @@
+<svg viewBox="0 0 620 520">
+  <defs><radialGradient id="glow"><stop offset="0%" stop-color="#ffd7a3" stop-opacity=".95"/><stop offset="100%" stop-color="#6855a0" stop-opacity=".2"/></radialGradient></defs>
+  <circle cx="310" cy="240" r="130" fill="url(#glow)"/>
+  <ellipse cx="310" cy="260" rx="210" ry="55" transform="rotate(-20 310 260)" fill="none" stroke="#fff3d0" stroke-width="12" stroke-linecap="round"/>
+</svg>

@@ -1,15 +1,24 @@
-# What does “paste the link and prompt” mean?
+# Link-first use and fallbacks
 
-SimpliCITY Builder aims to support a one-instruction experience. Installation is the most reliable path, but a **link-first** interaction can work in an AI app that has all required capabilities.
+Pasting the SimpliCITY Builder repository URL is **not installation**. It works only with an AI app that can retrieve repository source files, read a résumé, execute Python, and return generated files. Other hosts can follow the instructions or write code but cannot automatically deliver a tested website.
 
-The assistant must be able to (1) fetch the repository's actual files, (2) read the attached résumé, (3) create `portfolio.json`, (4) execute Python 3.9+, and (5) return an HTML file. It must follow `AI_START_HERE.md` and `simplicity-builder/SKILL.md`, not just browse the README.
+## Retrieval order for capable AI assistants
 
-A plain chat without file creation or tool execution may be able to explain how to use the repo but cannot automatically build the portfolio. Some apps may require a workspace, authorization, or a repo download. **Do not promise that a bare GitHub URL installs an Agent Skill.**
+1. Try the repository: `https://github.com/DishitKalsaria/SimpliCITY-Builder` and follow `AI_START_HERE.md`.
+2. If GitHub HTML browsing is blocked, try the raw text entry point: `https://raw.githubusercontent.com/DishitKalsaria/SimpliCITY-Builder/main/AI_START_HERE.md`. You still need the **full repo** for execution; the raw instructions alone are insufficient.
+3. Where a terminal is available, execute `git clone https://github.com/DishitKalsaria/SimpliCITY-Builder.git` and read files locally.
+4. Or download `https://github.com/DishitKalsaria/SimpliCITY-Builder/archive/refs/heads/main.zip` and extract in the execution workspace.
+5. If neither retrieval method works, ask the user to upload the [Skill ZIP](https://github.com/DishitKalsaria/SimpliCITY-Builder/releases) or project archive; never guess the generator code or claim to have run it.
 
-### Minimal prompt
+## Prompt to copy
 
 ```text
-Read https://github.com/dishitkalsaria/SimpliCITY-Builder and follow AI_START_HERE.md. Attached is my resume. SimpliCITY Builder, create a floating archipelago as my interactive professional portfolio. Download the repository's script and template, generate grounded portfolio.json, run and validate the builder, and give me index.html. Include no private contact details.
+Use SimpliCITY Builder from https://github.com/DishitKalsaria/SimpliCITY-Builder.
+If the GitHub page cannot be read, use the raw AI_START_HERE.md URL or git clone.
+Read the attached résumé and create an interactive downloadable index.html in
+my imagined world: [DESCRIBE ANY WORLD]. Preserve facts and private details.
+Validate the JSON and SVG, build the HTML, and browser-test it if available.
+Tell me what you could not verify.
 ```
 
-Before publishing a generated site, review career facts, links, and privacy. Share any failed installation or generation scenarios as a GitHub Issue (without uploading private résumé data).
+The skill supports **arbitrary** worlds. The output is a 2D/2.5D interactive website, not a unique game engine for every request. With a scanned PDF or résumé tables, extraction may be incomplete; review before publishing. Do not put private résumés in GitHub Issues.

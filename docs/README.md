@@ -1,13 +1,20 @@
-# GitHub Pages demo
+# GitHub Pages demo gallery
 
-This directory hosts a fully generated, **fictional** sample portfolio at `index.html`, with its screenshot in `assets/`.
+This folder hosts a **demo gallery** at `index.html` and four standalone, interactive portfolio samples:
 
-After pushing the repository, enable GitHub Pages in Settings → Pages → Build and deployment → Deploy from a branch, branch `main`, folder `/docs`. The public demo URL will be `https://dishitkalsaria.github.io/SimpliCITY-Builder/` once Pages has deployed.
+- `fairytale.html` generated from `examples/fairytale-sample.json`
+- `space.html` generated from `examples/space-sample.json`
+- `festival.html` generated from `examples/custom-sample.json`
+- `clockwork.html` generated from `examples/clockwork-sample.json`
 
-To regenerate this demo locally:
+The JSON is **developer input**, not the visitor-facing demo. Screenshots in `assets/` are captured from the actual generated HTML. All sample profiles are fictional.
+
+After uploading the folder, enable Pages in Settings → Pages → Deploy from a branch → `main` → `/docs`. The gallery then lives at <https://dishitkalsaria.github.io/SimpliCITY-Builder/>.
+
+To regenerate an example from repository root:
 
 ```bash
-python3 simplicity-builder/scripts/build_portfolio.py --input examples/fairytale-sample.json --output docs/index.html
+python3 simplicity-builder/scripts/build_portfolio.py --input examples/fairytale-sample.json --output docs/fairytale.html
 ```
 
-Do not replace `docs/index.html` with a portfolio built from someone's real résumé without approval.
+Do not replace the demos with real people’s résumé content without approval. If you modify the generator or sample inputs, regenerate the affected HTML and preview image.
