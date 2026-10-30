@@ -27,3 +27,7 @@ python3 simplicity-builder/scripts/extract_resume.py resume.pdf --output private
 7. Validate schema, artwork and generated HTML, and do a browser check where available. If you could not test visually, disclose that limitation.
 
 The generator intentionally does not call an LLM or run résumé-to-JSON extraction automatically: evidence interpretation happens in the chosen AI host and requires factual verification.
+
+## Owner-approved paraphrases (v0.1.4)
+
+An exact-token check can reject a safe paraphrase even when it is accurately supported. For carefully reviewed *nonnumeric, non-employer, non-date, non-attribution* wording, optional `review.approved_paraphrases` can record an explicit owner decision with source evidence. Each record has `field` (e.g. `sections[0].entries[0].tags[0]`), `claim` (exact text), `source_excerpt` (verbatim excerpt found in résumé text), and `approved_by_owner: true`. The verifier accepts the record only when the supporting excerpt exists. It will never override unmatched numbers, dates, employer names or testimonial attributions. This is an audit trail, not semantic proof. Keep the review JSON and extracted résumé private.

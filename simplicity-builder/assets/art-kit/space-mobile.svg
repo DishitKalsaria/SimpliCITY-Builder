@@ -1,0 +1,27 @@
+<svg viewBox="0 0 620 520">
+<defs>
+  <radialGradient id="planetMobile"><stop stop-color="#cbecfb"/><stop offset=".55" stop-color="#4d98d7"/><stop offset="1" stop-color="#1e427b"/></radialGradient>
+  <linearGradient id="portMobile"><stop stop-color="#c3e2f1"/><stop offset="1" stop-color="#526caa"/></linearGradient>
+</defs>
+<g opacity=".68" fill="#d0e2fa"><circle cx="50" cy="45" r="3"/><circle cx="499" cy="66" r="4"/><circle cx="382" cy="112" r="2"/><circle cx="543" cy="457" r="3"/><circle cx="95" cy="397" r="2"/></g>
+<ellipse cx="324" cy="252" rx="255" ry="202" fill="none" stroke="#4d6d9c" opacity=".33" stroke-width="2"/>
+<g id="landmark-experience" class="motion-float">
+  <circle cx="300" cy="184" r="104" fill="url(#planetMobile)"/>
+  <path d="M241 139 Q303 126 359 152 M227 187 Q304 172 368 188" fill="none" stroke="#a6e5fc" stroke-width="9" opacity=".5"/>
+  <ellipse cx="300" cy="184" rx="157" ry="39" fill="none" stroke="#eadab4" stroke-width="14" transform="rotate(-16 300 184)"/>
+  <ellipse cx="300" cy="184" rx="158" ry="40" fill="none" stroke="#fff9e6" stroke-width="2" transform="rotate(-16 300 184)"/>
+</g>
+<g id="landmark-projects" class="motion-drift">
+  <path d="M360 439 L393 335 L471 335 L510 439Z" fill="#506d9d"/>
+  <rect x="354" y="425" width="159" height="22" rx="8" fill="url(#portMobile)"/>
+  <rect x="392" y="334" width="80" height="84" rx="13" fill="#789ac9"/>
+  <path d="M390 334 Q433 244 474 334Z" fill="#c5d6ee"/>
+  <circle cx="432" cy="364" r="26" fill="#ffdc97"/>
+  <circle cx="432" cy="364" r="12" fill="#fff8e1"/>
+  <path d="M432 280 V245" stroke="#c5d6ee" stroke-width="8" stroke-linecap="round"/>
+</g>
+<g id="landmark-skills" class="motion-twinkle">
+  <path d="M83 339 L131 301 L195 334 L227 398 L137 429 L83 339 M131 301 L137 429" fill="none" stroke="#a9c9ed" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="83" cy="339" r="13" fill="#f6d399"/><circle cx="131" cy="301" r="16" fill="#d2e6fa"/><circle cx="195" cy="334" r="13" fill="#af8edd"/><circle cx="227" cy="398" r="15" fill="#f8dda9"/><circle cx="137" cy="429" r="12" fill="#8bd9ff"/>
+</g>
+</svg>

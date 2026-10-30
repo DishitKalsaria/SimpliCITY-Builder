@@ -35,6 +35,10 @@ def check(path:Path,browser,screenshots:Path|None=None):
         if screenshots:
             screenshots.mkdir(parents=True,exist_ok=True)
             page.screenshot(path=str(screenshots/f'{path.stem}-{label}.png'))
+        if page.locator('#mobile-scene-template').count():
+            variant=page.locator('.scene-world > .scene-svg').get_attribute('data-scene-variant')
+            expected='mobile' if width<=680 else 'desktop'
+            if variant!=expected:raise AssertionError(f'{label}: wrong active scene {variant}, expected {expected}')
         page.locator('.scene-landmark').first.hover()
         tip=page.locator('#scene-tooltip')
         if not tip.is_visible() or 'Explore' not in tip.inner_text():

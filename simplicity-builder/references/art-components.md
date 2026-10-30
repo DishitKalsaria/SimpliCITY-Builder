@@ -56,3 +56,7 @@ Use only sanitized SVG tags and attributes documented in `illustration-rules.md`
 ```
 
 This is the actual painted shape users click, hover and keyboard-focus. Assign `world.landmarks: [{"section_id":"projects", "label":"Crystal Workshop"}]` to give it an accessible, discoverable name. Build several **different object silhouettes** for a world; don't copy the same house for every section.
+
+## Curated v0.1.4 compositions
+
+See `assets/art-kit/space-desktop.svg` and `space-mobile.svg` for an original three-destination scene with a focal planet, a smaller observatory and a sparse constellation. They demonstrate composition, scene layering, safe gradients, permitted motion classes, larger click targets, and separately composed mobile framing. Adapt objects to the user's requested world rather than cloning this layout.

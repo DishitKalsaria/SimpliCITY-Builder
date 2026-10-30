@@ -1,4 +1,4 @@
-# World-building and navigation rules — v0.1.3
+# World-building and navigation rules — v0.1.4
 
 1. Treat the requested theme as unconstrained worldbuilding. Career facts are real; landmarks, metaphors and setting are creative.
 2. Each resume section maps to one **visible clickable location inside the SVG scene**. Put the exact ID `landmark-<section_id>` on a painted SVG group/shape. Specify its human-readable label through `world.landmarks`; do not guess percentages or add icon pins.
@@ -12,6 +12,6 @@
 10. Never use user-uploaded résumé examples in public galleries without informed approval; all bundled examples must be fictional.
 
 
-## Landmark-first world design (v0.1.3)
+## Landmark-first world design (v0.1.4)
 
 Use actual **named** illustrated objects in `scene_svg`, such as `landmark-projects` on a train SVG group. For each section, define an SVG ID `landmark-<section_id>` and add a matching `world.landmarks` label. The user must explore the *object itself*, not an icon or floating HTML pin. Vary the forms, silhouettes, and environments to match any custom theme. Reserve contrast around key objects and test mobile views.

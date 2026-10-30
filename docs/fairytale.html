@@ -33,16 +33,17 @@
     .intro{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:13px 3px 4px}
     .eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:850;margin:0 0 5px}
     h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(24px,3.2vw,44px);font-weight:500;line-height:1.05;letter-spacing:-.035em;margin:0;text-wrap:balance;overflow-wrap:anywhere}
-    .tagline{margin:6px 0 0;color:var(--muted);font-size:clamp(11px,1.2vw,14px);line-height:1.35;max-width:66ch}
+    .mobile-hint{display:none;margin:7px 0 0;color:var(--accent2);font-size:11px;line-height:1.3;max-width:40ch}.tagline{margin:6px 0 0;color:var(--muted);font-size:clamp(11px,1.2vw,14px);line-height:1.35;max-width:66ch}
     .overview{font-size:11px;text-align:right;white-space:nowrap;color:var(--muted);padding-top:4px}
     .overview strong{display:block;font-size:23px;color:var(--accent);line-height:1.1}
     .stage{display:grid;place-items:center;flex:1;min-height:0;position:relative;isolation:isolate}
     .scene-world{width:min(100%,calc((100dvh - 256px)*1.1923),1040px);aspect-ratio:620/520;position:relative;min-height:0;max-height:100%;filter:drop-shadow(0 24px 32px rgba(0,0,0,.17))}
-    .scene-svg{display:block;width:100%;height:100%;overflow:visible}
+    .scene-svg{display:block;width:100%;height:100%;overflow:visible;position:relative;z-index:1}
+    .scene-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:clamp(8px,1.5vw,20px);opacity:.87;z-index:0;pointer-events:none;user-select:none}
     .scene-world::before{content:"";position:absolute;inset:12% 18%;border:1px solid color-mix(in srgb,var(--accent2) 13%,transparent);border-radius:50%;opacity:.23;pointer-events:none}
     /* The scene objects themselves are the hit targets: no icon pins or overlaid badges. */
-    .scene-landmark{cursor:pointer;pointer-events:visiblePainted;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
-    .scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
+    .scene-landmark{cursor:pointer;pointer-events:bounding-box;touch-action:manipulation;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
+    .scene-landmark:active{scale:.985;opacity:.88}.scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
     .scene-landmark:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
     .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
     .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
@@ -76,7 +77,7 @@
     @keyframes pulse{0%,100%{opacity:.82}50%{opacity:1}}
     .motion-float{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
     .motion-twinkle{animation:twinkle 5s ease-in-out infinite}.motion-drift{animation:drift 9s ease-in-out infinite}.motion-pulse{animation:pulse 4s ease-in-out infinite}
-    @media(max-width:680px){.app{padding:0 11px env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(23px,6.1vw,31px)}.tagline{font-size:11px;max-width:31ch}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:min(100%,calc((100dvh - 226px)*1.1923))}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:9px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
+    @media(max-width:680px){.app{padding:0 11px env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(23px,6.1vw,31px)}.tagline{font-size:11px;max-width:31ch}.mobile-hint{display:block;max-width:37ch}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:min(100%,calc((100dvh - 226px)*1.1923))}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:9px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
     @media(max-width:380px){.tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.overview{display:none}}
     @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:min(100%,calc((100dvh - 155px)*1.1923))}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -87,7 +88,7 @@
   <div class="app" id="main">
     <button type="button" class="skip" data-dialog="list-dialog">Skip to locations</button>
     <header class="topbar"><div class="brand"><span class="brand-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg></span><span>SimpliCITY Builder</span></div><span class="owner">Alex Rivers · Product Designer &amp; Creative Technologist</span></header>
-    <div class="intro"><div><p class="eyebrow">A kingdom built from curiosity · The enchanted realm</p><h1>The Kingdom of Curious Ideas</h1><p class="tagline">Every great solution begins with a little wonder.</p></div><div class="overview"><strong>2</strong>Locations</div></div>
+    <div class="intro"><div><p class="eyebrow">A kingdom built from curiosity · The enchanted realm</p><h1>The Kingdom of Curious Ideas</h1><p class="tagline">Every great solution begins with a little wonder.</p><p class="mobile-hint">Choose a glowing landmark to enter its chapter</p></div><div class="overview"><strong>2</strong>Locations</div></div>
     <main class="stage" id="world" aria-label="Explore the realm"><div class="scene-world" role="group" aria-label="Choose a glowing landmark to enter its chapter"><svg class="scene-svg" viewBox="0 0 620 520" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="glow"><stop stop-color="var(--accent2)" stop-opacity=".33"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient><linearGradient id="roof" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--accent)"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient></defs><ellipse cx="310" cy="255" rx="285" ry="230" fill="url(#glow)"></ellipse><circle cx="490" cy="104" r="42" fill="#f4dfc1" opacity=".82"></circle><circle cx="490" cy="104" r="77" fill="url(#glow)"></circle><g class="motion-twinkle" fill="#fbe3b7" opacity=".7"><circle cx="112" cy="81" r="3"></circle><circle cx="378" cy="105" r="3"></circle><circle cx="540" cy="242" r="4"></circle><circle cx="282" cy="56" r="2"></circle><circle cx="588" cy="142" r="2"></circle></g><path d="M0 383 Q95 280 197 361 T421 357 T620 340 V520 H0Z" fill="#4b467a" opacity=".5"></path><path d="M0 439 Q116 375 222 412 T455 399 T620 414 V520 H0Z" fill="#315461" opacity=".85"></path><path d="M0 479 Q186 440 310 480 T620 457 V520 H0Z" fill="#27444d"></path><path d="M204 474 Q282 441 308 394 T401 354" fill="none" stroke="#eac48c" stroke-width="16" opacity=".22"></path><path d="M55 425 Q65 368 81 334 M74 423 Q91 379 111 356 M526 414 Q538 364 550 341 M542 419 Q566 378 585 362" fill="none" stroke="#b0a7c3" stroke-width="13" stroke-linecap="round" opacity=".65"></path><g id="landmark-experience" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore The Castle" data-dialog="detail-experience" class="scene-landmark"><title>The Castle</title><rect x="135" y="254" width="102" height="111" rx="4" fill="#9687b7"></rect><rect x="112" y="230" width="42" height="137" fill="#b4a1c5"></rect><rect x="218" y="230" width="42" height="137" fill="#b4a1c5"></rect><path d="M102 232 L133 177 L164 232Z" fill="url(#roof)"></path><path d="M208 232 L239 177 L270 232Z" fill="url(#roof)"></path><path d="M161 252 L186 200 L211 252Z" fill="#dfbce4"></path><path d="M168 365 V310 Q186 287 204 310 V365Z" fill="#312944"></path><rect x="125" y="266" width="15" height="25" rx="6" fill="#ffe1a5"></rect><rect x="232" y="266" width="15" height="25" rx="6" fill="#ffe1a5"></rect></g><g id="landmark-projects" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore The Quest Tower" data-dialog="detail-projects" class="scene-landmark"><title>The Quest Tower</title><path d="M396 347 L408 252 L468 252 L480 347Z" fill="#a792b1"></path><path d="M402 252 L438 209 L474 252Z" fill="url(#roof)"></path><rect x="429" y="295" width="18" height="52" rx="8" fill="#342844"></rect><g transform="rotate(-15 438 258)"><path d="M429 260 L413 167 L446 167 L448 257Z" fill="#edcee9"></path><path d="M446 253 L536 235 L543 267 L448 266Z" fill="#f5ce91"></path><path d="M448 262 L466 359 L433 361 L429 265Z" fill="#edcee9"></path><path d="M428 260 L340 278 L334 248 L426 251Z" fill="#f5ce91"></path></g><circle cx="438" cy="259" r="13" fill="#4c345d" stroke="#ffe0b4" stroke-width="5"></circle></g></svg><div class="scene-tooltip" id="scene-tooltip" hidden></div></div></main>
     <div class="toolbar"><span class="hint">Choose a glowing landmark to enter its chapter</span><nav class="tools" aria-label="World navigation"><button type="button" class="tool tool-primary" data-dialog="list-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> Kingdom locations</button><button type="button" class="tool" data-dialog="about-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/></svg> Meet the adventurer</button><button type="button" class="tool" data-dialog="recruiter-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/></svg> Read career facts</button></nav></div>
     <footer class="credits"><span>Made with SimpliCITY Builder</span><span>Review facts and privacy before sharing</span></footer>
@@ -116,13 +117,30 @@
         dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
       });
 
-      // Keyboard operation for SVG landmarks. Their real painted outlines accept clicks.
-      document.querySelectorAll('.scene-landmark').forEach(object=>{
-        object.addEventListener('keydown',event=>{
-          if(event.key==='Enter' || event.key===' '){event.preventDefault();object.dispatchEvent(new MouseEvent('click',{bubbles:true}));}
-        });
-      });
       const world=document.querySelector('.scene-world');
+      // Separate hand-composed mobile SVG is optional, not a cropped desktop scene.
+      // A template stays inert; only one scene and one set of landmark IDs exist.
+      const mobileTemplate=document.getElementById('mobile-scene-template');
+      const desktopScene=world?.querySelector('.scene-svg');
+      const mobileScene=mobileTemplate?.content.querySelector('.scene-svg');
+      const mobileQuery=window.matchMedia('(max-width:680px)');
+      function chooseScene(){
+        if(!mobileScene || !desktopScene)return;
+        const desired=mobileQuery.matches ? mobileScene : desktopScene;
+        const active=world.querySelector('.scene-svg');
+        if(active.dataset.sceneVariant !== (mobileQuery.matches?'mobile':'desktop')){
+          const next=desired.cloneNode(true);
+          next.dataset.sceneVariant=mobileQuery.matches?'mobile':'desktop';
+          active.replaceWith(next);
+        }
+      }
+      if(mobileScene){mobileQuery.addEventListener('change',chooseScene);chooseScene();}
+      world?.addEventListener('keydown',event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object && (event.key==='Enter'||event.key===' ')){
+          event.preventDefault();object.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+        }
+      });
       const tooltip=document.getElementById('scene-tooltip');
       function labelObject(object){
         if(!object || !world || !tooltip) return;

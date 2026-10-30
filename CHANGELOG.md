@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.4 — Quality testing candidate (not tagged)
+
+- Fixed duplicate SVG `class` attributes on animated landmarks; sparse constellations and hollow shapes now accept bounding-box interaction in supporting browsers, with the accessible list always available.
+- Added optional independently composed `world.scene_svg_mobile` for portrait and small-phone readability, with exactly one active landmark scene at any time.
+- Added `world.artwork_mode: image-assisted` and a local `--background-image` PNG/JPEG/WebP embedding option. Output stays offline and image creation is optional.
+- Introduced an art-direction brief, visual QA rubric, reusable SVG artwork references and a richer hand-composed space example.
+- Strengthened browser QA and regression coverage, and documented image privacy, optional visual generation, and traceable résumé review.
+- This candidate must pass external agent résumé-to-world and visual evaluation before Git tagging and distributing a final ZIP.
+
 ## v0.1.3 — Landmark-first polish (release candidate)
 
 - Real named SVG objects replace overlay pin icons; focus, click/tap, hover labels and keyboard action derive from each object's geometry.

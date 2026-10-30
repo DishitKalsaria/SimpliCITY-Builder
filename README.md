@@ -2,6 +2,8 @@
 
 **Your résumé tells your story. Your imagination builds its world.**
 
+> **v0.1.4 testing candidate — not tagged or released.** Verify interactions, artwork quality and real résumé-to-world workflows before publishing a stable release.
+
 Turn an uploaded résumé and an imaginative prompt into a downloadable, explorable portfolio. Invent any world—a miniature solar system, fairy-tale kingdom, graffiti universe, floating library, undersea metropolis, surreal museum, or something nobody has imagined yet.
 
 SimpliCITY Builder is a free, open-source **Agent Skill + small Python generator**. The result is a functional, responsive, offline `index.html` with labelled, clickable SVG landmarks, no-page-scroll navigation, a searchable location list and a recruiter view—not just a rendered image.
@@ -10,7 +12,7 @@ SimpliCITY Builder is a free, open-source **Agent Skill + small Python generator
 
 **[Explore four live demo worlds](https://dishitkalsaria.github.io/SimpliCITY-Builder/)** · **[Use without installing](#option-1-paste-the-link-and-prompt)** · **[Install the skill](#option-2-install-the-skill)** · **[Run tests](#testing-locally)**
 
-> **Status: v0.1.3 release candidate.** All local generator, browser and unit tests pass; real résumé-to-website testing across target AI apps remains a release acceptance requirement.
+> **Status: v0.1.4 release candidate.** All local generator, browser and unit tests pass; real résumé-to-website testing across target AI apps remains a release acceptance requirement.
 
 ## See what it builds
 
@@ -37,7 +39,7 @@ In an AI assistant with **web/repository retrieval, résumé reading, file execu
 Read https://github.com/dishitkalsaria/SimpliCITY-Builder and follow AI_START_HERE.md and the linked SKILL.md. Use the repository's generator and template, not just the README. I've attached my résumé. SimpliCITY Builder, make me a floating city of planets in space. Produce and validate the working interactive index.html and give me the download. Keep my career facts accurate and my private contact details off the website.
 ```
 
-Replace only the imaginative world phrase. **This is a best-effort entry point, not a universal one-click installation.** A text-only AI that cannot read a GitHub repository, run scripts or return files cannot complete the workflow from a link. Prefer cloning a **pinned release** after tagging: `git clone --branch v0.1.3 --depth 1 https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. Until that tag is published, use `main` only for development **with explicit permission and a source review**. A raw-file fetch is only a fallback, not a reliable installation method. An inaccessible link still cannot grant execution rights. See [link-only setup and trust requirements](docs/LINK_ONLY.md).
+Replace only the imaginative world phrase. **This is a best-effort entry point, not a universal one-click installation.** A text-only AI that cannot read a GitHub repository, run scripts or return files cannot complete the workflow from a link. Prefer cloning a **pinned release** after tagging: `git clone --branch v0.1.4 --depth 1 https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. Until that tag is published, use `main` only for development **with explicit permission and a source review**. A raw-file fetch is only a fallback, not a reliable installation method. An inaccessible link still cannot grant execution rights. See [link-only setup and trust requirements](docs/LINK_ONLY.md).
 
 ### Option 2: Install the skill
 
@@ -104,7 +106,7 @@ The generator uses structured, reviewed JSON. Run the included `verify_facts.py`
 | `docs/` | GitHub Pages four-world demo gallery |
 | `.github/workflows/test.yml` | Tests run for pushes and pull requests |
 | [COMPATIBILITY.md](COMPATIBILITY.md) | AI host support matrix, including unverified paths |
-| [RELEASING.md](RELEASING.md) | v0.1.3 quality gates, tags and checksums |
+| [RELEASING.md](RELEASING.md) | v0.1.4 quality gates, tags and checksums |
 
 ## Accessibility and visual quality
 
@@ -124,4 +126,12 @@ Created and maintained by **[Dishit Kalsaria](https://github.com/dishitkalsaria)
 
 Released under the [MIT License](LICENSE). © 2026 Dishit Kalsaria.
 
-**Distribution and trust:** Pin the `v0.1.3` GitHub tag after testing, publish SHA256 checksums with release assets and follow the [link-only retrieval policy](docs/LINK_ONLY.md). Real cross-agent end-to-end tests are not claimed until completed.
+**Distribution and trust:** Pin the `v0.1.4` GitHub tag after testing, publish SHA256 checksums with release assets and follow the [link-only retrieval policy](docs/LINK_ONLY.md). Real cross-agent end-to-end tests are not claimed until completed.
+
+## v0.1.4 quality-testing features (not released yet)
+
+The art director first plans a coherent world, with a clear focal point, depth, meaningful landmarks, and a mobile composition. `world.scene_svg_mobile` is an optional separate original mobile SVG. Sparse stroked constellations and motion-class landmarks are covered by browser tests. An **optional image-assisted mode** embeds an original local PNG/JPEG/WebP background inside the offline HTML; the real SVG objects remain interactive. See [Art direction](simplicity-builder/references/art-direction.md), [Visual QA](simplicity-builder/references/visual-quality.md), and [Testing](TESTING.md). No AI image service is required.
+
+**Future idea, not included in v0.1.4:** opt-in publishing to the owner's GitHub Pages site and a LinkedIn share prompt. The portfolio owner must explicitly approve public facts and authorize repository publishing; there is no automatic OAuth or remote publishing in this candidate.
+
+See [Future GitHub Pages + LinkedIn publishing idea](PUBLISHING_IDEA.md) for the opt-in publishing proposal.

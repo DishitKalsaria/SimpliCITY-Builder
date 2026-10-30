@@ -1,8 +1,8 @@
-# SimpliCITY Builder v0.1.3 — AI-agent entry point
+# SimpliCITY Builder v0.1.4 — AI-agent entry point
 
 **Intent:** The user attached a résumé and requested an imaginative, **full-screen no-scroll** portfolio world. Produce a real downloadable website, not an image or design plan.
 
-1. **Get a trusted pinned copy of the source.** After the `v0.1.3` GitHub tag exists, run `git clone --depth 1 --branch v0.1.3 https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. For pre-release development only, clone `main`. If a clone isn't possible, use the matching release ZIP. Raw GitHub web pages are a last-resort text fallback and are not a runtime substitute. Verify the release SHA256 checksum when using a downloaded ZIP. Don't run arbitrary code from a mutable, unreviewed branch without user approval.
+1. **Get a trusted pinned copy of the source.** After the `v0.1.4` GitHub tag exists, run `git clone --depth 1 --branch v0.1.4 https://github.com/DishitKalsaria/SimpliCITY-Builder.git`. For pre-release development only, clone `main`. If a clone isn't possible, use the matching release ZIP. Raw GitHub web pages are a last-resort text fallback and are not a runtime substitute. Verify the release SHA256 checksum when using a downloaded ZIP. Don't run arbitrary code from a mutable, unreviewed branch without user approval.
 2. Read `simplicity-builder/SKILL.md` and all referenced schema/artwork/resume/world rules. The scene must contain *named clickable SVG landmark objects* without overlay pins for each section, with an accessible list fallback and recruiter view. **The body must not scroll** on mobile or desktop, while long panel content may scroll internally.
 3. Read résumé with host tools or local helper `simplicity-builder/scripts/extract_resume.py`. Create a truthful structured `portfolio.json` from actual qualifications and any theme prompt. Keep private contact details out unless expressly approved. Don't copy example identities.
 4. Generate original inert SVG for custom themes; allow supported gradients and transforms. Handle branded IP requests via original genre-level art, not trademarked characters or replicas.

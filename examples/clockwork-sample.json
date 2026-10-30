@@ -9,7 +9,6 @@
     "title": "The Clockwork Museum",
     "tagline": "A career exhibited in curious rooms and mechanical discoveries.",
     "theme": "clockwork-museum",
-    "symbol": "⚙️",
     "accent": "#f0d38e",
     "accent_secondary": "#9ddbbf",
     "description": "Explore the stages and backstage moments of a creative career.",
@@ -42,7 +41,6 @@
     {
       "id": "roles",
       "name": "The Main Stage",
-      "symbol": "🎤",
       "intro": "The professional roles at the center of the show.",
       "entries": [
         {
@@ -59,7 +57,6 @@
     {
       "id": "projects",
       "name": "The Mixtape Lounge",
-      "symbol": "🎶",
       "intro": "Example creative initiatives and campaigns.",
       "entries": [
         {

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import html
 import json
 import re
-import math
 from pathlib import Path
 from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
@@ -15,11 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / 'assets' / 'template.html'
 
 THEMES = {
-    'fairytale': {'background': '#100d20', 'background2': '#291e3e', 'accent': '#f6cd8e', 'secondary': '#c4a7f8', 'icon': '🏰', 'label': 'The enchanted realm'},
-    'space': {'background': '#070c20', 'background2': '#171d46', 'accent': '#9de6ff', 'secondary': '#bf96ff', 'icon': '🪐', 'label': 'The cosmic realm'},
-    'graffiti': {'background': '#16111c', 'background2': '#302034', 'accent': '#ffb073', 'secondary': '#80ebd9', 'icon': '🎨', 'label': 'The creative realm'},
-    'ocean': {'background': '#061c27', 'background2': '#103b52', 'accent': '#9beade', 'secondary': '#a4caff', 'icon': '🐚', 'label': 'The underwater realm'},
-    'custom': {'background': '#101522', 'background2': '#222d43', 'accent': '#f3cf9e', 'secondary': '#a7c8ef', 'icon': '🗺️', 'label': 'The imagined realm'},
+    'fairytale': {'background': '#100d20', 'background2': '#291e3e', 'accent': '#f6cd8e', 'secondary': '#c4a7f8', 'label': 'The enchanted realm'},
+    'space': {'background': '#070c20', 'background2': '#171d46', 'accent': '#9de6ff', 'secondary': '#bf96ff', 'label': 'The cosmic realm'},
+    'graffiti': {'background': '#16111c', 'background2': '#302034', 'accent': '#ffb073', 'secondary': '#80ebd9', 'label': 'The creative realm'},
+    'ocean': {'background': '#061c27', 'background2': '#103b52', 'accent': '#9beade', 'secondary': '#a4caff', 'label': 'The underwater realm'},
+    'custom': {'background': '#101522', 'background2': '#222d43', 'accent': '#f3cf9e', 'secondary': '#a7c8ef', 'label': 'The imagined realm'},
 }
 
 
@@ -114,6 +114,12 @@ def validate_model(data: object) -> dict:
         if sid in landmark_ids:
             fail('world.landmarks: section_id must be unique')
         landmark_ids.add(sid)
+    mode = optional(world, 'artwork_mode', 'world', limit=20) or 'svg'
+    if mode not in ('svg', 'image-assisted'):
+        fail('world.artwork_mode: expected svg or image-assisted')
+    mobile_artwork = optional(world, 'scene_svg_mobile', 'world', limit=25000)
+    if mobile_artwork:
+        sanitize_scene(mobile_artwork)
     artwork = optional(world, 'scene_svg', 'world', limit=25000)
     if artwork:
         sanitize_scene(artwork)
@@ -182,6 +188,21 @@ def validate_model(data: object) -> dict:
         fail('world.landmarks: provide exactly one labelled object for each section ID')
     if artwork:
         sanitize_scene(artwork, section_ids=seen)
+    if mobile_artwork:
+        sanitize_scene(mobile_artwork, section_ids=seen)
+    review = data.get('review', {})
+    if not isinstance(review, dict) or any(k not in {'approved_paraphrases'} for k in review):
+        fail('review: only approved_paraphrases is supported')
+    approvals = review.get('approved_paraphrases', [])
+    if not isinstance(approvals, list) or len(approvals) > 30:
+        fail('review.approved_paraphrases: expected up to 30 owner approvals')
+    for i, approval in enumerate(approvals):
+        if not isinstance(approval, dict):
+            fail(f'review.approved_paraphrases[{i}]: expected object')
+        for field, limit in [('field', 150), ('claim', 250), ('source_excerpt', 800)]:
+            required(approval, field, f'review.approved_paraphrases[{i}]', limit)
+        if approval.get('approved_by_owner') is not True:
+            fail('review.approved_paraphrases: approved_by_owner must be true')
     share = world.get('share', {})
     if not isinstance(share, dict):
         fail('world.share: expected object')
@@ -341,7 +362,10 @@ def sanitize_scene(markup: str, section_ids: set[str] | None = None, labels: dic
                 fail('world.scene_svg: stroke-linecap must be round, square or butt')
             if key == 'stroke-linejoin' and val not in {'round', 'bevel', 'miter'}:
                 fail('world.scene_svg: stroke-linejoin must be round, bevel or miter')
-            pieces.append(f' {key}="{e(val)}"')
+            # A landmark receives a single combined class attribute below.
+            # Duplicate class attributes are invalid XML/HTML and break motion + clicks.
+            if not (key == 'class' and node.attrib.get('id', '').startswith('landmark-')):
+                pieces.append(f' {key}="{e(val)}"')
         landmark_id = node.attrib.get('id', '') if tag not in {'linearGradient','radialGradient'} else ''
         if landmark_id.startswith('landmark-'):
             section_id = landmark_id.removeprefix('landmark-')
@@ -351,7 +375,9 @@ def sanitize_scene(markup: str, section_ids: set[str] | None = None, labels: dic
                 fail('world.scene_svg: landmarks cannot be nested')
             if labels is not None:
                 human_label = labels[section_id]
-                attrs = f' role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore {e(human_label)}" data-dialog="detail-{e(section_id)}" class="scene-landmark"'
+                motion = node.attrib.get('class', '')
+                classes = 'scene-landmark' + (f' {motion}' if motion else '')
+                attrs = f' role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore {e(human_label)}" data-dialog="detail-{e(section_id)}" class="{classes}"' 
                 return f'<{tag}{"".join(pieces)}{attrs}><title>{e(human_label)}</title>' + ''.join(clean(child, tag) for child in node) + f'</{tag}>'
         return f'<{tag}{"".join(pieces)}>' + ''.join(clean(child, tag) for child in node) + f'</{tag}>'
 
@@ -528,8 +554,26 @@ def entry_html(entry: dict, work_label: str = 'View project') -> str:
     return f'<article class="entry"><h3>{title}</h3>{f"<p class=entry-subtitle>{subtitle}</p>" if subtitle else ""}<p class="entry-description">{desc}</p>{highlights_html}{metrics_html}{tags_html}{link_html}</article>'
 
 
-def generate(data: dict) -> str:
+def embedded_image(path: Path) -> str:
+    """Embed a local raster image without network requests or extra dependencies."""
+    raw = path.read_bytes()
+    if len(raw) > 4_000_000:
+        fail('Background image exceeds 4 MB; compress it before embedding')
+    if raw.startswith(b'\x89PNG\r\n\x1a\n'):
+        mime = 'image/png'
+    elif raw.startswith(b'\xff\xd8\xff'):
+        mime = 'image/jpeg'
+    elif raw.startswith(b'RIFF') and raw[8:12] == b'WEBP':
+        mime = 'image/webp'
+    else:
+        fail('Background image must be a valid PNG, JPEG or WebP file')
+    return f'data:{mime};base64,' + base64.b64encode(raw).decode('ascii')
+
+
+def generate(data: dict, background_image: str = '') -> str:
     validate_model(data)
+    if data['world'].get('artwork_mode') == 'image-assisted' and not background_image:
+        fail('Image-assisted world requires --background-image with a local PNG/JPEG/WebP')
     profile, world, sections = data['profile'], data['world'], data['sections']
     theme_name = world['theme']
     theme = THEMES.get(theme_name, THEMES['custom'])
@@ -554,6 +598,12 @@ def generate(data: dict) -> str:
     scene_source = world.get('scene_svg') or object_scene(theme_name, sections)
     label_map = {section['id']: next((p['label'] for p in world.get('landmarks', world.get('hotspots', [])) if p['section_id'] == section['id']), section['name']) for section in sections}
     scene = sanitize_scene(scene_source, section_ids=set(label_map), labels=label_map)
+    scene_mobile = ''
+    if world.get('scene_svg_mobile'):
+        # Rendered only in a <template> until selected at runtime, ensuring
+        # exactly one active scene and no duplicate landmark ids in the DOM.
+        scene_mobile = '<template id="mobile-scene-template">' + sanitize_scene(world['scene_svg_mobile'], section_ids=set(label_map), labels=label_map) + '</template>'
+    background = f'<img class="scene-backdrop" src="{e(background_image)}" alt="" aria-hidden="true" draggable="false">' if background_image else ''
     result = TEMPLATE.read_text(encoding='utf-8')
     replacements = {
         'TITLE':e(world['title']), 'TAGLINE':e(world['tagline']), 'DESCRIPTION':e(world.get('description') or world['tagline']),
@@ -563,7 +613,7 @@ def generate(data: dict) -> str:
         'BG':safe_background(world.get('background') or '', theme['background']),
         'BG2':safe_background(world.get('background_secondary') or '', theme['background2']),
         'THEME':e(theme_name), 'THEME_LABEL':e(world.get('visual_name') or theme['label']),
-        'SCENE':scene, 'LANDMARKS':'\n'.join(list_items),
+        'SCENE':scene, 'SCENE_MOBILE':scene_mobile, 'SCENE_BACKDROP':background, 'LANDMARKS':'\n'.join(list_items),
         'DIALOGS':'\n'.join(dialogs), 'RECRUITER_ENTRIES':'\n'.join(recruiter_items),
         'LINKS':links, 'COUNT':str(len(sections)), 'ENTRY_COUNT':str(sum(len(s['entries']) for s in sections)),
         'ICON_MAP':icon('map'), 'ICON_LIST':icon('list'), 'ICON_USER':icon('user'), 'ICON_PRINT':icon('print'), 'ICON_CLOSE':icon('close'),
@@ -591,10 +641,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Generate an offline SimpliCITY Builder world portfolio.')
     parser.add_argument('--input', required=True, type=Path, help='Input JSON file with verified career content')
     parser.add_argument('--output', required=True, type=Path, help='Output HTML file')
+    parser.add_argument('--background-image', type=Path, help='Optional locally supplied PNG/JPEG/WebP art layer; embed offline, never fetched remotely')
     args = parser.parse_args()
     try:
         data = json.loads(args.input.read_text(encoding='utf-8'))
-        result = generate(data)
+        image = embedded_image(args.background_image) if args.background_image else ''
+        result = generate(data, background_image=image)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(result, encoding='utf-8')
         print(f'Generated {args.output} ({len(result.encode("utf-8")):,} bytes)')

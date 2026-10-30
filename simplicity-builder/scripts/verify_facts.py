@@ -58,7 +58,17 @@ def evidence_gaps(data: dict, resume: str) -> list[dict]:
                 # Can include creative prose; flagged as a possible unsupported skill.
                 if norm(tag) not in evidence:
                     gaps.append({'field':f'{prefix}.tags[{k}]','kind':'skill or tag for review','claim':tag})
-    return gaps
+    approvals = (data.get('review') or {}).get('approved_paraphrases', [])
+    allowed = {(v['field'],norm(v['claim'])):v for v in approvals if isinstance(v,dict) and v.get('approved_by_owner') is True and all(k in v for k in ('field','claim','source_excerpt'))}
+    unresolved = []
+    for gap in gaps:
+        candidate = allowed.get((gap['field'], norm(gap['claim'])))
+        # No approval override for numbers, employers, dates or quote attribution.
+        forbidden = gap['kind'] == 'number or date' or gap['field'].endswith(('.employer','.attribution','.dates'))
+        if not forbidden and candidate and len(norm(candidate['source_excerpt'])) >= 12 and norm(candidate['source_excerpt']) in evidence:
+            continue
+        unresolved.append(gap)
+    return unresolved
 
 
 def main():
@@ -76,6 +86,7 @@ def main():
         ap.exit(2,'Résumé text is too short; PDF may be scanned. Request OCR or pasted text.\n')
     gaps=evidence_gaps(data,resume)
     report={'status':'review_required' if gaps else 'no_unmatched_tokens','unmatched':gaps,
+            'owner_approved_paraphrases':(data.get('review') or {}).get('approved_paraphrases', []),
             'notice':'Token matching is not semantic proof. Human review is always required.'}
     if args.report:
         args.report.parent.mkdir(parents=True,exist_ok=True)

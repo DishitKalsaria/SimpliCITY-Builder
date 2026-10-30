@@ -10,7 +10,6 @@
     "tagline": "Every great solution begins with a little wonder.",
     "theme": "fairytale",
     "description": "Explore a fictional designer's journey through quests, guilds, and discoveries.",
-    "symbol": "🏰",
     "copy": {
       "eyebrow": "A kingdom built from curiosity",
       "hint": "Choose a glowing landmark to enter its chapter",
@@ -39,7 +38,6 @@
     {
       "id": "experience",
       "name": "Castles of Experience",
-      "symbol": "🏯",
       "intro": "Places where products were designed and teams worked together.",
       "entries": [
         {
@@ -66,7 +64,6 @@
     {
       "id": "projects",
       "name": "Quests & Creations",
-      "symbol": "🗝️",
       "intro": "Ideas turned into something people could explore.",
       "entries": [
         {

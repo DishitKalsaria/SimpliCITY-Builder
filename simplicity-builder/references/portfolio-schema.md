@@ -1,4 +1,4 @@
-# SimpliCITY Builder v0.1.3 — portfolio JSON contract
+# SimpliCITY Builder v0.1.4 — portfolio JSON contract
 
 Provide verified `profile`, `world`, and `sections` objects. The generated HTML is offline, with no tracker or external runtime dependencies. Career information must be grounded in the résumé. Section IDs use lowercase hyphens and must be unique.
 
@@ -29,6 +29,8 @@ Provide verified `profile`, `world`, and `sections` objects. The generated HTML 
 | `world.title` / `tagline` / `theme` | Required, 95 / 200 / 60 characters |
 | `world.description` | Optional, 3,000 characters |
 | `world.scene_svg` | Optional only if using fallback art; max 25,000 characters, 180 SVG nodes |
+| `world.scene_svg_mobile` | Optional independent mobile scene, same section IDs, same SVG limits |
+| `world.artwork_mode` | Optional `svg` (default) or `image-assisted` (requires `--background-image` when generating) |
 | `world.landmarks[]` | Up to 8 records, `section_id` max 40, `label` max 60 characters |
 | `world.copy` | Documented supported keys, up to 180 characters each |
 | `world.share` | Optional `url` and `image` (max 600 each), `image_alt` max 160 |
@@ -57,3 +59,15 @@ Aim for visibly separated, generously sized shapes that remain hittable on narro
 ## Custom copy and aesthetics
 
 `world.copy` supported keys: `eyebrow`, `explore`, `hint`, `list`, `recruiter`, `about`, `close`, `search`, `empty`, `made_with`, `privacy`, `print`, `intro`, `locations`, `skip`, `open`, `view_work` (max 180 characters each). `world.theme` can be any lowercase-hyphenated setting. Color values use `#RGB` or `#RRGGBB`; world backgrounds must remain dark enough for accessible text. Refer to `illustration-rules.md` and `world-rules.md` for original artwork, motion, and IP guidelines.
+
+## Background image and mobile scene
+
+An agent may use `world.scene_svg_mobile` to create a second composition for phones. Both scenes must have one named `landmark-<section-id>` per section. The renderer keeps only one scene active at a time. For custom images, set `world.artwork_mode: "image-assisted"` and pass `--background-image /path/to/original.png`. Only local PNG/JPEG/WebP (max 4 MB) is accepted; it is embedded in the offline HTML. The SVG remains interactive, and neither image use nor image generation is mandatory. See `art-direction.md`.
+
+**Quote entries:** `title` and `description` are required by the validator, and `attribution` is required when `type: "quote"`. No résumé quote or endorsement may be invented.
+
+## Optional private review approvals
+
+Top-level `review.approved_paraphrases` accepts at most 30 records with `field`, `claim`, `source_excerpt`, and `approved_by_owner: true`; source excerpts must be verifiably present in private extracted résumé text. These approvals only resolve nonnumeric, non-employer, non-date, non-quote discrepancies and are recorded in the private evidence report. Do not include original extracted résumé text in public Git repositories. See `resume-review.md`.
+
+Legacy `world.symbol` and section `symbol` emoji fields are ignored for compatibility. New JSON should not use them. Consistent UI icons are inline SVG, and primary navigation is the illustrated scene itself.

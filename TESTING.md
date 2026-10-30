@@ -1,4 +1,4 @@
-# Acceptance tests — SimpliCITY Builder v0.1.3
+# Acceptance tests — SimpliCITY Builder v0.1.4
 
 Use fictional résumés for public screenshots. For full acceptance use a résumé you have permission to process, then **do not publish its raw content**. Never post sensitive files in GitHub Issues.
 
@@ -35,7 +35,7 @@ Start a **new chat** in an AI app that can read GitHub, the résumé and run scr
 
 A passing unit suite does not establish cross-app reliability. Record tested host versions, prompt, error and remediation in release notes.
 
-## SVG and résumé regression tests (v0.1.3)
+## SVG and résumé regression tests (v0.1.4)
 
 Run the unit suite and preflight custom artwork before building:
 
@@ -56,7 +56,7 @@ python3 scripts/browser_smoke.py index.html --screenshots private/screenshots
 Screenshot inspection is still a **human visual-review step**: smoke tests can catch layout overflow and broken interactions but cannot decide whether the fictional world is beautiful or sufficiently distinctive. Never publish unreviewed résumé details.
 
 
-## Required v0.1.3 checks
+## Required v0.1.4 checks
 
 - Run `python3 -m unittest discover -s tests -v`.
 - Generate all four demo HTML files and validate with `simplicity-builder/scripts/validate.py`.
@@ -76,3 +76,13 @@ python3 scripts/compare_screenshots.py docs/assets/fairytale-desktop.png private
 ```
 
 Screenshot diffs can be sensitive to OS/font/browser versions; they are a review trigger, not an automatic measure of good art. The release gate requires someone to look at desktop and mobile screenshots. Do not treat passing geometry or screenshot comparison as proof of aesthetics.
+
+## v0.1.4 acceptance before tagging
+
+- [ ] A landmark with `class="motion-float"` builds without duplicate `class` and remains hoverable, tabbable and clickable.
+- [ ] Sparse stroked constellations pass geometric center hover and click with accessible list fallback.
+- [ ] A custom desktop AND custom mobile `scene_svg` retain the same section destinations.
+- [ ] Offline image-assisted mode embeds a local image safely, does not depend on external network, and still opens landmark dialogs.
+- [ ] Inspect desktop/mobile/landscape screenshots and score composition, illustration, interaction, theme recognition and accessibility (4/5 minimum each).
+- [ ] Test several real, consented résumés through at least two intended agents.
+- [ ] No tag or public stable label until those tests pass.
