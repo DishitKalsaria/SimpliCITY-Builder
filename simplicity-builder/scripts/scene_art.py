@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import html
+from typing import Sequence
 
 PALETTES = (
     ('#f4c879', '#a7b9ff', '#11182b', '#29354e'),
@@ -64,7 +65,7 @@ def palette_for(theme: str) -> tuple[str, str, str, str]:
     return PALETTES[checksum % len(PALETTES)]
 
 
-def _motif(kind: str, x: int, y: int, i: int) -> str:
+def _motif(kind: str, x: int, y: float, i: int) -> str:
     """Shapes *are* interaction landmarks; no overlay pins or detached buttons."""
     primary = f'url(#material-{i})'
     if kind == 'guardian':
@@ -206,7 +207,7 @@ def build_scene(theme: str, sections: list[dict], mobile: bool = False) -> str:
     """Compose safe multi-depth SVG art; the same landmarks receive a separate mobile layout."""
     kind = family_for(theme)
     n = len(sections)
-    points: list[tuple[int, float]]
+    points: Sequence[tuple[int, float]]
     if mobile:
         # True portrait layout: four landmarks cover most of the vertical stage.
         if n == 1:
