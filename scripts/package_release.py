@@ -13,8 +13,10 @@ from pathlib import Path
 from package_skill import make_skill
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_DIRS = {'.git', '.venv', '.pytest_cache', '__pycache__', 'private', 'dist', 'out', '.mypy_cache'}
-EXCLUDED_GLOBS = ('*.pyc', '*.zip', 'SHA256SUMS.txt', '*.log', '.env', '.env.*')
+EXCLUDED_DIRS = {'.git', '.venv', '.pytest_cache', '__pycache__', 'private', 'dist', 'out',
+                 '.mypy_cache', '.ruff_cache', 'htmlcov'}
+EXCLUDED_GLOBS = ('*.pyc', '*.zip', 'SHA256SUMS.txt', '*.log', '.env', '.env.*',
+                  '.coverage*', '.DS_Store')
 
 
 def files_to_package():

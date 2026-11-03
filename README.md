@@ -64,6 +64,7 @@ For developers, Python **3.9+**, standard library only. Photo mode requires `--s
 
 ```bash
 python3 -m unittest discover -s tests -v
+# Contributors: install requirements-dev.txt, then run scripts/ci_preflight.py all before pushing.
 python3 simplicity-builder/scripts/build.py --input simplicity-builder/references/experience-sample.json --output demo.html
 python3 simplicity-builder/scripts/check.py simplicity-builder/references/experience-sample.json demo.html
 ```

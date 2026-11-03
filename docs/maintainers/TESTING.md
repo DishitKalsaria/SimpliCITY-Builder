@@ -15,17 +15,23 @@ python3 simplicity-builder/scripts/check.py simplicity-builder/references/experi
 
 The tests cover legacy résumé inputs, source-neutral content, theme families, SVG safety, publishing safeguards, metadata versions and package portability. A passed HTML validator does not mean the agent understood a document/photo or that the scene is artistically finished.
 
-## Optional developer checks
+## Required pre-push CI parity checks for contributors
+
+Run **before committing**, particularly on Windows. This reproduces the exact Ruff selector and mypy targets used by GitHub Actions, followed by the unit tests. It fails if required developer tools are missing instead of silently skipping them.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
-ruff check simplicity-builder/scripts scripts tests --select E4,E7,E9,F821,F822,F823
-mypy simplicity-builder/scripts/scene_art.py simplicity-builder/scripts/build_experience.py --follow-imports=skip --ignore-missing-imports
+python3 scripts/ci_preflight.py all
+```
+
+For source/commit comparisons without installing tools: `python3 scripts/ci_preflight.py fingerprint`. The preflight prints SHA256 for both type-checked files; compare these hashes against your local Git commit and the commit hash displayed by GitHub Actions. The script shares its lint/type commands with the workflow to avoid local/CI drift.
+
+The developer tools are **not runtime dependencies**. The generator itself uses Python's standard library. For the separate coverage check used by CI:
+
+```bash
 coverage run --source=simplicity-builder/scripts -m unittest discover -s tests -q
 coverage report
 ```
-
-These optional packages are **not runtime dependencies**. The generator itself uses Python's standard library.
 
 ## Photo and one-item smoke tests
 

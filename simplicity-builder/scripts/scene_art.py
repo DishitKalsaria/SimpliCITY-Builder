@@ -206,6 +206,7 @@ def build_scene(theme: str, sections: list[dict], mobile: bool = False) -> str:
     """Compose safe multi-depth SVG art; the same landmarks receive a separate mobile layout."""
     kind = family_for(theme)
     n = len(sections)
+    points: list[tuple[int, float]]
     if mobile:
         # True portrait layout: four landmarks cover most of the vertical stage.
         if n == 1:

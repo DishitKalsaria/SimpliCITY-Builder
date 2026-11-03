@@ -30,7 +30,7 @@ def to_portfolio(data: dict) -> dict:
     experience = data.get('experience')
     chapters = data.get('chapters')
     if not isinstance(source, dict) or not isinstance(experience, dict):
-        fail('source and experience must be objects')
+        raise ValueError('source and experience must be objects')
     kind = required(source, 'kind', 'source', 16)
     if kind not in KINDS:
         fail(f'source.kind must be one of: {", ".join(sorted(KINDS))}')
@@ -53,11 +53,11 @@ def to_portfolio(data: dict) -> dict:
     if mode not in MODES:
         fail('experience.mode must be world, explore or explain')
     if not isinstance(chapters, list) or not 1 <= len(chapters) <= 8:
-        fail('chapters must contain 1–8 sections')
+        raise ValueError('chapters must contain 1–8 sections')
     sections = []
     anchors = {}
     ids = set()
-    anchor_rects = []
+    anchor_rects: list[tuple[str, float, float, float, float]] = []
     for i, chapter in enumerate(chapters):
         if not isinstance(chapter, dict):
             fail(f'chapters[{i}] must be an object')
@@ -70,7 +70,7 @@ def to_portfolio(data: dict) -> dict:
         if kind == 'photo':
             anchor = chapter.get('anchor')
             if not isinstance(anchor, dict) or set(anchor) != {'x', 'y', 'width', 'height'}:
-                fail(f'chapters[{i}].anchor: photo requires an observed object box (x, y, width, height), normalized 0–1')
+                raise ValueError(f'chapters[{i}].anchor: photo requires an observed object box (x, y, width, height), normalized 0–1')
             if not all(isinstance(anchor[k], (int, float)) and not isinstance(anchor[k], bool) for k in anchor):
                 fail(f'chapters[{i}].anchor: expected numeric coordinates')
             x, y, w, h = (anchor[k] for k in ('x', 'y', 'width', 'height'))
@@ -87,7 +87,7 @@ def to_portfolio(data: dict) -> dict:
             anchors[section_id] = {k: round(float(v), 5) for k, v in anchor.items()}
         entries = chapter.get('items')
         if not isinstance(entries, list) or not 1 <= len(entries) <= 20:
-            fail(f'chapters[{i}].items must contain 1–20 items')
+            raise ValueError(f'chapters[{i}].items must contain 1–20 items')
         normalized = []
         for j, item in enumerate(entries):
             if not isinstance(item, dict):
