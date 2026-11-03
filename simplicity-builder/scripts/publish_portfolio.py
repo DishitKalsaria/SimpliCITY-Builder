@@ -143,7 +143,7 @@ def _prepare_into(html_file: Path, url: str, bundle: Path, preview: Path | None)
     image_url = url + image_file.name
     source = html_file.read_text(encoding='utf-8')
     rewritten = rewrite_social(source, url, image_url, 'Illustration of the interactive portfolio world')
-    (site / 'index.html').write_text(rewritten, encoding='utf-8')
+    (site / 'index.html').write_bytes(rewritten.encode('utf-8'))
     (site / '.nojekyll').touch()
     (bundle / 'LINKEDIN_POST.txt').write_text(
         'My professional journey now has a world of its own.\n\n'

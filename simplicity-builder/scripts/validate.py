@@ -53,7 +53,7 @@ def validate(json_path: Path, html_path: Path) -> None:
         'one named SVG object per section': named_scene_landmarks_valid(
             output,
             {section['id'] for section in data['sections']},
-            bool(data.get('world', {}).get('scene_svg_mobile')),
+            '<template id="mobile-scene-template">' in output,
         ),
         'no HTML pin overlays': 'class="hotspot' not in output and 'spot-dot' not in output,
         'accessible list fallback': output.count('class="landmark"') == len(data['sections']),

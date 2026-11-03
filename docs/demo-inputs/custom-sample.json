@@ -1,0 +1,73 @@
+{
+  "profile": {
+    "name": "Taylor Reed",
+    "headline": "Communications Specialist",
+    "summary": "A fictional communications professional interested in audience engagement and imaginative brand narratives.",
+    "links": []
+  },
+  "world": {
+    "title": "The Midnight Music Festival",
+    "tagline": "A career told through stages, soundchecks and headline performances.",
+    "theme": "midnight-festival",
+    "accent": "#ffcf87",
+    "accent_secondary": "#e89fca",
+    "description": "Explore the stages and backstage moments of a creative career.",
+    "background": "#101324",
+    "background_secondary": "#342341",
+    "visual_name": "The nocturnal concert grounds",
+    "scene_svg": "<svg viewBox=\"0 0 620 520\"><defs><radialGradient id=\"moonGlow\"><stop stop-color=\"#f6ca8e\" stop-opacity=\".35\"/><stop offset=\"1\" stop-color=\"#f6ca8e\" stop-opacity=\"0\"/></radialGradient><linearGradient id=\"velvet\" x1=\"0\" x2=\"1\" y1=\"0\" y2=\"1\"><stop stop-color=\"#ae719f\"/><stop offset=\"1\" stop-color=\"#533e76\"/></linearGradient></defs><circle cx=\"477\" cy=\"91\" r=\"89\" fill=\"url(#moonGlow)\"/><circle cx=\"477\" cy=\"91\" r=\"32\" fill=\"#f6ca8e\"/><path d=\"M0 443 Q120 391 235 432 T435 435 T620 414 V520 H0Z\" fill=\"#2a254b\"/><g id=\"landmark-roles\"><rect x=\"100\" y=\"251\" width=\"252\" height=\"164\" rx=\"9\" fill=\"#63466f\"/><path d=\"M75 252 L226 141 L377 252Z\" fill=\"url(#velvet)\"/><rect x=\"145\" y=\"268\" width=\"165\" height=\"122\" rx=\"5\" fill=\"#26243e\"/><path d=\"M112 270 L92 411 M343 270 L362 411\" fill=\"none\" stroke=\"#fad99b\" stroke-width=\"9\"/><circle cx=\"228\" cy=\"321\" r=\"31\" fill=\"#f5b9b9\"/><path d=\"M196 391 Q227 329 260 391\" fill=\"#e8d49c\"/><circle cx=\"226\" cy=\"151\" r=\"12\" fill=\"#ffe4b4\"/></g><g id=\"landmark-projects\"><rect x=\"393\" y=\"299\" width=\"166\" height=\"119\" rx=\"12\" fill=\"#554f83\"/><path d=\"M382 299 Q472 205 570 299 Z\" fill=\"#ecb5c9\"/><rect x=\"413\" y=\"323\" width=\"127\" height=\"74\" rx=\"8\" fill=\"#292544\"/><circle cx=\"440\" cy=\"346\" r=\"11\" fill=\"#facb95\"/><circle cx=\"511\" cy=\"346\" r=\"11\" fill=\"#facb95\"/><path d=\"M436 380 Q475 348 518 380\" fill=\"none\" stroke=\"#d993b9\" stroke-width=\"7\"/><path d=\"M401 305 L402 410 M558 305 L559 410\" stroke=\"#eccd99\" stroke-width=\"7\"/></g><path d=\"M0 461 Q150 420 310 457 T620 447 V520 H0Z\" fill=\"#171831\"/><circle cx=\"85\" cy=\"121\" r=\"6\" fill=\"#e2a7ed\"/><circle cx=\"560\" cy=\"195\" r=\"4\" fill=\"#e2a7ed\"/></svg>",
+    "copy": {
+      "eyebrow": "Follow the sound",
+      "hint": "Select a stage to explore the story",
+      "list": "Festival stages"
+    },
+    "landmarks": [
+      {
+        "section_id": "roles",
+        "label": "The Main Stage"
+      },
+      {
+        "section_id": "projects",
+        "label": "The Mixtape Lounge"
+      }
+    ],
+    "share": {
+      "url": "https://dishitkalsaria.github.io/SimpliCITY-Builder/festival.html",
+      "image": "https://dishitkalsaria.github.io/SimpliCITY-Builder/assets/festival-social.jpg",
+      "image_alt": "SimpliCITY Builder fictional festival portfolio world"
+    }
+  },
+  "sections": [
+    {
+      "id": "roles",
+      "name": "The Main Stage",
+      "intro": "The professional roles at the center of the show.",
+      "entries": [
+        {
+          "title": "Communications Coordinator",
+          "subtitle": "Example Organization · 2024–2026",
+          "description": "In this fictional scenario, coordinated publishing calendars and helped write internal announcements.",
+          "tags": [
+            "Writing",
+            "Planning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "The Mixtape Lounge",
+      "intro": "Example creative initiatives and campaigns.",
+      "entries": [
+        {
+          "title": "Soundcheck Newsletter",
+          "description": "A sample newsletter concept built to communicate new projects with playful language.",
+          "tags": [
+            "Editorial",
+            "Brand voice"
+          ]
+        }
+      ]
+    }
+  ]
+}

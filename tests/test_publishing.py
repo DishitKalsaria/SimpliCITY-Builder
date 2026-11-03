@@ -54,11 +54,11 @@ class PublishingTests(unittest.TestCase):
             self.assertEqual(url, 'https://DemoUser.github.io/my-world/')
             site = bundle / 'site'
             self.assertEqual(sorted(p.name for p in site.iterdir()), ['.nojekyll','index.html','social-preview.png'])
-            self.assertNotIn('Sensitive private', (site / 'index.html').read_text())
+            self.assertNotIn('Sensitive private', (site / 'index.html').read_text(encoding='utf-8'))
             self.assertTrue((bundle / 'LINKEDIN_POST.txt').exists())
             self.assertTrue((bundle / 'PUBLISH_CHECKLIST.md').exists())
-            self.assertIn('social-preview.png', (site / 'index.html').read_text())
-            self.assertIn(url, (bundle / 'LINKEDIN_POST.txt').read_text())
+            self.assertIn('social-preview.png', (site / 'index.html').read_text(encoding='utf-8'))
+            self.assertIn(url, (bundle / 'LINKEDIN_POST.txt').read_text(encoding='utf-8'))
             with self.assertRaisesRegex(ValueError, 'overwrite'):
                 prepare(source, 'DemoUser', 'my-world', bundle, image)
 

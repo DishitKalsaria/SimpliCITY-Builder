@@ -1,0 +1,15 @@
+{
+  "source": {"kind":"prompt", "title":"An original fictional guardian academy", "fictional":true},
+  "experience": {
+    "title":"The Guardian Command Center",
+    "theme":"colorful-superhero-team-command-center",
+    "mode":"world",
+    "tagline":"Choose a guardian station to uncover a fictional adventure"
+  },
+  "chapters":[
+    {"title":"The Command Deck", "summary":"A glowing center where the guardians coordinate their adventures.", "items":[{"title":"The Team Mission","description":"The fictional guardians protect the imagination realm together."}]},
+    {"title":"Training Arena", "summary":"A place to practice teamwork and creative problem-solving.", "items":[{"title":"Teamwork Trials","description":"Invented guardians learn how their different strengths work together."}]},
+    {"title":"The Mecha Hangar", "summary":"A workshop filled with imaginary engineering marvels.", "items":[{"title":"Guardian Machines","description":"The fictional hangar houses colorful prototype machines."}]},
+    {"title":"Energy Portal", "summary":"An illuminated gateway to the next chapter.", "items":[{"title":"Journey Beyond","description":"The portal opens into an invented landscape of bright stars and floating islands."}]}
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "source": {
+    "kind": "link",
+    "title": "Invented online exhibition for software testing",
+    "url": "https://example.org/fictional-exhibition",
+    "reviewed_by_host": true,
+    "summary": "This is a synthetic source fixture; the URL is not fetched"
+  },
+  "experience": {
+    "title": "Museum of Imaginary Discoveries",
+    "theme": "museum exploration",
+    "mode": "explain"
+  },
+  "chapters": [
+    {
+      "title": "The Fictional Exhibit",
+      "summary": "A test-only gallery of invented exhibits.",
+      "items": [
+        {
+          "title": "Example Exhibit",
+          "description": "The invented exhibition describes a quiet room of painted stars.",
+          "source_grounded": true,
+          "evidence_excerpt": "The invented exhibition describes a quiet room of painted stars."
+        }
+      ]
+    }
+  ]
+}

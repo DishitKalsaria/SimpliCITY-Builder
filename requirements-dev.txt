@@ -1,0 +1,7 @@
+# Developer and CI tooling only. The generator still requires stdlib Python 3.9+.
+ruff==0.14.1
+mypy==1.18.2
+coverage==7.11.0
+playwright==1.57.0
+pypdf==6.1.3
+Pillow==12.3.0  # Optional photo downscale and visual screenshot comparison (not runtime)

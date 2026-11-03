@@ -13,7 +13,7 @@ from verify_facts import evidence_gaps
 
 class InteractiveWorldTests(unittest.TestCase):
     def setUp(self):
-        self.data=json.loads((ROOT/'examples'/'fairytale-sample.json').read_text())
+        self.data=json.loads((ROOT/'examples'/'fairytale-sample.json').read_text(encoding='utf-8'))
 
     def test_no_page_scroll_and_hotspots(self):
         page=generate(self.data)

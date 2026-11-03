@@ -30,11 +30,11 @@ def files_to_package():
 
 
 def package(label: str):
-    if not re.fullmatch(r'v0\.1\.5(?:-rc\.[1-9][0-9]*)?', label):
-        raise ValueError('Expected v0.1.5 or v0.1.5-rc.N')
+    if label != 'v' + __import__('package_skill').declared_version():
+        raise ValueError('Release label must exactly match SKILL.md metadata.version')
     skill = ROOT / f'SimpliCITY-Builder-Skill-{label}.zip'
     source = ROOT / f'SimpliCITY-Builder-Complete-Source-{label}.zip'
-    make_skill(skill)
+    make_skill(skill, tag=label)
     with zipfile.ZipFile(source, 'w', compression=zipfile.ZIP_DEFLATED) as z:
         for path, arcname in files_to_package():
             z.write(path, arcname)
@@ -49,5 +49,5 @@ def package(label: str):
 
 if __name__ == '__main__':
     arg = argparse.ArgumentParser()
-    arg.add_argument('--label', default='v0.1.5')
+    arg.add_argument('--label', default='v0.2.0')
     package(arg.parse_args().label)

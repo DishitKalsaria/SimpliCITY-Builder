@@ -1,0 +1,2 @@
+# Ensure generated demo HTML stays LF on Windows, macOS and Linux.
+docs/*.html text eol=lf

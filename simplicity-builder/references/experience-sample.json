@@ -1,0 +1,52 @@
+{
+  "source": {
+    "kind": "document",
+    "title": "A fictional guide to starlight",
+    "summary": "Invented science-fiction notes for testing only",
+    "reviewed_by_host": true
+  },
+  "experience": {
+    "title": "The Starship Knowledge Museum",
+    "theme": "cosmic archive museum",
+    "mode": "explore",
+    "tagline": "Walk through the fictional learning modules"
+  },
+  "chapters": [
+    {
+      "title": "The Observatory",
+      "summary": "Explore the fictional station's viewing deck.",
+      "items": [
+        {
+          "title": "Night Sky",
+          "description": "A fictional observatory looks out across a field of stars.",
+          "source_grounded": true,
+          "evidence_excerpt": "A fictional observatory looks out across a field of stars."
+        }
+      ]
+    },
+    {
+      "title": "The Archives",
+      "summary": "Find the station's invented archive room.",
+      "items": [
+        {
+          "title": "Star Maps",
+          "description": "An invented collection of imaginary navigation charts.",
+          "source_grounded": true,
+          "evidence_excerpt": "An invented collection of imaginary navigation charts."
+        }
+      ]
+    },
+    {
+      "title": "The Engine Room",
+      "summary": "Learn about a fictional propulsion system.",
+      "items": [
+        {
+          "title": "Core Reactor",
+          "description": "A purely fictional source of power for the station.",
+          "source_grounded": true,
+          "evidence_excerpt": "A purely fictional source of power for the station."
+        }
+      ]
+    }
+  ]
+}

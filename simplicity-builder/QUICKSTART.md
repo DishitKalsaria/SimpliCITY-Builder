@@ -1,19 +1,15 @@
-# Quickstart for an AI assistant
+# Chat-first quickstart — SimpliCITY Builder v0.2.0
 
-If this skill is installed, read `SKILL.md`, read the attached résumé with your available document tools, create `portfolio.json` from grounded facts and the user's arbitrary theme prompt, then preflight SVG, run `scripts/verify_facts.py` against privately extracted résumé text, followed by `scripts/build_portfolio.py` and `scripts/validate.py`. Keep a no-page-scroll world with named SVG landmark objects (not overlay pins) and mobile accessible navigation. Return `index.html` as a downloadable artifact. No extra software is required for viewing output. For text extraction, use the bundled `scripts/extract_resume.py` when host reading is unavailable; see `references/resume-review.md`. Preflight custom SVGs using `scripts/check_artwork.py` and test HTML in a browser when possible. Do not claim to have built files unless you executed the generator.
+Needs a chat/agent with code execution and file output; a text-only chat cannot run the generator.
 
-For a link-only invocation, first retrieve the repository's `AI_START_HERE.md` and `simplicity-builder/SKILL.md`, then obtain the generator, HTML template and schema as files before attempting execution. A URL is not a runnable installation. If code execution or site retrieval is not available, explain the limitation and propose a capable host.
+1. Read the attachment or accessible link with the tools the host already provides. Use `scripts/extract_resume.py` only if needed; it does not interpret photos or OCR scanned documents.
+2. Use `references/experience-schema.md` to create `experience.json` from verified non-résumé content, or `references/portfolio-schema.md` for résumé JSON. If no theme is requested, ask one brief creative-world question, then proceed.
+3. Build: `python3 scripts/build.py --input /path/to/content.json --output /path/to/index.html` (detects both schemas).
+4. Independently validate: `python3 scripts/check.py /path/to/content.json /path/to/index.html` (optionally `--source-text /private/extracted.txt`).
+5. Return the downloadable HTML file. Use `/mnt/user-data/outputs/index.html` on hosts that expose that path; otherwise use their supported file-output location. Do not claim a real browser check unless it ran.
 
-## Optional original raster background (v0.1.5 testing)
+For an approved photo, build with `python3 scripts/build.py --input /path/to/photo-experience.json --source-image /local/photo.png --output /path/to/index.html` (the photo flag belongs to **build.py**, not the browser checker).
 
-Set `world.artwork_mode` to `image-assisted` only if you have a local, original PNG/JPEG/WebP you are permitted to publish. Run:
+Optional visual QA: `python3 scripts/browser_smoke.py /path/to/index.html`. If Playwright/Chromium is unavailable, report that it was skipped.
 
-```bash
-python3 scripts/build_portfolio.py --input /path/to/portfolio.json --background-image /path/to/original.png --output /path/to/index.html
-```
-
-The image is embedded; SVG landmarks remain clickable. With no image available, use the default `svg` mode. The host may choose an independent `world.scene_svg_mobile` to compose phone landmarks without shrinking the desktop layout.
-
-## Optional public GitHub Pages bundle and LinkedIn post
-
-After owner review and approval, run `python3 scripts/publish_portfolio.py prepare --html /path/to/index.html --account USERNAME --repo my-world --out /path/to/private/publish-ready`. A public-ready site and share draft are created **locally**. The optional authenticated `deploy` command needs explicit `--approve-public`; nothing is published by default. See `references/publishing.md`.
+No automatic publishing. Review factual claims, real people in photos, private details and sharing permissions before any public deployment. Read `SKILL.md` for full safeguards, art direction and publishing options. The skill works independently of repository-root files.

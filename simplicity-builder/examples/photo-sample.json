@@ -1,0 +1,70 @@
+{
+  "source": {
+    "kind": "photo",
+    "title": "Fictional illustrated lakeside test image",
+    "reviewed_by_host": true,
+    "summary": "Synthetic image created specifically for testing, with mountains, a cabin, and a lake."
+  },
+  "experience": {
+    "title": "Lakeside Discovery",
+    "theme": "lakeside nature exploration",
+    "mode": "explore",
+    "tagline": "Explore the mountain, cabin and shoreline in this illustrated scene."
+  },
+  "chapters": [
+    {
+      "title": "Snow-capped Mountains",
+      "summary": "Mountains fill the upper portion of this synthetic illustration.",
+      "anchor": {
+        "x": 0.04,
+        "y": 0.22,
+        "width": 0.93,
+        "height": 0.4
+      },
+      "items": [
+        {
+          "title": "Mountain silhouettes",
+          "description": "The synthetic image shows mountains against a blue sky.",
+          "source_grounded": true,
+          "evidence_excerpt": "The synthetic image shows mountains against a blue sky."
+        }
+      ]
+    },
+    {
+      "title": "Lakeside Cabin",
+      "summary": "A small cabin stands on the right shoreline.",
+      "anchor": {
+        "x": 0.63,
+        "y": 0.55,
+        "width": 0.16,
+        "height": 0.29
+      },
+      "items": [
+        {
+          "title": "Shoreline shelter",
+          "description": "An illustrated cabin with a triangular roof is visible near the water.",
+          "source_grounded": true,
+          "evidence_excerpt": "An illustrated cabin with a triangular roof is visible near the water."
+        }
+      ]
+    },
+    {
+      "title": "Blue Lake",
+      "summary": "Water occupies the foreground of the synthetic artwork.",
+      "anchor": {
+        "x": 0.28,
+        "y": 0.68,
+        "width": 0.38,
+        "height": 0.2
+      },
+      "items": [
+        {
+          "title": "Still water",
+          "description": "Blue water and pale curved reflections fill the lower foreground.",
+          "source_grounded": true,
+          "evidence_excerpt": "Blue water and pale curved reflections fill the lower foreground."
+        }
+      ]
+    }
+  ]
+}

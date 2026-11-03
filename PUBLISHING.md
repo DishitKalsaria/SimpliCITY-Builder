@@ -4,15 +4,15 @@
 
 ## Prepare your site locally
 
-First, verify the generated `index.html` in desktop and mobile browser views, review all public résumé facts and links, and remove anything private. **Do not put your source résumé, extracted text, evidence report, or private `portfolio.json` in a public repository.**
+First, verify the generated `index.html` in desktop and mobile browser views, review all factual claims, source attribution, images, and links, and remove anything private. **Do not put your source résumé/photo/document, extracted text, evidence report, or private source JSON in a public repository.**
 
-From a cloned SimpliCITY Builder repository:
+From the project repository (or, inside an installed skill, omit `simplicity-builder/` from this command):
 
 ```bash
 python3 simplicity-builder/scripts/publish_portfolio.py prepare \
   --html /path/to/index.html \
   --account YOUR_GITHUB_USERNAME \
-  --repo my-career-world \
+  --repo my-interactive-world \
   --out private/publish-ready
 ```
 
@@ -29,11 +29,11 @@ python3 -m pip install playwright
 python3 -m playwright install chromium
 ```
 
-Inspect the result before proceeding. The expected address is `https://YOUR_GITHUB_USERNAME.github.io/my-career-world/` for a project repository. Use a repository name and username you control.
+Inspect the result before proceeding. The expected address is `https://YOUR_GITHUB_USERNAME.github.io/my-interactive-world/` for a project repository. Use a repository name and username you control.
 
 ## Publish: manual path (no GitHub CLI)
 
-1. Create a **public** GitHub repository called `my-career-world` in your GitHub account.
+1. Create a **public** GitHub repository called `my-interactive-world` in your GitHub account.
 2. Upload **only the contents of `private/publish-ready/site/`** to that repository's root (`index.html`, `social-preview.jpg` or equivalent, `.nojekyll`).
 3. Go to repository **Settings → Pages → Deploy from a branch → main → /(root) → Save**.
 4. Open the public URL and test it on a phone. Confirm the share image loads at `.../social-preview.jpg`.
@@ -48,13 +48,13 @@ If your AI host or computer has the authenticated [`gh` CLI](https://cli.github.
 python3 simplicity-builder/scripts/publish_portfolio.py deploy \
   --bundle private/publish-ready \
   --account YOUR_GITHUB_USERNAME \
-  --repo my-career-world \
+  --repo my-interactive-world \
   --approve-public
 ```
 
-This **creates a public repository and pushes the approved site files**. It refuses to overwrite an existing repo and checks the authenticated GitHub account. The GitHub Pages API may need additional permissions; if activation fails, visit **Settings → Pages** and enable it manually. The tool does not guarantee deployment is complete until you confirm the public URL.
+This **creates a public repository and pushes the approved generated site files**. It refuses to overwrite an existing repo and checks the authenticated GitHub account. The GitHub Pages API may need additional permissions; if activation fails, visit **Settings → Pages** and enable it manually. The tool does not guarantee deployment is complete until you confirm the public URL.
 
-Do not run the deploy command unless the portfolio owner has explicitly authorized publication and has checked the site. If a host cannot run git/gh, use the manual path instead.
+Do not run the deploy command unless the content owner has explicitly authorized publication and has checked the site. If a host cannot run git/gh, use the manual path instead.
 
 ## Share on LinkedIn
 
@@ -65,4 +65,4 @@ Do not run the deploy command unless the portfolio owner has explicitly authoriz
 
 LinkedIn displays the image/title/description; people must click through to the website to interact. Preview images sometimes take time to refresh after website edits.
 
-**No résumé or project code is posted directly to LinkedIn.** Sharing is an owner-controlled action.
+**No source documents, photos, personal résumés or project code are posted directly to LinkedIn by this tool.** Sharing is an owner-controlled action.

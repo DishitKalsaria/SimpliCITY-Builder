@@ -1,21 +1,37 @@
-# Install SimpliCITY Builder
+# Install SimpliCITY Builder v0.2.0
 
-Choose one approach:
+**Needs a chat or agent with code execution and file output; a text-only chat cannot run the generator.**
 
-- **Link + prompt:** Paste the repository URL and prompt shown in [README.md](README.md) into an AI tool with GitHub retrieval, résumé reading, Python execution and file downloads. The link does not automatically install the skill. [Source trust guidance](docs/LINK_ONLY.md).
-- **Claude custom Skills:** Where supported, upload the installable `SimpliCITY-Builder-Skill-v0.1.5.zip` and enable file/code execution. Claude Code can instead place `simplicity-builder/` in `.claude/skills/`.
-- **OpenAI Codex:** Place `simplicity-builder/` under `.agents/skills/simplicity-builder/` or `~/.agents/skills/simplicity-builder/` where supported.
-- **Other agents:** Follow the host's Agent Skills import instructions. A text-only chatbot without execution/file access cannot run the website generator.
+## Best option: import the skill into a capable AI chat
 
-## Manual quick test
+After v0.2.0 is tagged and the release succeeds, download the GitHub Release asset **`simplicity-builder.zip`**, extract it if the host requires a folder, and import `simplicity-builder/`. The ZIP contains every required generator, validator, HTML template, reference and example. An AI host must also read attachments/links with its own tools; installation does not grant unsupported abilities.
 
-```bash
-python3 simplicity-builder/scripts/build_portfolio.py --input examples/space-sample.json --output space-demo.html
-python3 simplicity-builder/scripts/validate.py examples/space-sample.json space-demo.html
+For Claude custom Skills, use its supported skill upload feature with code execution enabled, where available. For Claude Code, copy the folder to `.claude/skills/simplicity-builder/`. For Codex, copy to `.agents/skills/simplicity-builder/`. Other hosts must support file reading, Python execution and downloadable outputs. We have not verified a universal `npx skills add` command for this repository; none is advertised.
+
+**Chat message after installation:** `SimpliCITY Builder: make me a world of guardians. Résumé attached.` Or `SimpliCITY Builder: make this photo an interactive landscape.`
+
+## Without installing: repo link + two-line prompt
+
+```text
+Fetch https://github.com/DishitKalsaria/SimpliCITY-Builder and follow AI_START_HERE.md (review the source before executing it).
+Build and validate an interactive HTML experience from my attachment or link; give me the downloadable file. Do not publish.
 ```
 
-Open `space-demo.html`. Python 3.9+ is sufficient for generation. Optional `pypdf` enables text-based PDF extraction; scanned PDFs require OCR or pasted text. Optional Playwright + Chromium enables browser tests and publishing preview screenshots.
+Full GitHub clone and codeload sandbox commands: [AI_START_HERE.md](AI_START_HERE.md). A link alone does not install the skill.
 
-## Publishing and privacy
+## Quick offline verification
 
-The output is an offline, dependency-free interactive HTML file. **Nothing is published by default.** Optional GitHub Pages packaging and LinkedIn preview drafting are documented in [PUBLISHING.md](PUBLISHING.md). All public content requires owner review and approval. Do not commit real résumés, extracted text or private verification reports.
+From the extracted **skill folder**, no repository root needed:
+
+```bash
+python3 scripts/build.py --input examples/fairytale-sample.json --output demo.html
+python3 scripts/check.py examples/fairytale-sample.json demo.html
+python3 scripts/build.py --input references/experience-sample.json --output experience.html
+python3 scripts/check.py references/experience-sample.json experience.html
+```
+
+For a real photograph the host must inspect the image, add normalized source object boxes, and pass the original image with `--source-image`; otherwise the photo build deliberately fails. The bundled `examples/photo-sample.json` and `examples/synthetic-lakeside.png` demonstrate this with fictional test art.
+
+Python 3.9+ stdlib is sufficient for the core. Optional `pypdf` reads text PDFs; scanned PDFs need an OCR-capable host. Optional Playwright + Chromium enables actual browser testing, social screenshots and visual QA. No image-generation model is bundled.
+
+**Privacy:** Do not publish the source documents, private résumé extraction or evidence reports. Deliver the offline HTML first; public hosting requires separate owner approval. See [SECURITY.md](SECURITY.md) and [PUBLISHING.md](PUBLISHING.md).

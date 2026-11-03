@@ -8,9 +8,9 @@
 - If the host cannot extract reliably but has file execution, use the bundled local tool:
 
 ```bash
-python3 simplicity-builder/scripts/extract_resume.py resume.docx --output private/resume-extracted.txt
+python3 scripts/extract_resume.py resume.docx --output private/resume-extracted.txt
 python3 -m pip install pypdf  # only if you need to extract a text-based PDF
-python3 simplicity-builder/scripts/extract_resume.py resume.pdf --output private/resume-extracted.txt
+python3 scripts/extract_resume.py resume.pdf --output private/resume-extracted.txt
 ```
 
 - `.txt`, `.md`, and `.docx` extraction is Python-standard-library only. PDF needs optional `pypdf`. Scanned/image-only PDFs require OCR or pasted text; do not pretend they were parsed.

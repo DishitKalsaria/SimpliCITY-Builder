@@ -12,7 +12,7 @@ from build_portfolio import generate, validate_model, embedded_image, sanitize_s
 
 class VisualRegressionTests(unittest.TestCase):
     def setUp(self):
-        self.data=json.loads((ROOT/'examples/space-sample.json').read_text())
+        self.data=json.loads((ROOT/'examples/space-sample.json').read_text(encoding='utf-8'))
 
     def test_animated_landmark_has_one_class_attribute(self):
         output=generate(self.data)
@@ -61,7 +61,7 @@ class VisualRegressionTests(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as td:
             image=Path(td)/'image.png'
-            image.write_bytes(base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9SpZ4OkAAAAASUVORK5CYII='))
+            image.write_bytes((ROOT / 'simplicity-builder/examples/synthetic-lakeside.png').read_bytes())
             encoded=embedded_image(image)
             self.assertTrue(encoded.startswith('data:image/png;base64,'))
             data=copy.deepcopy(self.data)
@@ -75,9 +75,9 @@ class VisualRegressionTests(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as td:
             img=Path(td)/'fake.png'; img.write_text('<svg><script>bad()</script></svg>')
-            with self.assertRaisesRegex(ValueError,'PNG, JPEG or WebP'):embedded_image(img)
+            with self.assertRaisesRegex(ValueError,'JPEG, PNG, or WebP'):embedded_image(img)
             img.write_bytes(b'\x89PNG\r\n\x1a\n'+b'Z'*4_000_010)
-            with self.assertRaisesRegex(ValueError,'4 MB'):embedded_image(img)
+            with self.assertRaisesRegex(ValueError,'PNG chunk size|Malformed PNG|Corrupt PNG'):embedded_image(img)
 
     def test_owner_approved_paraphrase_requires_real_resume_excerpt(self):
         from verify_facts import evidence_gaps

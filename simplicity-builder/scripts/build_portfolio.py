@@ -10,6 +10,9 @@ import re
 from pathlib import Path
 from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from scene_art import build_scene, palette_for, family_for
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / 'assets' / 'template.html'
@@ -75,6 +78,31 @@ def safe_background(value: str, fallback: str) -> str:
     return color
 
 
+
+def contrast_ratio(foreground: str, background: str) -> float:
+    """WCAG relative-luminance contrast for solid hex colors (no CSS alpha)."""
+    def luminance(color: str) -> float:
+        raw = color.lstrip('#')
+        if len(raw) == 3:
+            raw = ''.join(c * 2 for c in raw)
+        channels = [int(raw[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+        linear = [v / 12.92 if v <= 0.04045 else ((v + .055) / 1.055) ** 2.4 for v in channels]
+        return sum(v * w for v, w in zip(linear, (0.2126, 0.7152, 0.0722)))
+    f, b = luminance(foreground), luminance(background)
+    return (max(f, b) + .05) / (min(f, b) + .05)
+
+
+def readable_accents(world: dict, theme_def: dict) -> None:
+    """Prevent near-invisible custom accent text on either dark surface."""
+    backgrounds = [safe_background(world.get('background') or '', theme_def['background']),
+                   safe_background(world.get('background_secondary') or '', theme_def['background2'])]
+    for key, default in (('accent', theme_def['accent']), ('accent_secondary', theme_def['secondary'])):
+        fg = safe_color(world.get(key) or '', default)
+        for bg in backgrounds:
+            if contrast_ratio(fg, bg) < 4.5:
+                fail(f'world.{key}: color has insufficient text contrast on {bg} (requires >= 4.5:1)')
+
+
 def e(text: str) -> str:
     return html.escape(text, quote=True)
 
@@ -123,11 +151,12 @@ def validate_model(data: object) -> dict:
     artwork = optional(world, 'scene_svg', 'world', limit=25000)
     if artwork:
         sanitize_scene(artwork)
-    theme_def = THEMES.get(world['theme'], THEMES['custom'])
+    theme_def = THEMES.get(world['theme']) or dict(zip(('accent','secondary','background','background2'), palette_for(world['theme'])))
     safe_color(world.get('accent') or '', theme_def['accent'])
     safe_color(world.get('accent_secondary') or '', theme_def['secondary'])
     safe_background(world.get('background') or '', theme_def['background'])
     safe_background(world.get('background_secondary') or '', theme_def['background2'])
+    readable_accents(world, theme_def)
     links = profile.get('links', [])
     if not isinstance(links, list) or len(links) > 8:
         fail('profile.links must be an array of up to 8 items')
@@ -284,8 +313,8 @@ def sanitize_scene(markup: str, section_ids: set[str] | None = None, labels: dic
         root = ET.fromstring(markup)
     except ET.ParseError as exc:
         fail(f'world.scene_svg: malformed SVG ({exc})')
-    if _svg_name(root.tag) != 'svg' or root.attrib.get('viewBox') != '0 0 620 520':
-        fail('world.scene_svg: root must be <svg viewBox="0 0 620 520">')
+    if _svg_name(root.tag) != 'svg' or root.attrib.get('viewBox') not in {'0 0 620 520', '0 0 620 880'}:
+        fail('world.scene_svg: root viewBox must be 0 0 620 520 or 0 0 620 880 (portrait)')
     if set(root.attrib) != {'viewBox'}:
         fail('world.scene_svg: root attributes other than viewBox are not supported')
 
@@ -348,7 +377,7 @@ def sanitize_scene(markup: str, section_ids: set[str] | None = None, labels: dic
                     if parent in {'defs','linearGradient','radialGradient'}:
                         fail('world.scene_svg: landmarks must be visible shapes, not definitions')
                     landmark_ids.add(val)
-            if key == 'viewBox' and val != '0 0 620 520':
+            if key == 'viewBox' and val not in {'0 0 620 520', '0 0 620 880'}:
                 fail('world.scene_svg: viewBox must be 0 0 620 520')
             if key == 'd' and not SVG_PATH.fullmatch(val):
                 fail('world.scene_svg: invalid path data')
@@ -389,7 +418,7 @@ def sanitize_scene(markup: str, section_ids: set[str] | None = None, labels: dic
         expected = {'landmark-' + sid for sid in section_ids}
         if landmark_ids != expected:
             fail('world.scene_svg: each section needs exactly one named SVG object (landmark-<section-id>); missing: ' + ', '.join(sorted(expected-landmark_ids)))
-    return '<svg class="scene-svg" viewBox="0 0 620 520" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg">' + interior + '</svg>'
+    return '<svg class="scene-svg" viewBox="' + root.attrib['viewBox'] + '" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg">' + interior + '</svg>'
 
 
 def scene_svg(theme: str) -> str:
@@ -555,19 +584,23 @@ def entry_html(entry: dict, work_label: str = 'View project') -> str:
 
 
 def embedded_image(path: Path) -> str:
-    """Embed a local raster image without network requests or extra dependencies."""
-    raw = path.read_bytes()
-    if len(raw) > 4_000_000:
-        fail('Background image exceeds 4 MB; compress it before embedding')
-    if raw.startswith(b'\x89PNG\r\n\x1a\n'):
-        mime = 'image/png'
-    elif raw.startswith(b'\xff\xd8\xff'):
-        mime = 'image/jpeg'
-    elif raw.startswith(b'RIFF') and raw[8:12] == b'WEBP':
-        mime = 'image/webp'
-    else:
-        fail('Background image must be a valid PNG, JPEG or WebP file')
+    """Embed pixel-preserving sanitized raster data (metadata excluded)."""
+    from photo_privacy import clean_image
+    raw, mime = clean_image(path)
     return f'data:{mime};base64,' + base64.b64encode(raw).decode('ascii')
+
+
+def photo_scene(sections: list[dict], anchors: dict) -> str:
+    """Interactive photo regions; the browser maps normalized source coordinates to the contained image."""
+    parts = ['<svg viewBox="0 0 620 520">']
+    colors = ('#83e9ff', '#ffd18b', '#b9ffca', '#ffc5e1', '#e4bdff', '#ffeca2')
+    for index, section in enumerate(sections):
+        sid = e(section['id'])
+        col = colors[index % len(colors)]
+        parts.append(f'<g id="landmark-{sid}"><rect x="240" y="190" width="120" height="110" rx="15" '
+                     f'fill="{col}" opacity=".35" stroke="{col}" stroke-width="5"/></g>')
+    parts.append('</svg>')
+    return ''.join(parts)
 
 
 def generate(data: dict, background_image: str = '') -> str:
@@ -575,8 +608,11 @@ def generate(data: dict, background_image: str = '') -> str:
     if data['world'].get('artwork_mode') == 'image-assisted' and not background_image:
         fail('Image-assisted world requires --background-image with a local PNG/JPEG/WebP')
     profile, world, sections = data['profile'], data['world'], data['sections']
+    is_photo = world.get('content_kind') == 'photo'
+    if is_photo and not background_image:
+        fail('Photo experiences require --source-image; generic procedural art cannot substitute for the photo')
     theme_name = world['theme']
-    theme = THEMES.get(theme_name, THEMES['custom'])
+    theme = THEMES.get(theme_name) or dict(zip(('accent','secondary','background','background2'), palette_for(theme_name)), label='An imagined world')
     accent = safe_color(world.get('accent') or '', theme['accent'])
     secondary = safe_color(world.get('accent_secondary') or '', theme['secondary'])
     copy = world.get('copy') or {}
@@ -595,15 +631,30 @@ def generate(data: dict, background_image: str = '') -> str:
         dialogs.append(f'<dialog class="detail-dialog" id="detail-{e(sid)}" aria-labelledby="label-{e(sid)}"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">{eyebrow}</p><h2 id="label-{e(sid)}">{name}</h2><p>{e(section["intro"])}</p></div><button type="button" class="close-dialog" aria-label="{c("close", "Close details")}">{icon("close")}</button></header><div class="entries">{details}</div></div></dialog>')
         recruiter_items.append(f'<section class="recruiter-section"><h3>{name}</h3>{details}</section>')
     links = ''.join(f'<a href="{e(safe_url(link["url"]))}" target="_blank" rel="noopener noreferrer">{e(link["label"])} ↗</a>' for link in profile.get('links', []))
-    scene_source = world.get('scene_svg') or object_scene(theme_name, sections)
+    scene_source = (photo_scene(sections, world.get('photo_anchors', {})) if is_photo else
+                    (world.get('scene_svg') or (object_scene(theme_name, sections) if theme_name in THEMES else
+                     build_scene(' '.join((theme_name, world['title'], world.get('visual_name') or '')), sections))))
     label_map = {section['id']: next((p['label'] for p in world.get('landmarks', world.get('hotspots', [])) if p['section_id'] == section['id']), section['name']) for section in sections}
     scene = sanitize_scene(scene_source, section_ids=set(label_map), labels=label_map)
     scene_mobile = ''
-    if world.get('scene_svg_mobile'):
-        # Rendered only in a <template> until selected at runtime, ensuring
-        # exactly one active scene and no duplicate landmark ids in the DOM.
-        scene_mobile = '<template id="mobile-scene-template">' + sanitize_scene(world['scene_svg_mobile'], section_ids=set(label_map), labels=label_map) + '</template>'
+    if not is_photo:
+        mobile_source = world.get('scene_svg_mobile')
+        if not mobile_source and not world.get('scene_svg') and theme_name not in THEMES:
+            mobile_source = build_scene(' '.join((theme_name, world['title'], world.get('visual_name') or '')),
+                                        sections, mobile=True)
+        if mobile_source:
+            # Only one landmark set is active; the other scene stays inert in a template.
+            scene_mobile = '<template id="mobile-scene-template">' + sanitize_scene(
+                mobile_source, section_ids=set(label_map), labels=label_map) + '</template>'
     background = f'<img class="scene-backdrop" src="{e(background_image)}" alt="" aria-hidden="true" draggable="false">' if background_image else ''
+    if is_photo:
+        background = (f'<img class="photo-ambient" src="{e(background_image)}" alt="" '
+                      'aria-hidden="true" draggable="false">') + background
+    labels = ''.join(f'<span class="scene-plaque" data-plaque-for="landmark-{e(section["id"])}">'
+                     f'{e(label_map[section["id"]])}</span>' for section in sections)
+    photo_hotspots = json.dumps(world.get('photo_anchors', {}), separators=(',', ':')).replace('<', '\u003c')
+    featured = (f'<button type="button" class="featured-action" data-dialog="detail-{e(sections[0]["id"])}">'
+                f'Explore: {e(sections[0]["name"])}</button>') if len(sections) == 1 else ''
     result = TEMPLATE.read_text(encoding='utf-8')
     replacements = {
         'TITLE':e(world['title']), 'TAGLINE':e(world['tagline']), 'DESCRIPTION':e(world.get('description') or world['tagline']),
@@ -612,8 +663,12 @@ def generate(data: dict, background_image: str = '') -> str:
         'ACCENT':accent, 'ACCENT2':secondary,
         'BG':safe_background(world.get('background') or '', theme['background']),
         'BG2':safe_background(world.get('background_secondary') or '', theme['background2']),
-        'THEME':e(theme_name), 'THEME_LABEL':e(world.get('visual_name') or theme['label']),
-        'SCENE':scene, 'SCENE_MOBILE':scene_mobile, 'SCENE_BACKDROP':background, 'LANDMARKS':'\n'.join(list_items),
+        'THEME':e(theme_name), 'THEME_FAMILY':e(family_for(' '.join((theme_name, world['title'], world.get('visual_name') or '')))), 'THEME_LABEL':e(world.get('visual_name') or theme['label']),
+        'SCENE':scene, 'SCENE_MOBILE':scene_mobile, 'SCENE_BACKDROP':background,
+        'SCENE_PLAQUES':labels, 'PHOTO_ANCHORS':photo_hotspots,
+        'PHOTO_CLASS':('photo-mode ' if is_photo else '') + ('single-mode' if len(sections) == 1 else ''),
+        'FEATURED_ACTION':featured,
+        'LANDMARKS':'\n'.join(list_items),
         'DIALOGS':'\n'.join(dialogs), 'RECRUITER_ENTRIES':'\n'.join(recruiter_items),
         'LINKS':links, 'COUNT':str(len(sections)), 'ENTRY_COUNT':str(sum(len(s['entries']) for s in sections)),
         'ICON_MAP':icon('map'), 'ICON_LIST':icon('list'), 'ICON_USER':icon('user'), 'ICON_PRINT':icon('print'), 'ICON_CLOSE':icon('close'),
@@ -626,7 +681,7 @@ def generate(data: dict, background_image: str = '') -> str:
         'COPY_PRIVACY':c('privacy', 'Review facts and privacy before sharing'),
         'COPY_PRINT':c('print', 'Print résumé'),
         'COPY_INTRO':c('intro', 'Discover the person behind the world'),
-        'COPY_LOCATIONS':c('locations', 'Locations'),
+        'COPY_LOCATIONS':c('locations', 'Location' if len(sections) == 1 else 'Locations'),
         'COPY_SKIP':c('skip', 'Skip to locations'),
     }
     def replace(match):
@@ -634,7 +689,11 @@ def generate(data: dict, background_image: str = '') -> str:
         if key not in replacements:
             fail(f'Template has unresolved placeholder {key}')
         return replacements[key]
-    return re.sub(r'%%([A-Z0-9_]+)%%', replace, result)
+    html_output = re.sub(r'%%([A-Z0-9_]+)%%', replace, result)
+    from photo_privacy import OUTPUT_LIMIT
+    if len(html_output.encode('utf-8')) > OUTPUT_LIMIT:
+        fail('Resulting HTML exceeds the 16 MB safety limit; reduce the source image')
+    return html_output
 
 
 def main() -> None:
@@ -648,7 +707,7 @@ def main() -> None:
         image = embedded_image(args.background_image) if args.background_image else ''
         result = generate(data, background_image=image)
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(result, encoding='utf-8')
+        args.output.write_bytes(result.encode('utf-8'))
         print(f'Generated {args.output} ({len(result.encode("utf-8")):,} bytes)')
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         parser.exit(1, f'Error: {exc}\n')

@@ -1,0 +1,80 @@
+{
+  "profile": {
+    "name": "Alex Rivers",
+    "headline": "Product Designer & Creative Technologist",
+    "summary": "A fictional example who turns research and prototypes into playful digital products.",
+    "links": []
+  },
+  "world": {
+    "title": "The Kingdom of Curious Ideas",
+    "tagline": "Every great solution begins with a little wonder.",
+    "theme": "fairytale",
+    "description": "Explore a fictional designer's journey through quests, guilds, and discoveries.",
+    "copy": {
+      "eyebrow": "A kingdom built from curiosity",
+      "hint": "Choose a glowing landmark to enter its chapter",
+      "list": "Kingdom locations",
+      "recruiter": "Read career facts",
+      "about": "Meet the adventurer",
+      "explore": "Explore the realm"
+    },
+    "landmarks": [
+      {
+        "section_id": "experience",
+        "label": "The Castle"
+      },
+      {
+        "section_id": "projects",
+        "label": "The Quest Tower"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "experience",
+      "name": "Castles of Experience",
+      "intro": "Places where products were designed and teams worked together.",
+      "entries": [
+        {
+          "title": "Product Designer",
+          "subtitle": "Fictional Studio · 2023–2025",
+          "description": "Worked on interface prototypes and usability research for a fictional digital product.",
+          "tags": [
+            "Product design",
+            "Research"
+          ],
+          "highlights": [
+            "Created interface prototypes for a fictional digital product.",
+            "Participated in fictional usability research sessions."
+          ],
+          "metrics": [
+            {
+              "value": "2",
+              "label": "Story chapters in this demonstration"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "Quests & Creations",
+      "intro": "Ideas turned into something people could explore.",
+      "entries": [
+        {
+          "title": "The Storybook App",
+          "description": "Built a fictional reading interface concept with an interactive prototype.",
+          "tags": [
+            "Prototyping"
+          ]
+        },
+        {
+          "type": "quote",
+          "title": "Fictional endorsement",
+          "description": "The story invites people to explore ideas with curiosity.",
+          "attribution": "Imaginary character (demonstration only)"
+        }
+      ]
+    }
+  ]
+}

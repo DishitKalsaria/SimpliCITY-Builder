@@ -1,0 +1,51 @@
+name: Publish validated Agent Skill
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test source
+        run: python3 -m unittest discover -s tests -v
+      - name: Package skill from matching tag
+        run: |
+          python3 scripts/package_skill.py --tag "$GITHUB_REF_NAME" --output simplicity-builder.zip
+          sha256sum simplicity-builder.zip > SHA256SUMS.txt
+      - name: Verify portable ZIP in empty directory
+        run: |
+          mkdir /tmp/skill-install
+          cd /tmp/skill-install
+          unzip "$GITHUB_WORKSPACE/simplicity-builder.zip"
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/fairytale-sample.json --output resume-demo.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/examples/fairytale-sample.json resume-demo.html
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/references/experience-sample.json --output document-demo.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/references/experience-sample.json document-demo.html
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/guardian-academy.json --output fictional-demo.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/examples/guardian-academy.json fictional-demo.html
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/photo-sample.json --source-image simplicity-builder/examples/synthetic-lakeside.png --output photo-demo.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/examples/photo-sample.json photo-demo.html
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/link-sample.json --output link-demo.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/examples/link-sample.json link-demo.html
+      - name: Create or update GitHub Release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" simplicity-builder.zip SHA256SUMS.txt --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" simplicity-builder.zip SHA256SUMS.txt \
+              --title "SimpliCITY Builder $GITHUB_REF_NAME" --generate-notes
+          fi

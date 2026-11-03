@@ -1,4 +1,4 @@
-# SimpliCITY Builder v0.1.5 — portfolio JSON contract
+# SimpliCITY Builder v0.2.0 — portfolio JSON contract
 
 Provide verified `profile`, `world`, and `sections` objects. The generated HTML is offline, with no tracker or external runtime dependencies. Career information must be grounded in the résumé. Section IDs use lowercase hyphens and must be unique.
 
@@ -46,9 +46,9 @@ Each entry may use `type: "standard"` or `"quote"`; quotes require an authentic 
 
 ## Navigation is the illustration, not an overlay
 
-When `world.scene_svg` is supplied, **every section must own exactly one painted SVG object**, represented by a `<g id="landmark-SECTION-ID">...</g>` or a geometry element with that ID. The SVG viewBox is exactly `0 0 620 520`. Interactive IDs must match section IDs exactly and be unique. The generator attaches keyboard/pointer interaction and accessible labels to those actual objects. A label shown on hover/focus is dynamically positioned using the object's bounding box; there are **no coordinate pins**.
+When `world.scene_svg` is supplied, **every section must own exactly one painted SVG object**, represented by a `<g id="landmark-SECTION-ID">...</g>` or a geometry element with that ID. The desktop SVG viewBox is `0 0 620 520`; independent portrait scenes may use `0 0 620 880`. Interactive IDs must match section IDs exactly and be unique. The generator attaches keyboard/pointer interaction and accessible labels to those actual objects. A label shown on hover/focus is dynamically positioned using the object's bounding box; there are **no coordinate pins**.
 
-Use `world.landmarks` for human-readable labels (one per section). A previous `world.hotspots` array is accepted for migration but its `x/y` values are **ignored**. Do not create new `x/y` coordinates. Missing or duplicated SVG objects fail validation. If `scene_svg` is omitted, a safe illustrative fallback produces named landmarks automatically; off-preset custom worlds should always supply an original scene.
+Use `world.landmarks` for human-readable labels (one per section). A previous `world.hotspots` array is accepted for migration but its `x/y` values are **ignored**. Do not create new `x/y` coordinates. Missing or duplicated SVG objects fail validation. If `scene_svg` is omitted, a safe illustrative fallback produces named landmarks automatically; off-preset custom worlds should prefer an original scene; a theme-aware procedural scene is the self-contained fallback.
 
 Aim for visibly separated, generously sized shapes that remain hittable on narrow phones. Avoid large opaque foreground elements covering landmark objects. Keep copy and résumé facts as HTML outside SVG. The document does not scroll; long text in a dialog may scroll. A searchable list and recruiter view are always offered.
 
@@ -75,3 +75,7 @@ Legacy `world.symbol` and section `symbol` emoji fields are ignored for compatib
 ## Publishing output (optional)
 
 The source schema need not know a GitHub Pages URL at creation time. After the owner approves the generated offline site, `scripts/publish_portfolio.py prepare` creates public-site HTML with the correct canonical URL, Open Graph `og:image` and Twitter-card metadata and a local preview image. Do not include private review data in public packages. Publishing itself is separate and opt-in; see `references/publishing.md`.
+
+## General inputs in v0.2.0
+
+For photo, document, link and fictional prompt sources, use [experience-schema.md](experience-schema.md) with `build.py`. This legacy résumé format remains supported and unchanged.

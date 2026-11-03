@@ -1,13 +1,18 @@
-# SimpliCITY Builder v0.1.5 — compatibility
+# SimpliCITY Builder v0.2.0 — capabilities and support
 
-| Environment | Supported route | Acceptance status |
+| Environment | Route | Verified status |
 |---|---|---|
-| Claude custom Skills | Import skill ZIP with code execution | External host acceptance pending |
-| Claude Code | Install skill folder and run Python | External host acceptance pending |
-| OpenAI Codex | Install skill folder and run Python | External host acceptance pending |
-| Other AI chats | Repository link + prompt where retrieval and execution exist | Capability-dependent, not guaranteed |
-| Local Python | Generate, validate, package approved site | Automated tests cover this route |
-| GitHub Pages | Hosts the approved static `index.html` | Optional deployment; live user-account flow not end-to-end tested here |
-| LinkedIn | Link preview + user-written post | Does not run the interactive HTML inside a post |
+| Local Python 3.9+ | Standalone ZIP + two validators | Local automated test coverage; cross-version Python verification remains to run |
+| Claude custom Skills | Import skill ZIP with code execution | External v0.2.0 acceptance pending |
+| Claude Code | Install `simplicity-builder/` and run Python | External v0.2.0 acceptance pending |
+| OpenAI Codex | Install skill in supported skills directory | External v0.2.0 acceptance pending |
+| Other coding-enabled chats | Reviewed repository fetch + Python + file output | Host-dependent; cannot guarantee capabilities |
+| Text-only chatbot | No code execution or downloadable files | Cannot run generator |
+| Photo input | Host image understanding + observed normalized object boxes + approved local image | Python generator refuses a photo scene without `--source-image`; the host, not the engine, identifies objects |
+| PDF/doc input | Host reader preferred; TXT/DOCX extractor bundled; text PDF optional `pypdf` | Scanned PDF requires OCR-capable host |
+| Website link | Requires authorized host retrieval | Generator makes no network requests |
+| Image generation | Optional host image tool, or offline procedural SVG fallback | Not built into Python runtime |
+| GitHub Pages | Hosts approved static HTML | Live demo HTTP checks not verified here |
+| LinkedIn | Social preview + manually authored post | Interactive site runs outside LinkedIn |
 
-The Builder is portable, not a universal chatbot installation. Do not mark a host *verified* without recording résumé type, theme, test date, result and manual intervention in [RELEASE_ACCEPTANCE.md](RELEASE_ACCEPTANCE.md).
+See [RELEASE_ACCEPTANCE.md](docs/maintainers/RELEASE_ACCEPTANCE.md) before marking external workflows verified. No universal automated publishing or third-party image API is implied.

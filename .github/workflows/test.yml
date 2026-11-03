@@ -1,4 +1,4 @@
-name: Verify SimpliCITY Builder v0.1.5
+name: Verify SimpliCITY Builder v0.2.0
 
 on:
   push:
@@ -16,6 +16,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install optional quality tooling
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Ruff lint (new modules, fatal errors and structural style)
+        run: ruff check simplicity-builder/scripts/scene_art.py simplicity-builder/scripts/build_experience.py simplicity-builder/scripts/validate_experience.py simplicity-builder/scripts/build.py simplicity-builder/scripts/check.py simplicity-builder/scripts/verify_source.py scripts/package_skill.py --select E4,E7,E9,F821,F822,F823
+      - name: Type-check focused v0.2.0 modules
+        run: mypy simplicity-builder/scripts/scene_art.py simplicity-builder/scripts/build_experience.py --follow-imports=skip --ignore-missing-imports
+      - name: Unit test coverage (baseline reporting, no arbitrary target)
+        run: coverage run --source=simplicity-builder/scripts -m unittest discover -s tests -q && coverage report
       - name: Run unit tests
         run: python3 -m unittest discover -s tests -v
       - name: Check Agent Skills structure (local structural checks)
@@ -23,9 +31,19 @@ jobs:
       - name: Generate and validate four worlds
         run: |
           for theme in fairytale space custom clockwork; do
-            python3 simplicity-builder/scripts/build_portfolio.py --input "examples/${theme}-sample.json" --output "/tmp/${theme}.html"
-            python3 simplicity-builder/scripts/validate.py "examples/${theme}-sample.json" "/tmp/${theme}.html"
+            python3 simplicity-builder/scripts/build.py --input "examples/${theme}-sample.json" --output "/tmp/${theme}.html"
+            python3 simplicity-builder/scripts/check.py "examples/${theme}-sample.json" "/tmp/${theme}.html"
           done
+      - name: Generate and validate general-input experience
+        run: |
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/references/experience-sample.json --output /tmp/exhibition.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/references/experience-sample.json /tmp/exhibition.html
+      - name: Verify source-photo experience (real local image + observed regions)
+        run: |
+          python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/photo-sample.json \
+            --source-image simplicity-builder/examples/synthetic-lakeside.png --output /tmp/photo.html
+          python3 simplicity-builder/scripts/check.py simplicity-builder/examples/photo-sample.json /tmp/photo.html
+          ! python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/photo-sample.json --output /tmp/without-photo.html
       - name: Check public bundle preparation (offline)
         run: |
           python3 simplicity-builder/scripts/publish_portfolio.py prepare \
@@ -34,7 +52,7 @@ jobs:
           test -f /tmp/test-publish/site/index.html
           grep -q 'og:image' /tmp/test-publish/site/index.html
       - name: Build installable skill archive and checksum manifest
-        run: python3 scripts/package_release.py --label v0.1.5-rc.1
+        run: python3 scripts/package_release.py --label v0.2.0
 
   browser:
     runs-on: ubuntu-latest
@@ -47,11 +65,13 @@ jobs:
           python-version: '3.11'
       - name: Install Chromium browser test dependency
         run: |
-          python3 -m pip install 'playwright==1.57.0'
+          python3 -m pip install 'playwright==1.57.0' 'Pillow==12.3.0'
           python3 -m playwright install --with-deps chromium
       - name: Test actual HTML in desktop and mobile Chromium
         run: |
-          python3 scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html --screenshots private/screenshots
+          python3 simplicity-builder/scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html docs/guardian.html docs/photo.html --screenshots private/screenshots
+      - name: Enforce approved screenshot baselines (25% tolerance)
+        run: python3 scripts/check_visual_baselines.py --screenshots private/screenshots --tolerance 0.25
       - name: Save screenshots for visual review
         if: always()
         uses: actions/upload-artifact@v4

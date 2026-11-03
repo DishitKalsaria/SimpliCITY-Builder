@@ -1,12 +1,13 @@
-# Using a GitHub link in an AI chat
+# Link-only bootstrap for capable AI chats — v0.2.0
 
-Link-only use requires repository retrieval, attached-résumé reading, Python execution and downloadable file output. A bare link will not activate the skill.
+Requires repository retrieval, attachment/link understanding, Python execution and downloadable file output. A GitHub URL alone does **not** activate a skill. Read [AI_START_HERE.md](../AI_START_HERE.md) for exact `git clone` and codeload `curl`/unzip fallback commands.
 
-- **Preferred:** review and clone a pinned tag: `git clone --depth 1 --branch v0.1.5-rc.1 https://github.com/DishitKalsaria/SimpliCITY-Builder.git` (when that candidate tag exists).
-- **Alternative:** download a matching source archive or release asset and verify its published checksum.
-- **If no tag yet:** use an exact reviewed commit. For mutable `main`, obtain permission and inspect before executing code.
-- **Last resort:** fetch raw files as reference text only; this doesn't provide runtime assets or execute scripts.
+Use a reviewed pinned `v0.2.0` tag **only after it exists**. Before then use an explicitly reviewed commit on mutable `main` with permission; verify the files being executed. The installable `simplicity-builder.zip` is the preferred option for compatible chat-agent skill upload.
 
-Tell the AI to read `AI_START_HERE.md` and `simplicity-builder/SKILL.md`. If execution/file retrieval is not possible, ask the user to install/upload the skill ZIP in a supported host.
+## Longer advanced prompt
 
-To publish an approved world or make a LinkedIn draft, follow [PUBLISHING.md](../PUBLISHING.md). Sharing is optional; public deployment is never automatic.
+```text
+Retrieve and inspect https://github.com/DishitKalsaria/SimpliCITY-Builder and follow AI_START_HERE.md and simplicity-builder/SKILL.md. Use the actual bundled Python generator, schema, templates and validator rather than inventing a static mockup. Read my attachment with supported host tools. Convert only source-supported facts into a world/exhibition/explainer inspired by my prompt, with original clickable named SVG landmarks, keyboard and mobile support. Generate and validate the offline index.html and return it as a downloadable file. Do not invent facts, include private contact details, auto-publish or claim browser tests that were not run.
+```
+
+If you cannot obtain the source, read the attachment, execute Python or output a file, disclose that limitation instead of claiming an interactive HTML was produced. Publishing is always separately authorized; see [PUBLISHING.md](../PUBLISHING.md).

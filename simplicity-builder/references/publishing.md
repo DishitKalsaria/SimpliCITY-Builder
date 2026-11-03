@@ -1,6 +1,6 @@
 # Optional GitHub Pages publishing + LinkedIn sharing
 
-Publishing is **not part of generating a portfolio** and may never happen automatically. Review the final site and obtain explicit owner approval before any remote action. Do not publish résumé files, extracted text, private evidence reports, API keys or full private `portfolio.json`.
+Publishing is **not part of generating an experience** and may never happen automatically. Review the final site and obtain explicit owner approval before any remote action. Do not publish source files or photos, extracted text, private evidence reports, API keys or full private input JSON.
 
 From an installed skill folder (Python 3.9+):
 
