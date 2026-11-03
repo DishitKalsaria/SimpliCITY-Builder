@@ -94,7 +94,7 @@ def to_portfolio(data: dict) -> dict:
                 fail(f'chapters[{i}].items[{j}] must be an object')
             # Factual sources require attribution to the supplied source, not
             # fabricated external citations. Host review is an explicit step.
-            if kind != 'prompt' and not item.get('source_grounded') is True:
+            if kind != 'prompt' and item.get('source_grounded') is not True:
                 fail(f'chapters[{i}].items[{j}] must be marked source_grounded after verification')
             entry = {
                 'title': required(item, 'title', f'chapters[{i}].items[{j}]', 220),

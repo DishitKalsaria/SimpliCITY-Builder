@@ -37,7 +37,8 @@ def main() -> None:
             from build_portfolio import THEMES
             import re
             new_theme = re.sub(r'[^a-z0-9]+', '-', args.theme.lower()).strip('-')[:60].rstrip('-')
-            if not new_theme: raise ValueError('--theme must name an art direction')
+            if not new_theme:
+                raise ValueError('--theme must name an art direction')
             portfolio['world']['theme'] = new_theme
             portfolio['world']['visual_name'] = args.theme[:120]
             for key in ('accent', 'accent_secondary','background','background_secondary','scene_svg','scene_svg_mobile'):
