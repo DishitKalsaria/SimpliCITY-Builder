@@ -316,7 +316,7 @@
         const blockers=controls&&getComputedStyle(controls).display!=='none'?[local(controls.getBoundingClientRect())]:[];
         const featured=world.querySelector('.featured-action');
         if(featured)blockers.push(local(featured.getBoundingClientRect()));
-        nodes.forEach(plaque=>{plaque.classList.remove('placed');plaque.dataset.placement='';plaque.style.left='';plaque.style.top='';});
+        nodes.forEach(plaque=>{plaque.classList.remove('placed');plaque.dataset.placement='';plaque.style.left='';plaque.style.top='';plaque.style.width='';plaque.style.maxWidth='';});
         const sorted=nodes.map(plaque=>{
           if(focusedPhoto&&plaque.dataset.plaqueFor!==focusId){
             plaque.dataset.placement='offscreen';return {plaque,box:null};
@@ -369,9 +369,10 @@
         // Every candidate must satisfy the SAME bounds, proximity, target and
         // plaque collision rules as the general composition engine.
         // Solve crowded two-bank compositions using measured, fixed plaque
-        // sizes. A global greedy pass is sensitive to OS font metrics: if one
-        // name wraps, it may strand every label after it. Here every candidate
-        // respects the same landmark, collision and attachment constraints.
+        // sizes. The meeting-room phone layout reserves outside gutters for
+        // the plaque text; placing 2-line labels between the short landmark
+        // rows is mathematically impossible on some font stacks. Every
+        // candidate retains the same bounds, collision and attachment checks.
         // Dynamic programming finds a non-overlapping sequence for each bank.
         function packDenseBanks(){
           const isOcean=document.body.dataset.family==='ocean';
@@ -390,17 +391,26 @@
           for(let side=0;side<2;side++){
             const entries=banks[side].sort((a,b)=>a.box.t-b.box.t);
             const rows=[];
+            // Dense meeting rooms have landmark columns down the middle.
+            // The space above/below each row is too short for 2-line labels
+            // at some OS font metrics. Fit full text into the outside gutters
+            // instead, without reducing its font size or relaxing clearance.
+            const gutter=meetingPhone?Math.floor(side===0?
+              Math.min(...entries.map(item=>item.box.l))-11:
+              frame.width-Math.max(...entries.map(item=>item.box.r))-11):0;
+            if(meetingPhone&&gutter<48)return [];
             for(const {plaque,box} of entries){
+              if(meetingPhone){
+                plaque.style.width=gutter+'px';
+                plaque.style.maxWidth='none';
+              }
               const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
               const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
               let x;
               if(oceanLandscape){
                 x=side===0?box.l-w-8:box.r+8;
               }else{
-                const lo=side===0?5:midpoint+4;
-                const hi=side===0?midpoint-4:frame.width-5;
-                if(w>hi-lo)return [];
-                x=Math.max(lo,Math.min(hi-w,cx-w/2));
+                x=side===0?5:frame.width-w-5;
               }
               const choices=[];
               // A four-pixel scan avoids platform-dependent rounding while
@@ -436,7 +446,7 @@
             let best=states.reduce((a,b)=>a.total<=b.total?a:b);
             for(let i=rows.length-1;i>=0;i--){
               solution.push({plaque:rows[i].plaque,rect:{
-                ...best.rect,name:oceanLandscape?(side===0?'left':'right'):(best.rect.b<=rows[i].box.t?'above':'below')
+                ...best.rect,name:(oceanLandscape||meetingPhone)?(side===0?'left':'right'):(best.rect.b<=rows[i].box.t?'above':'below')
               }});
               best=best.prev;
             }

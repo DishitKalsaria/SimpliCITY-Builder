@@ -78,6 +78,8 @@ PLAQUE_FONT_VARIANTS = (
     ('meeting-8-larger-text', 'dejavu', 'font-family:"DejaVu Sans",sans-serif !important'),
     ('meeting-8-larger-text', 'monospace', 'font-family:monospace !important'),
     ('meeting-8-larger-text', 'wide-letters', 'letter-spacing:.8px !important'),
+    ('meeting-8-larger-text', 'dejavu-spaced',
+     'font-family:"DejaVu Sans",sans-serif !important;letter-spacing:.8px !important'),
     ('ocean-8-wide-text-24', 'dejavu', 'font-family:"DejaVu Sans",sans-serif !important'),
     ('ocean-8-wide-text-24', 'monospace', 'font-family:monospace !important'),
     ('ocean-8-wide-text-24', 'wide-letters', 'letter-spacing:.8px !important'),
@@ -108,6 +110,21 @@ def verify_ocean_banks(page, name: str) -> None:
     )
     if len(placements) != 8 or any(value not in ('left', 'right') for value in placements):
         raise AssertionError(f'{name}: ocean bank layout not engaged: {placements}')
+
+
+def verify_meeting_rails(page, name: str) -> None:
+    """Dense phone rooms must use the outside label gutters, not greedy fallback.
+
+    The Ubuntu CI artifact from the failing v0.2.1 commit showed 5–6 labels
+    left at the stage bottom when measured two-line plaques could not fit
+    between the interactive landmark rows. Check the actual placement mode so
+    a future font/solver regression cannot pass on one operating system only.
+    """
+    placements = page.locator('.scene-plaque').evaluate_all(
+        '(nodes) => nodes.map(node => node.dataset.placement)'
+    )
+    if len(placements) not in (7, 8) or any(value not in ('left', 'right') for value in placements):
+        raise AssertionError(f'{name}: outside meeting-room gutters not engaged: {placements}')
 
 
 def save_failure_diagnostics(page, name: str) -> None:
@@ -171,6 +188,8 @@ def main() -> int:
                         assert_visual(page, name)
                         if family == 'ocean' and count == 8:
                             verify_ocean_banks(page, name)
+                        if family == 'meeting' and count >= 7 and viewport == 'small-phone':
+                            verify_meeting_rails(page, name)
                         passed += 1
                     except Exception as exc:
                         failures.append(f'{name}: {exc}')
@@ -193,6 +212,8 @@ def main() -> int:
                                 assert_visual(page, f'{family} {count} {label}')
                                 if family == 'ocean' and count == 8 and label == 'landscape':
                                     verify_ocean_banks(page, f'{family} {count} {label}')
+                                if family == 'meeting' and count >= 7 and label == 'small-phone':
+                                    verify_meeting_rails(page, f'{family} {count} {label}')
                                 passed += 1
                             except Exception as exc:
                                 failures.append(f'{family} {count} {label}: {exc}')

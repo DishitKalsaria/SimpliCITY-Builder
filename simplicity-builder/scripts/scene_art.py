@@ -445,7 +445,10 @@ def _layout(kind: str, count: int, mobile: bool, theme: str) -> tuple[list[tuple
             # Four deliberate depth bands. Preserve margins for motifs and
             # room for readable callouts at compact phone sizes.
             row_y = {3: (160, 429, 714), 4: (147, 343, 538, 738)}[rows]
-            points = [(168 if i%2 == 0 else 446,
+            # Dense meeting rooms keep two banks closer to the conference
+            # table, leaving outside gutters for full-text mobile labels.
+            left, right = (245, 369) if kind == 'meeting' and count >= 7 else (168, 446)
+            points = [(left if i%2 == 0 else right,
                        row_y[i//2]+(9 if i%2 else 0)) for i in range(count)]
         delta = -11 if seed == 0 else 11
         if count >= 3:
@@ -453,7 +456,7 @@ def _layout(kind: str, count: int, mobile: bool, theme: str) -> tuple[list[tuple
         elif count <= 2:
             points = [(int(x + (family_shift if i%2 == 0 else -family_shift)), y)
                       for i,(x,y) in enumerate(points)]
-        scale = 1.08 if count <= 2 else .93 if count <= 4 else .75 if count <= 6 else .62
+        scale = 1.08 if count <= 2 else .93 if count <= 4 else .75 if count <= 6 else .58 if kind == 'meeting' else .62
         return list(points), [scale for _ in points]
     if count == 1:
         return [(310 + family_shift + (12 if seed else -12), 267)], [1.19]

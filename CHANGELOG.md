@@ -4,6 +4,8 @@
 
 ### Release quality and maintainability hardening
 
+- Corrected the GitHub Ubuntu 320px meeting-room regression using artifact-measured landmark gutters. Dense 7–8-site mobile rooms now reserve outside plaque columns, keep original text size and minimum interactive target dimensions, and verify bank placement under DejaVu/wider letter-spacing fonts. No QA thresholds were relaxed.
+
 - Replaced crowded ocean-landscape and meeting-room phone greedy plaque packing with measured-width, collision-checked two-bank dynamic programming. Added CI font-family and letter-spacing variants to reproduce cross-platform text wrapping; kept strict QA failures and v0.2.1 metadata unchanged.
 
 - Stabilized dense ocean landscape plaques with a bank-aligned layout under unchanged collision and attachment constraints; expanded the regression suite and added failed-layout screenshot/geometry artifacts and source fingerprints for GitHub Actions.

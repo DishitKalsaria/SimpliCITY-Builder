@@ -77,7 +77,7 @@ not baked into scenery. Visual review is a human acceptance gate.
 python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/volcanic-sample.json --output example.html
 python3 simplicity-builder/scripts/check.py simplicity-builder/examples/volcanic-sample.json example.html
 python3 -m scripts.check_environment_matrix  # requires Playwright + Chromium
-python3 -m scripts.check_environment_matrix --plaque-stress  # 15 dense-label/font variants
+python3 -m scripts.check_environment_matrix --plaque-stress  # 16 dense-label/font variants
 python3 -m unittest discover -s tests -v
 ```
 
