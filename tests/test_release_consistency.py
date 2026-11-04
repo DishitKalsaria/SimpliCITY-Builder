@@ -34,7 +34,11 @@ class ReleaseConsistencyTests(unittest.TestCase):
             1,
             'Document the active release under one version heading, with subheadings as needed',
         )
-        self.assertIn('--tag "$GITHUB_REF_NAME"', (ROOT / '.github/workflows/release.yml').read_text(encoding='utf-8'))
+        release = (ROOT / '.github/workflows/release.yml').read_text(encoding='utf-8')
+        self.assertIn('workflow_dispatch:', release)
+        self.assertIn('python3 -m pip install -r requirements-dev.txt', release)
+        self.assertIn('--tag "$RELEASE_TAG"', release)
+        self.assertIn('ref: ${{ inputs.release_tag || github.ref_name }}', release)
 
     def test_contributor_and_browser_docs_match_supported_release(self):
         contributing = (ROOT / 'CONTRIBUTING.md').read_text(encoding='utf-8')
