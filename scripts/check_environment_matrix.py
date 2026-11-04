@@ -72,6 +72,19 @@ PLAQUE_STRESS = (
 )
 
 
+# These variants reproduced Ubuntu-versus-Windows font-metric failures. The
+# letter-spacing case remains useful even when a named font is unavailable.
+PLAQUE_FONT_VARIANTS = (
+    ('meeting-8-larger-text', 'dejavu', 'font-family:"DejaVu Sans",sans-serif !important'),
+    ('meeting-8-larger-text', 'monospace', 'font-family:monospace !important'),
+    ('meeting-8-larger-text', 'wide-letters', 'letter-spacing:.8px !important'),
+    ('ocean-8-wide-text-24', 'dejavu', 'font-family:"DejaVu Sans",sans-serif !important'),
+    ('ocean-8-wide-text-24', 'monospace', 'font-family:monospace !important'),
+    ('ocean-8-wide-text-24', 'wide-letters', 'letter-spacing:.8px !important'),
+    ('ocean-8-wide-text-22', 'dejavu', 'font-family:"DejaVu Sans",sans-serif !important'),
+)
+
+
 def make_world(theme: str, names: tuple[str, ...], count: int) -> str:
     titles = list(names[:count]) or [f'Chapter {i}' for i in range(count)]
     data = {
@@ -139,7 +152,12 @@ def main() -> int:
         try:
             if args.plaque_stress:
                 viewport_by_name = {label: (width, height) for label, width, height in VIEWPORTS}
-                for name, family, count, viewport, font_px, titles in PLAQUE_STRESS:
+                cases = [(*case, '') for case in PLAQUE_STRESS]
+                by_name = {case[0]: case for case in PLAQUE_STRESS}
+                for base_name, variant, css in PLAQUE_FONT_VARIANTS:
+                    _, *parameters = by_name[base_name]
+                    cases.append((f'{base_name}-{variant}', *parameters, css))
+                for name, family, count, viewport, font_px, titles, extra_css in cases:
                     width, height = viewport_by_name[viewport]
                     theme, default_titles = THEMES[family]
                     markup = make_world(theme, titles or default_titles, count)
@@ -148,7 +166,7 @@ def main() -> int:
                     try:
                         page.emulate_media(reduced_motion='reduce')
                         page.set_content(markup, wait_until='load')
-                        page.add_style_tag(content=f'body .scene-plaque {{font-size:{font_px}px !important}}')
+                        page.add_style_tag(content=f'body .scene-plaque {{font-size:{font_px}px !important; {extra_css}}}')
                         page.evaluate("window.dispatchEvent(new Event('resize'))")
                         assert_visual(page, name)
                         if family == 'ocean' and count == 8:

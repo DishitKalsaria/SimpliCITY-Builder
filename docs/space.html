@@ -63,7 +63,7 @@
     .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
     .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
     .scene-tooltip[hidden]{display:none}
-    .scene-plaque{position:absolute;z-index:4;pointer-events:none;display:block;max-width:min(200px,43%);padding:5px 9px;border-radius:9px;background:#101a2df2;border:1px solid #bdcde7;color:#fff;font:750 12px/1.28 ui-sans-serif,system-ui,sans-serif;box-shadow:0 3px 12px #000a;text-align:center;overflow-wrap:anywhere;opacity:0;transition:opacity .1s ease}
+    .scene-plaque{position:absolute;z-index:4;pointer-events:none;display:block;width:max-content;box-sizing:border-box;max-width:min(200px,43%);padding:5px 9px;border-radius:9px;background:#101a2df2;border:1px solid #bdcde7;color:#fff;font:750 12px/1.28 ui-sans-serif,system-ui,sans-serif;box-shadow:0 3px 12px #000a;text-align:center;overflow-wrap:anywhere;opacity:0;transition:opacity .1s ease}
     /* Family plaque vocabulary: subdued basalt, ocean glass, orbital metal,
        or thick-ink toon. Labels remain HTML and never baked into scenery. */
     body[data-family="volcanic"] .scene-plaque{background:#281b24f2;border-color:#ffb06e;color:#fff0dc;box-shadow:0 4px 15px #12080ce6,0 0 13px #ee6a323d}
@@ -130,12 +130,12 @@
         overflow-wrap:anywhere;line-height:1.26;text-align:right}
     }
     @media(max-width:680px) and (min-height:560px){.photo-mode .scene-backdrop{object-fit:cover}}
-    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:46%;font-size:9px;padding:2px 4px;line-height:1.13}}
+    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:46%;font-size:9px;padding:1px 3px;line-height:1.08}}
     @media(max-width:380px){#start-tour::before{content:"▶";font-size:17px;line-height:1} .tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
     /* On short landscape screens, dense scenes have room beside landmarks but
        little vertical room. Wider plaques prevent font-dependent line wrapping. */
     @media(min-width:681px) and (max-height:570px){
-      body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:min(300px,38%)}
+      body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:min(300px,38%);padding:3px 6px;line-height:1.08}
     }
     @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -381,34 +381,85 @@
         // This also avoids font/Chromium-dependent greedy-order failures on CI.
         // Every candidate must satisfy the SAME bounds, proximity, target and
         // plaque collision rules as the general composition engine.
-        function packOceanBanks(){
-          if(document.body.dataset.family!=='ocean' || sorted.length<7 ||
-             window.innerWidth<=680 || window.innerHeight>570)return [];
-          const occupied=[],proposed=[];
-          for(const {plaque,box} of sorted){
-            const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
-            const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
-            const side=cx<frame.width/2?'left':'right';
-            const x=side==='left'?box.l-w-8:box.r+8;
-            let chosen=null;
-            for(const delta of [0,-4,4,-8,8,-12,12,-16,16,-20,20]){
-              const rect={l:x,t:cy-h/2+delta,r:x+w,b:cy+h/2+delta,name:side};
-              if(!inBounds(rect)||near(rect,box)>maxGap||
-                 occupied.some(p=>overlaps(p,rect,4))||
-                 hitBoxes.some(b=>overlaps(b,rect,3))||
-                 blockers.some(b=>overlaps(b,rect,4)))continue;
-              chosen=rect;break;
-            }
-            if(!chosen)return [];
-            occupied.push(chosen);
-            proposed.push({plaque,rect:chosen});
+        // Solve crowded two-bank compositions using measured, fixed plaque
+        // sizes. A global greedy pass is sensitive to OS font metrics: if one
+        // name wraps, it may strand every label after it. Here every candidate
+        // respects the same landmark, collision and attachment constraints.
+        // Dynamic programming finds a non-overlapping sequence for each bank.
+        function packDenseBanks(){
+          const isOcean=document.body.dataset.family==='ocean';
+          const isMeeting=document.body.dataset.family==='meeting';
+          const oceanLandscape=isOcean&&innerWidth>680&&innerHeight<=570;
+          const meetingPhone=isMeeting&&innerWidth<=380;
+          if(sorted.length<7||(!oceanLandscape&&!meetingPhone))return [];
+          const midpoint=frame.width/2;
+          const banks=[[],[]];
+          for(const item of sorted){
+            const center=(item.box.l+item.box.r)/2;
+            banks[center<midpoint?0:1].push(item);
           }
-          return proposed;
+          if(!banks[0].length||!banks[1].length)return [];
+          const solution=[];
+          for(let side=0;side<2;side++){
+            const entries=banks[side].sort((a,b)=>a.box.t-b.box.t);
+            const rows=[];
+            for(const {plaque,box} of entries){
+              const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
+              const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
+              let x;
+              if(oceanLandscape){
+                x=side===0?box.l-w-8:box.r+8;
+              }else{
+                const lo=side===0?5:midpoint+4;
+                const hi=side===0?midpoint-4:frame.width-5;
+                if(w>hi-lo)return [];
+                x=Math.max(lo,Math.min(hi-w,cx-w/2));
+              }
+              const choices=[];
+              // A four-pixel scan avoids platform-dependent rounding while
+              // allowing each bank to redistribute spare vertical space.
+              for(let y=5;y<=frame.height-h-5;y+=4){
+                const rect={l:x,t:y,r:x+w,b:y+h};
+                if(!inBounds(rect)||near(rect,box)>maxGap||
+                   hitBoxes.some(b=>overlaps(b,rect,3))||
+                   blockers.some(b=>overlaps(b,rect,4)))continue;
+                const distance=Math.abs((y+h/2)-cy);
+                choices.push({rect,score:distance});
+              }
+              if(!choices.length)return [];
+              rows.push({plaque,choices,box});
+            }
+            let states=rows[0].choices.map((candidate)=>({
+              ...candidate,total:candidate.score,prev:null
+            }));
+            for(let i=1;i<rows.length;i++){
+              const next=[];
+              for(const candidate of rows[i].choices){
+                let best=null;
+                for(const prior of states){
+                  if(prior.rect.b+4>candidate.rect.t)continue;
+                  const total=prior.total+candidate.score;
+                  if(!best||total<best.total)best={...candidate,total,prev:prior};
+                }
+                if(best)next.push(best);
+              }
+              if(!next.length)return [];
+              states=next;
+            }
+            let best=states.reduce((a,b)=>a.total<=b.total?a:b);
+            for(let i=rows.length-1;i>=0;i--){
+              solution.push({plaque:rows[i].plaque,rect:{
+                ...best.rect,name:oceanLandscape?(side===0?'left':'right'):(best.rect.b<=rows[i].box.t?'above':'below')
+              }});
+              best=best.prev;
+            }
+          }
+          return solution;
         }
-        const oceanBanks=packOceanBanks();
-        const topDown=oceanBanks.length===sorted.length?[]:pack(sorted);
-        const bottomUp=oceanBanks.length===sorted.length||topDown.length===sorted.length?[]:pack([...sorted].reverse());
-        const result=oceanBanks.length===sorted.length?oceanBanks:
+        const denseBanks=packDenseBanks();
+        const topDown=denseBanks.length===sorted.length?[]:pack(sorted);
+        const bottomUp=denseBanks.length===sorted.length||topDown.length===sorted.length?[]:pack([...sorted].reverse());
+        const result=denseBanks.length===sorted.length?denseBanks:
           bottomUp.length>topDown.length?bottomUp:topDown;
         for(const {plaque,rect} of result){
           plaque.style.left=rect.l+'px';plaque.style.top=rect.t+'px';

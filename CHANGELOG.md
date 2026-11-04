@@ -4,6 +4,8 @@
 
 ### Release quality and maintainability hardening
 
+- Replaced crowded ocean-landscape and meeting-room phone greedy plaque packing with measured-width, collision-checked two-bank dynamic programming. Added CI font-family and letter-spacing variants to reproduce cross-platform text wrapping; kept strict QA failures and v0.2.1 metadata unchanged.
+
 - Stabilized dense ocean landscape plaques with a bank-aligned layout under unchanged collision and attachment constraints; expanded the regression suite and added failed-layout screenshot/geometry artifacts and source fingerprints for GitHub Actions.
 - Kept the Python module-based Windows preflight fix in the complete-source package.
 

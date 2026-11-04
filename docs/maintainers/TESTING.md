@@ -92,8 +92,8 @@ Review the resulting tracked PNG changes before committing. Browser/font/OS diff
 CI checks all **11 demos** (`fairytale space festival clockwork guardian photo volcanic toon meeting-room playground farm`) across desktop/mobile/compact/small-phone/landscape. Its `browser` job loads a pinned locally installed axe-core script (no remote call from the website), builds a contact sheet for the original eight showcase worlds, and compares **eight** desktop/mobile screenshot golden baselines for guardian, photo, toon and volcanic. The three new environment scenes are additionally covered by the 1–8-landmark browser matrix. On your workstation, run:
 
 ```bash
-python3 scripts/check_environment_matrix.py
-python3 scripts/check_environment_matrix.py --plaque-stress  # seven alternate-font/dense-label cases
+python3 -m scripts.check_environment_matrix
+python3 -m scripts.check_environment_matrix --plaque-stress  # 15 alternate-font/dense-label checks
 python3 scripts/contact_sheet.py --screenshots private/screenshots --output private/screenshots/contact-sheet.png --worlds fairytale space festival clockwork guardian photo volcanic toon
 python3 scripts/record_tour.py docs/volcanic.html --output docs/assets/volcanic-tour.webm
 ```
