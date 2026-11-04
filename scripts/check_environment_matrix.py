@@ -39,6 +39,21 @@ THEMES = {
 }
 
 
+# Alternate plaque metrics reproduce the previously reported failures. Keep
+# these as browser checks instead of lowering the visual QA thresholds.
+PLAQUE_STRESS = (
+    ('meeting-7-small-phone', 'meeting', 7, 'small-phone', 10, ()),
+    ('meeting-8-small-phone', 'meeting', 8, 'small-phone', 10, ()),
+    ('meeting-8-larger-text', 'meeting', 8, 'small-phone', 12, ()),
+    ('ocean-8-landscape', 'ocean', 8, 'landscape', 12, ()),
+    ('ocean-8-long-labels', 'ocean', 8, 'landscape', 16, (
+        'Coral Observatory', 'Ocean Research Library', 'Sunken Shipwreck',
+        'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
+        'Tidal Energy Workshop', 'Submarine Exploration',
+    )),
+)
+
+
 def make_world(theme: str, names: tuple[str, ...], count: int) -> str:
     titles = list(names[:count]) or [f'Chapter {i}' for i in range(count)]
     data = {
@@ -55,7 +70,9 @@ def make_world(theme: str, names: tuple[str, ...], count: int) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--new-only', action='store_true', help='Only test new settings across all 1–8 counts')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--new-only', action='store_true', help='Only test new settings across all 1–8 counts')
+    mode.add_argument('--plaque-stress', action='store_true', help='Recheck dense labels using alternate text metrics')
     args = parser.parse_args()
     try:
         from playwright.sync_api import sync_playwright
@@ -67,24 +84,45 @@ def main() -> int:
     with sync_playwright() as playwright:
         browser = launch(playwright)
         try:
-            for family, (theme, names) in THEMES.items():
-                if args.new_only and family not in ('meeting', 'playground', 'farm'):
-                    continue
-                for count in (range(1, 9) if family in ('meeting', 'playground', 'farm') else (4, 8)):
-                    markup = make_world(theme, names, count)
-                    for label, width, height in VIEWPORTS:
-                        page = browser.new_page(viewport={'width': width, 'height': height},
-                                                device_scale_factor=1)
-                        try:
-                            page.emulate_media(reduced_motion='reduce')
-                            page.set_content(markup, wait_until='load')
-                            assert_visual(page, f'{family} {count} {label}')
-                            passed += 1
-                        except Exception as exc:
-                            failures.append(f'{family} {count} {label}: {exc}')
-                        finally:
-                            page.close()
-                print(f'Checked {family}', flush=True)
+            if args.plaque_stress:
+                viewport_by_name = {label: (width, height) for label, width, height in VIEWPORTS}
+                for name, family, count, viewport, font_px, titles in PLAQUE_STRESS:
+                    width, height = viewport_by_name[viewport]
+                    theme, default_titles = THEMES[family]
+                    markup = make_world(theme, titles or default_titles, count)
+                    page = browser.new_page(viewport={'width': width, 'height': height},
+                                            device_scale_factor=1)
+                    try:
+                        page.emulate_media(reduced_motion='reduce')
+                        page.set_content(markup, wait_until='load')
+                        page.add_style_tag(content=f'body .scene-plaque {{font-size:{font_px}px !important}}')
+                        page.evaluate("window.dispatchEvent(new Event('resize'))")
+                        assert_visual(page, name)
+                        passed += 1
+                    except Exception as exc:
+                        failures.append(f'{name}: {exc}')
+                    finally:
+                        page.close()
+                    print(f'Checked {name}', flush=True)
+            else:
+                for family, (theme, names) in THEMES.items():
+                    if args.new_only and family not in ('meeting', 'playground', 'farm'):
+                        continue
+                    for count in (range(1, 9) if family in ('meeting', 'playground', 'farm') else (4, 8)):
+                        markup = make_world(theme, names, count)
+                        for label, width, height in VIEWPORTS:
+                            page = browser.new_page(viewport={'width': width, 'height': height},
+                                                    device_scale_factor=1)
+                            try:
+                                page.emulate_media(reduced_motion='reduce')
+                                page.set_content(markup, wait_until='load')
+                                assert_visual(page, f'{family} {count} {label}')
+                                passed += 1
+                            except Exception as exc:
+                                failures.append(f'{family} {count} {label}: {exc}')
+                            finally:
+                                page.close()
+                    print(f'Checked {family}', flush=True)
         finally:
             browser.close()
     print(f'{passed} viewport checks passed; {len(failures)} failed.')

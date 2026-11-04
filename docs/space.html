@@ -130,7 +130,7 @@
         overflow-wrap:anywhere;line-height:1.26;text-align:right}
     }
     @media(max-width:680px) and (min-height:560px){.photo-mode .scene-backdrop{object-fit:cover}}
-    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:34%;font-size:9px;padding:2px 4px;line-height:1.13}}
+    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:46%;font-size:9px;padding:2px 4px;line-height:1.13}}
     @media(max-width:380px){#start-tour::before{content:"▶";font-size:17px;line-height:1} .tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
     @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -324,7 +324,6 @@
         const blockers=controls&&getComputedStyle(controls).display!=='none'?[local(controls.getBoundingClientRect())]:[];
         const featured=world.querySelector('.featured-action');
         if(featured)blockers.push(local(featured.getBoundingClientRect()));
-        const placed=[];
         nodes.forEach(plaque=>{plaque.classList.remove('placed');plaque.dataset.placement='';plaque.style.left='';plaque.style.top='';});
         const sorted=nodes.map(plaque=>{
           if(focusedPhoto&&plaque.dataset.plaqueFor!==focusId){
@@ -333,37 +332,55 @@
           const target=targets.find(p=>p.el.id===plaque.dataset.plaqueFor);
           return {plaque,box:target?local(target.rect):null};
         }).filter(i=>i.box).sort((a,b)=>a.box.t-b.box.t);
-        for(const {plaque,box} of sorted){
-          const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
-          const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
-          // Cropped photo regions are reached through the navigation controls.
-          if(document.body.classList.contains('photo-mode') &&
-             (cx<-6||cx>frame.width+6||cy<-6||cy>frame.height+6)){
-            plaque.dataset.placement='offscreen';continue;
+        // A greedy top-down pass can strand the last label in a crowded
+        // scene. Try bottom-up as well, without hiding labels or relaxing
+        // distance/overlap constraints. Keep the normal layout if it fits.
+        function pack(ordered){
+          const occupied=[],proposed=[];
+          for(const {plaque,box} of ordered){
+            const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
+            const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
+            // Cropped photo regions are reached through the navigation controls.
+            if(document.body.classList.contains('photo-mode') &&
+               (cx<-6||cx>frame.width+6||cy<-6||cy>frame.height+6)){
+              plaque.dataset.placement='offscreen';continue;
+            }
+            const options=[];
+            for(const delta of [0,-18,18,-36,36,-54,54,-72,72]){
+              options.push({name:'above',l:cx-w/2+delta,t:box.t-h-8});
+              options.push({name:'below',l:cx-w/2+delta,t:box.b+8});
+              options.push({name:'left',l:box.l-w-8,t:cy-h/2+delta});
+              options.push({name:'right',l:box.r+8,t:cy-h/2+delta});
+            }
+            let chosen=null,score=Infinity;
+            for(const option of options){
+              const l=Math.max(5,Math.min(frame.width-w-5,option.l));
+              const t=Math.max(5,Math.min(frame.height-h-5,option.t));
+              const rect={l,t,r:l+w,b:t+h};
+              const gap=near(rect,box);
+              if(!inBounds(rect)||gap>maxGap||occupied.some(p=>overlaps(p,rect,4))||
+                 hitBoxes.some(b=>overlaps(b,rect,3))||blockers.some(b=>overlaps(b,rect,4)))continue;
+              const candidate=gap+Math.hypot(l-option.l,t-option.t)*.8+
+                (option.name==='above'?0:option.name==='below'?1:2);
+              if(candidate<score){score=candidate;chosen={...rect,name:option.name};}
+            }
+            if(!chosen)break;
+            occupied.push(chosen);
+            proposed.push({plaque,rect:chosen});
           }
-          const options=[];
-          for(const delta of [0,-18,18,-36,36,-54,54,-72,72]){
-            options.push({name:'above',l:cx-w/2+delta,t:box.t-h-8});
-            options.push({name:'below',l:cx-w/2+delta,t:box.b+8});
-            options.push({name:'left',l:box.l-w-8,t:cy-h/2+delta});
-            options.push({name:'right',l:box.r+8,t:cy-h/2+delta});
+          return proposed;
+        }
+        const topDown=pack(sorted);
+        const bottomUp=topDown.length===sorted.length?[]:pack([...sorted].reverse());
+        const result=bottomUp.length>topDown.length?bottomUp:topDown;
+        for(const {plaque,rect} of result){
+          plaque.style.left=rect.l+'px';plaque.style.top=rect.t+'px';
+          plaque.dataset.placement=rect.name;plaque.classList.add('placed');
+        }
+        for(const {plaque} of sorted){
+          if(!plaque.classList.contains('placed')&&plaque.dataset.placement!=='offscreen'){
+            plaque.dataset.placement='unplaced';
           }
-          let chosen=null,score=Infinity;
-          for(const option of options){
-            const l=Math.max(5,Math.min(frame.width-w-5,option.l));
-            const t=Math.max(5,Math.min(frame.height-h-5,option.t));
-            const rect={l,t,r:l+w,b:t+h};
-            const gap=near(rect,box);
-            if(!inBounds(rect)||gap>maxGap||placed.some(p=>overlaps(p,rect,4))||
-               hitBoxes.some(b=>overlaps(b,rect,3))||blockers.some(b=>overlaps(b,rect,4)))continue;
-            const candidate=gap+Math.hypot(l-option.l,t-option.t)*.8+
-              (option.name==='above'?0:option.name==='below'?1:2);
-            if(candidate<score){score=candidate;chosen={...rect,name:option.name};}
-          }
-          if(!chosen){plaque.dataset.placement='unplaced';continue;}
-          placed.push(chosen);
-          plaque.style.left=chosen.l+'px';plaque.style.top=chosen.t+'px';
-          plaque.dataset.placement=chosen.name;plaque.classList.add('placed');
         }
       }
       function updateArt(){fitPhotoAnchors();correctBackgroundCircles();requestAnimationFrame(placePlaques);}

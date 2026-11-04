@@ -125,8 +125,12 @@ METRICS_JS = r'''() => {
 
 
 def visual_metrics(page) -> dict:
-    # Layout effects are rAF-based; flush two frames before measurement.
-    page.evaluate('''() => new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))''')
+    # Font metrics affect plaque packing. Wait for fonts, then flush the
+    # placement scheduled by document.fonts.ready and any resize effects.
+    page.evaluate('''async () => {
+      await document.fonts?.ready;
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }''')
     return page.evaluate(METRICS_JS)
 
 
