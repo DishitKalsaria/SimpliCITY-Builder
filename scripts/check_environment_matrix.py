@@ -51,6 +51,18 @@ PLAQUE_STRESS = (
         'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
         'Tidal Energy Workshop', 'Submarine Exploration',
     )),
+    # The 200px plaque cap used to wrap these labels into two lines and
+    # strand two of them in the shallow ocean landscape. Preserve both cases.
+    ('ocean-8-wide-text-18', 'ocean', 8, 'landscape', 18, (
+        'Coral Observatory', 'Ocean Research Library', 'Sunken Shipwreck',
+        'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
+        'Tidal Energy Workshop', 'Submarine Exploration',
+    )),
+    ('ocean-8-wide-text-22', 'ocean', 8, 'landscape', 22, (
+        'Coral Observatory', 'Ocean Research Library', 'Sunken Shipwreck',
+        'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
+        'Tidal Energy Workshop', 'Submarine Exploration',
+    )),
 )
 
 

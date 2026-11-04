@@ -4,8 +4,10 @@
 
 ### Release quality and maintainability hardening
 
+- Fixed the remaining eight-object ocean landscape plaque collision by allowing wider, still collision-checked labels on short landscape screens; added 18px/22px text-metric browser regressions.
+
 - Hardened dense 7–8-object plaque widths on narrow phones, and added a second collision-safe placement order when the standard pass leaves a label unplaced.
-- Browser QA now waits for font readiness before measuring; added five targeted plaque stress cases to the browser CI gate without reducing distance, clipping or overlap requirements.
+- Browser QA now waits for font readiness before measuring; added seven targeted plaque stress cases to the browser CI gate without reducing distance, clipping or overlap requirements.
 
 - Closed the remaining v0.2.1 style and stale-gallery-documentation gaps; aligned mypy target to CI Python 3.11 while keeping the Python 3.9+ runtime contract.
 - Added direct CLI artwork-sanitizer and browser-smoke assertions to cover validation, failure states, viewport checks and opt-in accessibility.

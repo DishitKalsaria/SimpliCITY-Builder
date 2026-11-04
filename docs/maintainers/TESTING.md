@@ -93,7 +93,7 @@ CI checks all **11 demos** (`fairytale space festival clockwork guardian photo v
 
 ```bash
 python3 scripts/check_environment_matrix.py
-python3 scripts/check_environment_matrix.py --plaque-stress  # five alternate-font/dense-label cases
+python3 scripts/check_environment_matrix.py --plaque-stress  # seven alternate-font/dense-label cases
 python3 scripts/contact_sheet.py --screenshots private/screenshots --output private/screenshots/contact-sheet.png --worlds fairytale space festival clockwork guardian photo volcanic toon
 python3 scripts/record_tour.py docs/volcanic.html --output docs/assets/volcanic-tour.webm
 ```
