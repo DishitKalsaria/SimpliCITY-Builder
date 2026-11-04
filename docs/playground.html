@@ -373,9 +373,41 @@
           }
           return proposed;
         }
-        const topDown=pack(sorted);
-        const bottomUp=topDown.length===sorted.length?[]:pack([...sorted].reverse());
-        const result=bottomUp.length>topDown.length?bottomUp:topDown;
+        // Eight-site ocean landscapes have two natural landmark banks. Prefer
+        // names immediately alongside their own bank instead of letting a
+        // global greedy pass spend scarce vertical space above or below them.
+        // This also avoids font/Chromium-dependent greedy-order failures on CI.
+        // Every candidate must satisfy the SAME bounds, proximity, target and
+        // plaque collision rules as the general composition engine.
+        function packOceanBanks(){
+          if(document.body.dataset.family!=='ocean' || sorted.length<7 ||
+             window.innerWidth<=680 || window.innerHeight>570)return [];
+          const occupied=[],proposed=[];
+          for(const {plaque,box} of sorted){
+            const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
+            const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
+            const side=cx<frame.width/2?'left':'right';
+            const x=side==='left'?box.l-w-8:box.r+8;
+            let chosen=null;
+            for(const delta of [0,-4,4,-8,8,-12,12,-16,16,-20,20]){
+              const rect={l:x,t:cy-h/2+delta,r:x+w,b:cy+h/2+delta,name:side};
+              if(!inBounds(rect)||near(rect,box)>maxGap||
+                 occupied.some(p=>overlaps(p,rect,4))||
+                 hitBoxes.some(b=>overlaps(b,rect,3))||
+                 blockers.some(b=>overlaps(b,rect,4)))continue;
+              chosen=rect;break;
+            }
+            if(!chosen)return [];
+            occupied.push(chosen);
+            proposed.push({plaque,rect:chosen});
+          }
+          return proposed;
+        }
+        const oceanBanks=packOceanBanks();
+        const topDown=oceanBanks.length===sorted.length?[]:pack(sorted);
+        const bottomUp=oceanBanks.length===sorted.length||topDown.length===sorted.length?[]:pack([...sorted].reverse());
+        const result=oceanBanks.length===sorted.length?oceanBanks:
+          bottomUp.length>topDown.length?bottomUp:topDown;
         for(const {plaque,rect} of result){
           plaque.style.left=rect.l+'px';plaque.style.top=rect.t+'px';
           plaque.dataset.placement=rect.name;plaque.classList.add('placed');

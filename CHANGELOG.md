@@ -4,10 +4,13 @@
 
 ### Release quality and maintainability hardening
 
+- Stabilized dense ocean landscape plaques with a bank-aligned layout under unchanged collision and attachment constraints; expanded the regression suite and added failed-layout screenshot/geometry artifacts and source fingerprints for GitHub Actions.
+- Kept the Python module-based Windows preflight fix in the complete-source package.
+
 - Fixed the remaining eight-object ocean landscape plaque collision by allowing wider, still collision-checked labels on short landscape screens; added 18px/22px text-metric browser regressions.
 
 - Hardened dense 7–8-object plaque widths on narrow phones, and added a second collision-safe placement order when the standard pass leaves a label unplaced.
-- Browser QA now waits for font readiness before measuring; added seven targeted plaque stress cases to the browser CI gate without reducing distance, clipping or overlap requirements.
+- Browser QA now waits for font readiness before measuring; added eight targeted plaque stress cases to the browser CI gate without reducing distance, clipping or overlap requirements.
 
 - Closed the remaining v0.2.1 style and stale-gallery-documentation gaps; aligned mypy target to CI Python 3.11 while keeping the Python 3.9+ runtime contract.
 - Added direct CLI artwork-sanitizer and browser-smoke assertions to cover validation, failure states, viewport checks and opt-in accessibility.

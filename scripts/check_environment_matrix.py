@@ -7,6 +7,7 @@ quality, factual accuracy, or the quality of a host-generated scenic image.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -58,6 +59,11 @@ PLAQUE_STRESS = (
         'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
         'Tidal Energy Workshop', 'Submarine Exploration',
     )),
+    ('ocean-8-wide-text-24', 'ocean', 8, 'landscape', 24, (
+        'Coral Observatory', 'Ocean Research Library', 'Sunken Shipwreck',
+        'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
+        'Tidal Energy Workshop', 'Submarine Exploration',
+    )),
     ('ocean-8-wide-text-22', 'ocean', 8, 'landscape', 22, (
         'Coral Observatory', 'Ocean Research Library', 'Sunken Shipwreck',
         'Marine Wildlife Studies', 'Deep Sea Laboratory', 'Kelp Forest Station',
@@ -78,6 +84,41 @@ def make_world(theme: str, names: tuple[str, ...], count: int) -> str:
         ],
     }
     return generate(to_portfolio(data))
+
+
+def verify_ocean_banks(page, name: str) -> None:
+    # A label above/below a dense bank can strand others on different
+    # Chromium/font stacks. In short landscape, each label belongs beside its
+    # left or right ocean landmark bank.
+    placements = page.locator('.scene-plaque').evaluate_all(
+        '(nodes) => nodes.map(node => node.dataset.placement)'
+    )
+    if len(placements) != 8 or any(value not in ('left', 'right') for value in placements):
+        raise AssertionError(f'{name}: ocean bank layout not engaged: {placements}')
+
+
+def save_failure_diagnostics(page, name: str) -> None:
+    # GitHub Actions uploads private/screenshots even when a browser step fails.
+    # Record geometry and font details to distinguish CI font metrics, different
+    # SVG bounds, and a failed placement attempt from version mismatches.
+    destination = ROOT / 'private/screenshots/matrix-failures'
+    destination.mkdir(parents=True, exist_ok=True)
+    label = name.replace(' ', '-').replace('/', '-')
+    try:
+        details = page.evaluate('''() => {
+          const box=e=>{const r=e.getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height}};
+          return {viewport:{width:innerWidth,height:innerHeight},frame:box(document.querySelector('.scene-world')),
+            fonts:document.fonts?.status,readyState:document.readyState,
+            plaques:[...document.querySelectorAll('.scene-plaque')].map(p=>({
+              text:p.textContent.trim(),for:p.dataset.plaqueFor,
+              placement:p.dataset.placement,rect:box(p),font:getComputedStyle(p).font})),
+            targets:[...document.querySelectorAll('.scene-landmark')].map(p=>({id:p.id,rect:box(p)}))};
+        }''')
+        (destination / f'{label}.json').write_text(json.dumps(details, indent=2), encoding='utf-8')
+        page.screenshot(path=str(destination / f'{label}.png'))
+        print(f'Diagnostics saved under {destination / label}', file=sys.stderr)
+    except Exception as error:
+        print(f'Diagnostics for {name} could not be saved: {error}', file=sys.stderr)
 
 
 def main() -> int:
@@ -110,9 +151,12 @@ def main() -> int:
                         page.add_style_tag(content=f'body .scene-plaque {{font-size:{font_px}px !important}}')
                         page.evaluate("window.dispatchEvent(new Event('resize'))")
                         assert_visual(page, name)
+                        if family == 'ocean' and count == 8:
+                            verify_ocean_banks(page, name)
                         passed += 1
                     except Exception as exc:
                         failures.append(f'{name}: {exc}')
+                        save_failure_diagnostics(page, name)
                     finally:
                         page.close()
                     print(f'Checked {name}', flush=True)
@@ -129,9 +173,12 @@ def main() -> int:
                                 page.emulate_media(reduced_motion='reduce')
                                 page.set_content(markup, wait_until='load')
                                 assert_visual(page, f'{family} {count} {label}')
+                                if family == 'ocean' and count == 8 and label == 'landscape':
+                                    verify_ocean_banks(page, f'{family} {count} {label}')
                                 passed += 1
                             except Exception as exc:
                                 failures.append(f'{family} {count} {label}: {exc}')
+                                save_failure_diagnostics(page, f'{family} {count} {label}')
                             finally:
                                 page.close()
                     print(f'Checked {family}', flush=True)

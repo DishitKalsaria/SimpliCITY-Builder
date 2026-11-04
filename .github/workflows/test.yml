@@ -72,6 +72,10 @@ jobs:
       - name: Test actual HTML in desktop and mobile Chromium
         run: |
           python3 simplicity-builder/scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html docs/guardian.html docs/photo.html docs/volcanic.html docs/toon.html docs/meeting-room.html docs/playground.html docs/farm.html --screenshots private/screenshots --axe-script node_modules/axe-core/axe.min.js
+      - name: Identify exact browser QA source from this commit
+        run: |
+          echo "Commit: $GITHUB_SHA"
+          sha256sum simplicity-builder/assets/template.html scripts/check_environment_matrix.py
       - name: Check room, playground and farm layouts from 1 to 8 landmarks; regress legacy families at 4 and 8
         run: python3 scripts/check_environment_matrix.py
       - name: Check previously fragile dense plaques with alternate text metrics
