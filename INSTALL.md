@@ -1,10 +1,10 @@
-# Install SimpliCITY Builder v0.2.0
+# Install SimpliCITY Builder v0.2.1
 
 **Needs a chat or agent with code execution and file output; a text-only chat cannot run the generator.**
 
 ## Best option: import the skill into a capable AI chat
 
-After v0.2.0 is tagged and the release succeeds, download the GitHub Release asset **`simplicity-builder.zip`**, extract it if the host requires a folder, and import `simplicity-builder/`. The ZIP contains every required generator, validator, HTML template, reference and example. An AI host must also read attachments/links with its own tools; installation does not grant unsupported abilities.
+After v0.2.1 is tagged and the release succeeds, download the GitHub Release asset **`simplicity-builder.zip`**, extract it if the host requires a folder, and import `simplicity-builder/`. The ZIP contains every required generator, validator, HTML template, reference and example. An AI host must also read attachments/links with its own tools; installation does not grant unsupported abilities.
 
 For Claude custom Skills, use its supported skill upload feature with code execution enabled, where available. For Claude Code, copy the folder to `.claude/skills/simplicity-builder/`. For Codex, copy to `.agents/skills/simplicity-builder/`. Other hosts must support file reading, Python execution and downloadable outputs. We have not verified a universal `npx skills add` command for this repository; none is advertised.
 
@@ -31,6 +31,8 @@ python3 scripts/check.py references/experience-sample.json experience.html
 ```
 
 For a real photograph the host must inspect the image, add normalized source object boxes, and pass the original image with `--source-image`; otherwise the photo build deliberately fails. The bundled `examples/photo-sample.json` and `examples/synthetic-lakeside.png` demonstrate this with fictional test art.
+
+Optional v0.2.1 visual mode: original approved scenery plus manually authored `scene_svg` and `scene_svg_mobile` in your input can be built with `--scenic-image /path/to/scenery.png`. See [visual excellence](simplicity-builder/references/visual-excellence.md).
 
 Python 3.9+ stdlib is sufficient for the core. Optional `pypdf` reads text PDFs; scanned PDFs need an OCR-capable host. Optional Playwright + Chromium enables actual browser testing, social screenshots and visual QA. No image-generation model is bundled.
 

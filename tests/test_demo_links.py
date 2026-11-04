@@ -11,7 +11,7 @@ BASE = 'https://dishitkalsaria.github.io/SimpliCITY-Builder/'
 class DemoLinksTests(unittest.TestCase):
     def test_gallery_points_to_generated_websites(self):
         gallery = (DOCS / 'index.html').read_text(encoding='utf-8')
-        for name in ('fairytale', 'space', 'festival', 'clockwork', 'guardian', 'photo'):
+        for name in ('fairytale', 'space', 'festival', 'clockwork', 'guardian', 'photo', 'volcanic', 'toon', 'meeting-room', 'playground', 'farm'):
             with self.subTest(name=name):
                 self.assertIn(f'href="{name}.html"', gallery)
                 self.assertIn(f'src="assets/{name}-preview.webp"', gallery)
@@ -59,6 +59,17 @@ class DemoLinksTests(unittest.TestCase):
             self.assertEqual(output.read_bytes(), (DOCS / 'photo.html').read_bytes())
             self.assertTrue((DOCS / 'assets/photo-preview.webp').exists())
             self.assertIn('href="photo.html"', (DOCS / 'index.html').read_text(encoding='utf-8'))
+
+    def test_two_new_fictional_themes_are_current(self):
+        for name in ('volcanic', 'toon', 'meeting-room', 'playground', 'farm'):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                generated=Path(tmp)/f'{name}.html'
+                result=subprocess.run([sys.executable,
+                    str(ROOT/'simplicity-builder/scripts/build.py'),
+                    '--input',str(ROOT/f'simplicity-builder/examples/{name}-sample.json'),
+                    '--output',str(generated)],capture_output=True,text=True)
+                self.assertEqual(result.returncode,0,result.stderr)
+                self.assertEqual(generated.read_bytes(),(DOCS/f'{name}.html').read_bytes())
 
     def test_readme_distinguishes_live_demo_from_json(self):
         readme = (ROOT / 'README.md').read_text(encoding='utf-8')

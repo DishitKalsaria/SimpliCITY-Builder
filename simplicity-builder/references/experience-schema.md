@@ -1,4 +1,4 @@
-# Source-neutral interactive experience JSON — v0.2.0
+# Source-neutral interactive experience JSON — v0.2.1
 
 A coding-capable AI host reads and interprets the user's input, then writes this structured, source-grounded file. **The Python generator itself cannot understand a photo, retrieve a web link, extract arbitrary PDFs, or verify semantic claims.** Never turn missing source content into fabricated claims.
 

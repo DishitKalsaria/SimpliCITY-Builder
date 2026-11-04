@@ -1,0 +1,56 @@
+{
+  "source": {
+    "kind": "prompt",
+    "title": "A fictional interactive exploration",
+    "fictional": true
+  },
+  "creator": "SimpliCITY Builder",
+  "experience": {
+    "title": "The Imagination Playground",
+    "theme": "joyful outdoor playground",
+    "mode": "world",
+    "tagline": "Open an object to discover a story from this imagined setting."
+  },
+  "chapters": [
+    {
+      "title": "Adventure Slide",
+      "summary": "Where the journey begins with a little bravery.",
+      "items": [
+        {
+          "title": "Start the Adventure",
+          "description": "Where the journey begins with a little bravery. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Swings",
+      "summary": "Take a new perspective and see how far an idea can travel.",
+      "items": [
+        {
+          "title": "Bigger Perspectives",
+          "description": "Take a new perspective and see how far an idea can travel. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Sandbox",
+      "summary": "Experiment with simple pieces and build something unexpected.",
+      "items": [
+        {
+          "title": "Experiment Corner",
+          "description": "Experiment with simple pieces and build something unexpected. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Climbing Frame",
+      "summary": "Every challenge offers a new way forward.",
+      "items": [
+        {
+          "title": "Climb Together",
+          "description": "Every challenge offers a new way forward. This is a fictional demonstration."
+        }
+      ]
+    }
+  ]
+}

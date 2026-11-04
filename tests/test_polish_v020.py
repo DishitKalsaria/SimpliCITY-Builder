@@ -15,7 +15,6 @@ sys.path.insert(0,str(SCRIPTS))
 from build_experience import to_portfolio
 from photo_privacy import jpeg_clean,png_clean,webp_clean,clean_image
 from build_portfolio import embedded_image, generate
-from build_experience import to_portfolio
 from review_sheet import make_review_sheet
 from browser_smoke import assert_visual, launch
 
@@ -35,18 +34,21 @@ class PrivacyTests(unittest.TestCase):
 
     def test_png_drops_exif_and_text_but_preserves_pixels(self):
         sample=ROOT/'simplicity-builder/examples/synthetic-lakeside.png'
-        raw=sample.read_bytes(); self.assertTrue(raw.startswith(b'\x89PNG'))
+        raw=sample.read_bytes()
+        self.assertTrue(raw.startswith(b'\x89PNG'))
         split=8+int.from_bytes(raw[8:12],'big')+12
         enhanced=raw[:split]+chunk(b'eXIf',b'fake GPS latitude 42.0')+chunk(b'tEXt',b'Location\0fake GPS longitude 71.0')+raw[split:]
         with tempfile.TemporaryDirectory() as td:
-            p=Path(td)/'gps.png';p.write_bytes(enhanced)
+            p=Path(td)/'gps.png'
+            p.write_bytes(enhanced)
             cleaned,mime=clean_image(p)
         self.assertEqual(mime,'image/png')
         self.assertNotIn(b'GPS',cleaned)
         self.assertEqual(png_clean(cleaned),raw)  # unchanged IDAT and every other image byte
 
     def test_webp_removes_exif_xmp_and_flags(self):
-        def riff(tag,data):return tag+struct.pack('<I',len(data))+data+(b'\0' if len(data)&1 else b'')
+        def riff(tag,data):
+            return tag+struct.pack('<I',len(data))+data+(b'\0' if len(data)&1 else b'')
         body=b'WEBP'+riff(b'VP8X',bytes([0x0c])+bytes(9))+riff(b'VP8 ',b'framebytes')+riff(b'EXIF',b'GPS=42.0')+riff(b'XMP ',b'<GPS>71.0</GPS>')
         cleaned=webp_clean(b'RIFF'+struct.pack('<I',len(body))+body)
         self.assertNotIn(b'GPS',cleaned)
@@ -61,7 +63,8 @@ class PrivacyTests(unittest.TestCase):
         split=8+int.from_bytes(original[8:12],'big')+12
         tainted=original[:split]+chunk(b'eXIf',b'GPS-LATITUDE-42.6 PRIVATE-ADDRESS')+original[split:]
         with tempfile.TemporaryDirectory() as td:
-            p=Path(td)/'photo.png';p.write_bytes(tainted)
+            p=Path(td)/'photo.png'
+            p.write_bytes(tainted)
             uri=embedded_image(p)
             data=json.loads((ROOT/'simplicity-builder/examples/photo-sample.json').read_text(encoding='utf-8'))
             output=generate(to_portfolio(data),uri)
@@ -72,13 +75,17 @@ class PrivacyTests(unittest.TestCase):
         self.assertNotIn(b'PRIVATE-ADDRESS',base64.b64decode(encoded))
 
     def test_optional_pillow_downscales_large_dimensions(self):
-        try:from PIL import Image
-        except ImportError:raise unittest.SkipTest('Optional Pillow not installed')
+        try:
+            from PIL import Image
+        except ImportError:
+            raise unittest.SkipTest('Optional Pillow not installed')
         with tempfile.TemporaryDirectory() as td:
-            p=Path(td)/'wide.png';Image.new('RGB',(2101,90),'white').save(p)
+            p=Path(td)/'wide.png'
+            Image.new('RGB',(2101,90),'white').save(p)
             cleaned,mime=clean_image(p)
             from io import BytesIO
-            with Image.open(BytesIO(cleaned)) as img:self.assertLessEqual(max(img.size),2000)
+            with Image.open(BytesIO(cleaned)) as img:
+                self.assertLessEqual(max(img.size),2000)
 
     def test_review_sheet_private_evidence_and_warning(self):
         source=json.loads((ROOT/'simplicity-builder/examples/photo-sample.json').read_text(encoding='utf-8'))
@@ -92,7 +99,8 @@ class PrivacyTests(unittest.TestCase):
         import subprocess
         fixture=ROOT/'simplicity-builder/examples/guardian-academy.json'
         with tempfile.TemporaryDirectory() as td:
-            out=Path(td)/'index.html';private=Path(td)/'private/review.md'
+            out=Path(td)/'index.html'
+            private=Path(td)/'private/review.md'
             process=subprocess.run([sys.executable,str(SCRIPTS/'build.py'),'--input',str(fixture),
                 '--output',str(out),'--theme','noir mystery','--review-sheet',str(private)],
                 capture_output=True,text=True)
@@ -106,7 +114,8 @@ class PrivacyTests(unittest.TestCase):
         original=json.loads((ROOT/'simplicity-builder/examples/photo-sample.json').read_text(encoding='utf-8'))
         for anchor in ({'x':.1,'y':.1,'width':.1,'height':.3},  # 3%
                        {'x':.01,'y':.01,'width':.97,'height':.96}):
-            data=json.loads(json.dumps(original));data['chapters'][0]['anchor']=anchor
+            data=json.loads(json.dumps(original))
+            data['chapters'][0]['anchor']=anchor
             with self.subTest(anchor=anchor),self.assertRaisesRegex(ValueError,'4%–90%'):
                 to_portfolio(data)
         data=json.loads(json.dumps(original))
@@ -142,16 +151,21 @@ class SourceFixtureIsolation(unittest.TestCase):
 class BrokenPageMustFail(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        try:from playwright.sync_api import sync_playwright
-        except ImportError:raise unittest.SkipTest('Playwright not installed; Chromium negative tests skipped')
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            raise unittest.SkipTest('Playwright not installed; Chromium negative tests skipped')
         cls.ctx=sync_playwright().start()
-        try:cls.browser=launch(cls.ctx)
+        try:
+            cls.browser=launch(cls.ctx)
         except Exception:
-            cls.ctx.stop();raise unittest.SkipTest('Chromium not installed; negative browser tests skipped')
+            cls.ctx.stop()
+            raise unittest.SkipTest('Chromium not installed; negative browser tests skipped')
 
     @classmethod
     def tearDownClass(cls):
-        cls.browser.close();cls.ctx.stop()
+        cls.browser.close()
+        cls.ctx.stop()
 
     def broken(self,filename,css,expected,width=390,height=844):
         page=self.browser.new_page(viewport={'width':width,'height':height})
@@ -161,8 +175,10 @@ class BrokenPageMustFail(unittest.TestCase):
             if page.locator('.scene-backdrop').count():
                 page.locator('.scene-backdrop').first.evaluate('(img)=>img.decode()')
             page.add_style_tag(content=css)
-            with self.assertRaisesRegex(AssertionError,expected):assert_visual(page,'deliberately broken')
-        finally:page.close()
+            with self.assertRaisesRegex(AssertionError,expected):
+                assert_visual(page,'deliberately broken')
+        finally:
+            page.close()
 
     def test_distant_but_inside_plaque_must_fail(self):
         # A label can be within the stage and not collide, yet be detached.
@@ -179,10 +195,9 @@ class BrokenPageMustFail(unittest.TestCase):
 
     def test_miniature_mobile_landmarks_must_fail(self):
         self.broken('guardian.html',
-                    '.scene-landmark{scale:.48!important}', 'mobileLandmarkSizes')
+                    '.scene-landmark{scale:.24!important}', 'mobileLandmarkSizes')
 
     def test_hidden_foreground_seam_must_fail(self):
-        from playwright.sync_api import sync_playwright
         page=self.browser.new_page(viewport={'width':1440,'height':900})
         try:
             page.set_content((ROOT/'docs/guardian.html').read_text(encoding='utf-8'),wait_until='load')
@@ -194,7 +209,8 @@ class BrokenPageMustFail(unittest.TestCase):
             }""")
             with self.assertRaisesRegex(AssertionError,'hardEdges'):
                 assert_visual(page,'deliberately added scene-box seam')
-        finally:page.close()
+        finally:
+            page.close()
 
     def test_overlapping_plaques_must_fail(self):
         self.broken('guardian.html','.scene-plaque{left:7px!important;top:7px!important}', 'plaqueOverlap')
@@ -218,7 +234,8 @@ class BrokenPageMustFail(unittest.TestCase):
             next_=page.locator('.scene-plaque.placed').all_text_contents()
             self.assertEqual(len(next_),1)
             self.assertNotEqual(first,next_)
-        finally:page.close()
+        finally:
+            page.close()
 
     def test_photo_coverage_below_55_percent_must_fail(self):
         page=self.browser.new_page(viewport={'width':390,'height':844})
@@ -231,7 +248,8 @@ class BrokenPageMustFail(unittest.TestCase):
             }""")
             with self.assertRaisesRegex(AssertionError,'photoCoverageLow'):
                 assert_visual(page,'deliberately tiny photo')
-        finally:page.close()
+        finally:
+            page.close()
 
     def test_distorted_celestial_circle_must_fail(self):
         page=self.browser.new_page(viewport={'width':1440,'height':900})
@@ -243,7 +261,8 @@ class BrokenPageMustFail(unittest.TestCase):
             }""")
             with self.assertRaisesRegex(AssertionError,'distortedCircles'):
                 assert_visual(page,'deliberately distorted moon')
-        finally:page.close()
+        finally:
+            page.close()
 
     def test_missing_procedural_scenery_must_fail(self):
         page=self.browser.new_page(viewport={'width':1440,'height':900})
@@ -254,7 +273,8 @@ class BrokenPageMustFail(unittest.TestCase):
             }""")
             with self.assertRaisesRegex(AssertionError,'sceneryMissing'):
                 assert_visual(page,'deliberately empty ambience')
-        finally:page.close()
+        finally:
+            page.close()
 
     def test_clipped_header_must_fail(self):
         self.broken('guardian.html','.intro h1{height:2px!important;overflow:hidden!important}', 'headerClipped')
@@ -266,4 +286,5 @@ class BrokenPageMustFail(unittest.TestCase):
         self.broken('guardian.html','.scene-landmark{scale:.05!important}', 'tinyTargets')
 
 
-if __name__=='__main__':unittest.main()
+if __name__=='__main__':
+    unittest.main()

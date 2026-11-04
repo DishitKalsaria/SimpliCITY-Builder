@@ -1,0 +1,59 @@
+{
+  "source": {
+    "kind": "prompt",
+    "title": "Fictional Volcanic Atelier",
+    "fictional": true
+  },
+  "experience": {
+    "title": "The Volcanic Atelier",
+    "theme": "volcanic-lava-world",
+    "mode": "world",
+    "tagline": "Discover four outposts forged by imagination and volcanic light"
+  },
+  "chapters": [
+    {
+      "id": "magma-citadel",
+      "title": "Magma Citadel",
+      "summary": "A central citadel watches over the active caldera.",
+      "items": [
+        {
+          "title": "The Gathering",
+          "description": "An imagined council convenes inside the glowing citadel."
+        }
+      ]
+    },
+    {
+      "id": "ember-foundry",
+      "title": "Ember Foundry",
+      "summary": "An industrial workshop turns heat into inventions.",
+      "items": [
+        {
+          "title": "Creative Engines",
+          "description": "Inventors in this fictional workshop test experimental machines."
+        }
+      ]
+    },
+    {
+      "id": "obsidian-forge",
+      "title": "Obsidian Forge",
+      "summary": "A dramatic forge hidden within cooled black stone.",
+      "items": [
+        {
+          "title": "Forged Ideas",
+          "description": "Explorers turn imagined materials into impossible tools."
+        }
+      ]
+    },
+    {
+      "id": "ridge-observatory",
+      "title": "Ridge Observatory",
+      "summary": "A crystal-lit observatory looks across the volcanic valley.",
+      "items": [
+        {
+          "title": "Beyond the Crater",
+          "description": "The fictional observatory maps distant islands and constellations."
+        }
+      ]
+    }
+  ]
+}

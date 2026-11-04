@@ -1,4 +1,4 @@
-# Illustrated landmark rules — SimpliCITY Builder v0.2.0
+# Illustrated landmark rules — SimpliCITY Builder v0.2.1
 
 The illustration is the navigation. **Do not draw icon pins, badges or clickable circles over an unrelated background.** A saloon, windmill, planet, bridge, train, creature or crystal spire is itself a safe clickable SVG object.
 

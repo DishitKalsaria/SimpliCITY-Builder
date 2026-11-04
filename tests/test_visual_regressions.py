@@ -1,5 +1,4 @@
 """Visual regressions: animations, sparse objects, optional mobile SVG and image layer."""
-import base64
 import copy
 import json
 import sys
@@ -50,12 +49,14 @@ class VisualRegressionTests(unittest.TestCase):
     def test_mobile_landmark_missing_rejected(self):
         data=copy.deepcopy(self.data)
         data['world']['scene_svg_mobile']=data['world']['scene_svg_mobile'].replace('id="landmark-skills"','id="not-a-landmark"')
-        with self.assertRaises(ValueError):validate_model(data)
+        with self.assertRaises(ValueError):
+            validate_model(data)
 
     def test_image_assisted_requires_image(self):
         data=copy.deepcopy(self.data)
         data['world']['artwork_mode']='image-assisted'
-        with self.assertRaisesRegex(ValueError,'requires --background-image'):generate(data)
+        with self.assertRaisesRegex(ValueError,'requires --background-image'):
+            generate(data)
 
     def test_embedded_original_raster_is_offline_only(self):
         import tempfile
@@ -74,10 +75,13 @@ class VisualRegressionTests(unittest.TestCase):
     def test_background_rejects_html_or_svg(self):
         import tempfile
         with tempfile.TemporaryDirectory() as td:
-            img=Path(td)/'fake.png'; img.write_text('<svg><script>bad()</script></svg>')
-            with self.assertRaisesRegex(ValueError,'JPEG, PNG, or WebP'):embedded_image(img)
+            img=Path(td)/'fake.png'
+            img.write_text('<svg><script>bad()</script></svg>')
+            with self.assertRaisesRegex(ValueError,'JPEG, PNG, or WebP'):
+                embedded_image(img)
             img.write_bytes(b'\x89PNG\r\n\x1a\n'+b'Z'*4_000_010)
-            with self.assertRaisesRegex(ValueError,'PNG chunk size|Malformed PNG|Corrupt PNG'):embedded_image(img)
+            with self.assertRaisesRegex(ValueError,'PNG chunk size|Malformed PNG|Corrupt PNG'):
+                embedded_image(img)
 
     def test_owner_approved_paraphrase_requires_real_resume_excerpt(self):
         from verify_facts import evidence_gaps
@@ -90,5 +94,6 @@ class VisualRegressionTests(unittest.TestCase):
         data['review']['approved_paraphrases'][0]['source_excerpt']='not present anywhere'
         self.assertTrue(evidence_gaps(data,resume))
 
-if __name__=='__main__':unittest.main()
+if __name__=='__main__':
+    unittest.main()
 

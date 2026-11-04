@@ -25,3 +25,10 @@ SimpliCITY-Builder-v*-Update.zip
 # All generated release assets (source remains visible in the repository)
 *.zip
 SHA256SUMS.txt
+
+# Local quality checks and frontend accessibility tooling
+node_modules/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+htmlcov/

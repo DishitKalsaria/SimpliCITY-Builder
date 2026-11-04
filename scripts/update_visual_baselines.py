@@ -18,14 +18,17 @@ def main():
     p.add_argument('--screenshots',type=Path,required=True)
     p.add_argument('--accept',action='store_true',help='You have visually approved these generated screenshots')
     args=p.parse_args()
-    if not args.accept:p.exit(2,'Refusing to update goldens without --accept (human screenshot review required).\n')
+    if not args.accept:
+        p.exit(2,'Refusing to update goldens without --accept (human screenshot review required).\n')
     dest=ROOT/'tests/visual-golden'
     for name in NAMES:
         source=args.screenshots/name
-        if not source.is_file():p.exit(2,f'Missing screenshot: {source}\n')
+        if not source.is_file():
+            p.exit(2,f'Missing screenshot: {source}\n')
     for name in NAMES:
         shutil.copyfile(args.screenshots/name,dest/name)
         print(f'Updated {dest/name}')
     print('Review the changed tracked PNGs in git diff before committing.')
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

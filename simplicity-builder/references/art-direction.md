@@ -1,4 +1,4 @@
-# Art direction — SimpliCITY Builder v0.2.0
+# Art direction — SimpliCITY Builder v0.2.1
 
 **Do not begin by drawing disconnected SVG shapes.** Prepare a compact internal plan first, then build the interactive scene. Any user-defined world (saloon, fantasy, underwater, space, graffiti, original hybrid) is valid.
 
@@ -23,6 +23,22 @@ For mobile, bespoke SVG can use a separate mobile composition, and procedural sc
 
 Before delivery, run the validator and browser smoke checks. Compare desktop (1440×900), mobile (390×844), 320×568 and landscape. Render, inspect and deliberately revise up to two times when browser and visual-inspection tools exist. Inspect screenshots, not just assertions. Ask: is the setting recognizable without reading the title? Are landmarks visibly distinct, reasonably sized, separated, interactive, and not competing with badge text? Is there a focal point? Does visual polish survive narrow viewports? If not, revise existing scene once deliberately rather than layering random decoration. See `visual-quality.md`.
 
-## v0.2.0 scene composition
+## v0.2.1 scene composition
 
 Use the content and user theme to decide visual family, depth, focal object, spatial hierarchy, landmark metaphors and mobile framing. Prefer an original bespoke SVG scene if the host can construct one safely. The bundled `scripts/scene_art.py` creates deterministic themed SVG for recognized motifs and abstract pavilions for unfamiliar concepts; it is a fallback, **not an AI-generated image or evidence of polished visual QA**. Distinguish visible landmarks from mere decorative icons. Visual review in a real browser remains recommended when possible.
+
+## v0.2.1 visual-excellence contract
+
+- **Procedural mode:** theme grammar controls atmosphere, terrain, light,
+  architecture, destination platforms and connecting paths. A user-requested
+  art direction must take precedence over unrelated nouns in source content.
+- **Scenic-art mode:** a capable host may create original scenery without
+  lettering, buttons, identity claims, or UI. Use both `scene_svg` and
+  `scene_svg_mobile` for the landmark layer and pass `--scenic-image` to the
+  unified builder. The image is not a source photo and no arbitrary photo
+  bounding boxes are inferred from it. Review geometry at actual viewports.
+- **Composition:** a memorable focal landmark, distinct silhouettes, spatial
+  connections, readable callouts and different portrait arrangements.
+- **Quality gate:** compare scenic/illustrated output with a visual reference,
+  but never claim that procedural SVG alone reproduces photorealistic imagery.
+  A validated webpage may still need an artistic revision.

@@ -16,6 +16,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Build and validate a standalone interactive HTML experience')
     parser.add_argument('--input', required=True, type=Path, help='Legacy résumé or source-neutral experience JSON')
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--scenic-image', type=Path, help='Optional approved AI scenic image; requires authored desktop and mobile landmark SVGs')
     parser.add_argument('--source-image', '--background-image', dest='image', type=Path,
                         help='Optional approved local PNG/JPEG/WebP to embed offline')
     parser.add_argument('--source-text', type=Path, help='Optional private extracted source text for evidence cross-checking')
@@ -32,9 +33,17 @@ def main() -> None:
         else:
             validate_model(data)
             portfolio = data
+        if args.scenic_image:
+            if args.image:
+                raise ValueError('Choose --scenic-image or --source-image, not both')
+            if portfolio['world'].get('content_kind') == 'photo':
+                raise ValueError('Photo source images must use --source-image and observed anchors')
+            if not portfolio['world'].get('scene_svg') or not portfolio['world'].get('scene_svg_mobile'):
+                raise ValueError('--scenic-image requires authored scene_svg and scene_svg_mobile, aligned to the approved image')
+            portfolio['world']['artwork_mode'] = 'image-assisted'
+        if args.theme and args.scenic_image:
+            raise ValueError('--theme cannot override authored scenic-image landmarks; re-author aligned SVGs first')
         if args.theme:
-            from scene_art import palette_for
-            from build_portfolio import THEMES
             import re
             new_theme = re.sub(r'[^a-z0-9]+', '-', args.theme.lower()).strip('-')[:60].rstrip('-')
             if not new_theme:
@@ -53,7 +62,8 @@ def main() -> None:
                 raise ValueError('Keep --review-sheet in a private folder, not a public docs/ directory')
             source_text_content = args.source_text.read_text(encoding='utf-8') if args.source_text else None
             save_private_sheet(args.review_sheet, data, source_text_content)
-        image = embedded_image(args.image) if args.image else ''
+        image_path = args.scenic_image or args.image
+        image = embedded_image(image_path) if image_path else ''
         html = generate(portfolio, background_image=image)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_bytes(html.encode('utf-8'))

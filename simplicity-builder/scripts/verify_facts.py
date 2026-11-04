@@ -97,4 +97,5 @@ def main():
     if args.strict and gaps:
         ap.exit(1,'Strict mode failed: unmatched claims. Correct or document them before public release.\n')
 
-if __name__=='__main__': main()
+if __name__=='__main__':
+    main()

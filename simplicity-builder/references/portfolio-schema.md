@@ -1,4 +1,4 @@
-# SimpliCITY Builder v0.2.0 — portfolio JSON contract
+# SimpliCITY Builder v0.2.1 — portfolio JSON contract
 
 Provide verified `profile`, `world`, and `sections` objects. The generated HTML is offline, with no tracker or external runtime dependencies. Career information must be grounded in the résumé. Section IDs use lowercase hyphens and must be unique.
 
@@ -76,6 +76,6 @@ Legacy `world.symbol` and section `symbol` emoji fields are ignored for compatib
 
 The source schema need not know a GitHub Pages URL at creation time. After the owner approves the generated offline site, `scripts/publish_portfolio.py prepare` creates public-site HTML with the correct canonical URL, Open Graph `og:image` and Twitter-card metadata and a local preview image. Do not include private review data in public packages. Publishing itself is separate and opt-in; see `references/publishing.md`.
 
-## General inputs in v0.2.0
+## General inputs in v0.2.1
 
 For photo, document, link and fictional prompt sources, use [experience-schema.md](experience-schema.md) with `build.py`. This legacy résumé format remains supported and unchanged.

@@ -1,7 +1,15 @@
-# Manually reviewable browser screenshot baselines
+# Visual-regression candidates — v0.2.1
 
-These four Chromium screenshots were captured from the **fictional, generated** guardian and synthetic-photo examples at fixed 1440×900 desktop and 390×844 mobile viewports. They are a qualitative reference, not evidence that arbitrary photos or AI art are understood.
+Eight screenshot candidates from **guardian, photo, volcanic and toon** at
+1440×900 desktop and 390×844 mobile. Captured in real Chromium using
+fictional/synthetic inputs. Owners must visually review and approve these
+images before committing or tagging. They are *not* automatically approved
+because the compare script reports 0% drift.
 
-To compare optional new screenshots after installing Pillow, run `python3 scripts/compare_screenshots.py tests/visual-golden/photo-mobile.png private/screenshots/photo-mobile.png --max-changed 0.15`. Difference is a **review alert**, not automatic aesthetic approval; browser/font differences can cause noise. Update baselines only after explicit visual acceptance.
+Use `python3 scripts/check_visual_baselines.py --screenshots private/screenshots
+--tolerance 0.25` to detect unexpected change. To accept new baselines after
+inspection, use `python3 scripts/update_visual_baselines.py --screenshots
+private/screenshots --accept`. The visual contact sheet in the CI artifact
+includes the eight original gallery worlds; browser CI checks all 11 gallery worlds, while only eight guardian/photo/volcanic/toon desktop/mobile screenshots are fixed baselines.
 
-**v0.2.0 last-touch candidate:** These regenerated golden images still require repository-owner visual approval before merge or release. Passing a pixel-difference gate is not an artistic-quality certification.
+Pixel comparison cannot certify taste, truthful art or photo-anchor accuracy.

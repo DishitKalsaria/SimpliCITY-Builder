@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Four colorful original districts full of playful discoveries">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Toon City Studio — SimpliCITY Builder">
+  <meta property="og:description" content="Four colorful original districts full of playful discoveries">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Toon City Studio — SimpliCITY Builder">
+  <meta name="twitter:description" content="Four colorful original districts full of playful discoveries">
+  <title>The Toon City Studio — SimpliCITY Builder</title>
+  <style>
+    :root{--bg:#172b63;--bg2:#283f86;--accent:#ffe04f;--accent2:#fff0a4;--white:#fdf9ff;--muted:#eee6f1;--stroke:rgba(255,255,255,.23);color-scheme:dark}
+    *{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+    body{height:100dvh;background:var(--bg);color:var(--white);font:15px/1.48 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--accent2) 17%,transparent),transparent 58%),linear-gradient(135deg,var(--bg2),var(--bg) 75%)}
+    button,input,a{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+    .ui-icon{height:19px;width:19px;flex-shrink:0;vertical-align:middle}
+    .skip{position:absolute;left:12px;top:-100px;z-index:100;border:0;border-radius:12px;background:var(--accent);color:var(--bg);padding:10px 14px}.skip:focus{top:12px}
+    .app{--gutter:clamp(12px,3vw,44px);position:relative;z-index:1;display:flex;flex-direction:column;height:100%;height:100dvh;min-height:0;max-width:1600px;margin:auto;padding:0 var(--gutter) env(safe-area-inset-bottom)}
+    .topbar{display:flex;flex:none;align-items:center;justify-content:space-between;min-height:65px;gap:12px;border-bottom:1px solid var(--stroke)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:12px;white-space:nowrap}
+    .brand-icon{width:30px;height:30px;border-radius:11px;background:linear-gradient(140deg,var(--accent),var(--accent2));display:grid;place-items:center;color:var(--bg)}
+    .owner{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:45%}
+    .intro{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:13px 3px 4px}
+    .eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:850;margin:0 0 5px}
+    h1{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:clamp(24px,3.2vw,44px);font-weight:500;line-height:1.05;letter-spacing:-.035em;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+    .mobile-hint{display:none;margin:7px 0 0;color:var(--white);font-size:12px;line-height:1.3;max-width:40ch}.tagline{margin:6px 0 0;color:var(--muted);font-size:clamp(11px,1.2vw,14px);line-height:1.35;max-width:66ch}
+    .overview{font-size:11px;text-align:right;white-space:nowrap;color:var(--muted);padding-top:4px}
+    .overview strong{display:block;font-size:23px;color:var(--accent);line-height:1.1}
+    .stage{margin-inline:calc(-1 * var(--gutter));display:grid;place-items:stretch;flex:1;min-height:0;position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 64%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 66%);overflow:hidden}
+    .scene-world{width:100%;height:100%;position:relative;min-height:0;min-width:0;max-height:100%;isolation:isolate;overflow:hidden}
+    .scene-ambience{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;z-index:0;opacity:1}
+    .scene-svg{display:block;width:100%;height:100%;overflow:hidden;position:relative;z-index:1}
+    .scene-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85;z-index:0;pointer-events:none;user-select:none}.photo-mode .scene-backdrop{object-fit:contain;opacity:1}.photo-ambient{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(23px);opacity:.35;z-index:0;pointer-events:none}.photo-mode .scene-backdrop{z-index:1}.photo-mode .scene-svg{z-index:2}.photo-mode .scene-world{background:#0a101b}.photo-mode .scene-world::before{display:none}.photo-mode .scene-svg{pointer-events:none}.photo-mode .scene-landmark{pointer-events:bounding-box}.photo-mode .scene-landmark rect{fill-opacity:.12}.photo-mode .scene-landmark:hover rect,.photo-mode .scene-landmark:focus-visible rect{fill-opacity:.24}
+    .scene-world::before{content:none}
+    /* Optional high-definition scenic artwork: painted landscape remains the
+       backdrop, while independent SVG landmarks and accessible controls stay
+       interactive. Scene SVG positions must be authored against the image. */
+    .scenic-art-mode .scene-backdrop{opacity:1;object-fit:cover}
+    .scenic-art-mode .scene-ambience{opacity:.075}
+    .scenic-art-mode .scene-world{background:#10141e}
+    /* Only decorative ambience moves; interactive hit regions stay fixed.
+       Motion is disabled entirely by the existing reduced-motion rules. */
+    @media(prefers-reduced-motion:no-preference){
+      body:not(.photo-mode) .scene-ambience{transition:transform 3s ease}
+      body:not(.photo-mode) .scene-world:hover .scene-ambience{transform:scale(1.008)}
+    }
+    /* The scene objects themselves are the hit targets: no icon pins or overlaid badges. */
+    .scene-landmark{cursor:pointer;pointer-events:bounding-box;touch-action:manipulation;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
+    /* Avoid double-applying SVG transforms when packing dense layouts. */
+    body:is([data-family="meeting"],[data-family="playground"],[data-family="farm"],[data-count="5"],[data-count="6"],[data-count="7"],[data-count="8"]) .scene-landmark{transform-box:view-box;transform-origin:0 0}
+    .scene-landmark:active{scale:.985;opacity:.88}.scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
+    .scene-landmark:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
+    .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
+    .scene-tooltip[hidden]{display:none}
+    .scene-plaque{position:absolute;z-index:4;pointer-events:none;display:block;max-width:min(200px,43%);padding:5px 9px;border-radius:9px;background:#101a2df2;border:1px solid #bdcde7;color:#fff;font:750 12px/1.28 ui-sans-serif,system-ui,sans-serif;box-shadow:0 3px 12px #000a;text-align:center;overflow-wrap:anywhere;opacity:0;transition:opacity .1s ease}
+    /* Family plaque vocabulary: subdued basalt, ocean glass, orbital metal,
+       or thick-ink toon. Labels remain HTML and never baked into scenery. */
+    body[data-family="volcanic"] .scene-plaque{background:#281b24f2;border-color:#ffb06e;color:#fff0dc;box-shadow:0 4px 15px #12080ce6,0 0 13px #ee6a323d}
+    body[data-family="ocean"] .scene-plaque{background:#103a4aeF;border-color:#8ce8d5;color:#f2ffff}
+    body[data-family="space"] .scene-plaque{background:#161c41f2;border-color:#b7c3ff;color:#f6f4ff}
+    body[data-family="toon"] .scene-plaque{background:#1c2e63;border:3px solid #10152f;color:#ffe04f;border-radius:14px;box-shadow:4px 5px 0 #10152f}
+    body[data-family="toon"] h1{font-weight:900;letter-spacing:-.035em}
+    @media(prefers-reduced-motion:no-preference){
+      body[data-family="volcanic"] .scene-landmark:hover{filter:drop-shadow(0 0 16px #fa7840)}
+      body[data-family="space"] .scene-landmark:hover{filter:drop-shadow(0 0 16px #93bfff)}
+    }
+    .photo-mode .scene-plaque{transition:none} .scene-plaque.placed{opacity:1}.scene-plaque[data-placement="rail"]{font-size:10px;padding:3px 6px}.scene-plaque:before{content:"";display:block;position:absolute;inset:-3px;pointer-events:none;border-radius:11px;border:1px solid var(--accent);opacity:.55}
+    .featured-action{position:absolute;bottom:9px;left:50%;z-index:6;transform:translateX(-50%);min-height:44px;max-width:90%;padding:9px 16px;border-radius:13px;border:1px solid var(--accent);background:#101a2ff5;color:#fff;font-weight:800;box-shadow:0 5px 18px #0008;white-space:normal;text-align:center}
+    .photo-navigation{display:none;position:absolute;z-index:7;right:8px;bottom:8px;gap:5px;align-items:center}
+    .photo-navigation button{min-width:44px;min-height:44px;border-radius:10px;border:1px solid #c5dcf0;background:#142338ed;color:#fff;padding:6px;font-weight:700}
+    .photo-mode .photo-navigation{display:flex}
+    .scene-plaque[data-placement="offscreen"]{opacity:0!important;visibility:hidden}
+    .photo-mode .stage{background:#0a101b}.photo-mode .scene-landmark{filter:drop-shadow(0 1px 4px #000)}
+    .single-mode .overview{display:none}
+    body[data-family="technology"] h1,body[data-family="guardian"] h1{letter-spacing:-.055em;font-weight:800}
+    body[data-family="fantasy"] h1,body[data-family="museum"] h1{font-family:ui-serif,Georgia,Cambria,serif;font-weight:650;letter-spacing:-.035em}
+
+     .tour-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;padding-top:12px;border-top:1px solid var(--stroke)}
+    .tour-buttons button{min-height:44px;padding:9px 12px;border-radius:11px;color:var(--white);background:#263750;border:1px solid var(--stroke)}
+    .tour-buttons button:disabled{opacity:.5;cursor:not-allowed}
+    body[data-family="desert"] h1{font-family:Georgia,Cambria,ui-serif,serif;font-weight:700}
+    body[data-family="noir"] h1{font-family:Impact,"Arial Narrow",ui-sans-serif,sans-serif;letter-spacing:.015em}
+    .toolbar{display:flex;flex:none;justify-content:space-between;align-items:center;gap:12px;min-height:74px;border-top:1px solid var(--stroke)}
+    .hint{color:var(--white);font-size:13px;max-width:34ch}.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
+    .tool{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--stroke);border-radius:13px;padding:10px 12px;background:rgba(255,255,255,.065);color:var(--white);font-size:12px;font-weight:750;white-space:nowrap;min-height:42px}
+    .tool:hover{background:rgba(255,255,255,.13)}.tool-primary{color:var(--bg);background:var(--accent);border-color:var(--accent)}.tool-primary:hover{background:var(--accent2)}
+    .credits{font-size:14px;color:var(--white);padding:0 3px 8px;display:flex;justify-content:space-between;gap:12px}
+    dialog{color:var(--white);border:1px solid var(--stroke);border-radius:23px;width:min(760px,calc(100vw - 24px));max-height:min(88dvh,900px);padding:0;background:linear-gradient(155deg,var(--bg2),var(--bg));box-shadow:0 35px 120px #0009}
+    dialog::backdrop{background:#030712da;backdrop-filter:blur(9px)}.dialog-inner{padding:clamp(18px,3vw,30px);overflow-y:auto;overscroll-behavior:contain;max-height:calc(88dvh - 2px);scrollbar-color:var(--accent2) transparent}
+    .dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:1px solid var(--stroke);padding-bottom:17px;margin-bottom:17px}
+    .dialog-heading h2{font:650 clamp(25px,4.8vw,39px)/1.14 ui-sans-serif,system-ui,sans-serif;margin:0 0 9px}.dialog-heading p:last-child{color:var(--muted);margin:0;font-size:13px;line-height:1.6}
+    .close-dialog{display:grid;place-items:center;flex:none;min-width:42px;min-height:42px;border:1px solid var(--stroke);border-radius:14px;background:#ffffff12;color:var(--white)}
+    .entries{display:grid;gap:12px}.entry{border:1px solid var(--stroke);border-radius:17px;padding:19px;background:#ffffff09;overflow-wrap:anywhere}
+    .entry h3{font-size:18px;line-height:1.24;margin:0 0 6px}.entry-subtitle{color:var(--accent);font-size:12px;margin:0 0 10px}
+    .entry-description{color:var(--muted);font-size:13px;line-height:1.65;margin:7px 0 10px;white-space:pre-line}
+    .highlights{margin:12px 0;padding:0 0 0 20px}.highlights li{margin-bottom:7px;font-size:13px;line-height:1.55}
+    .metrics{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.metric{display:flex;flex-direction:column;gap:3px;background:#ffffff10;border:1px solid var(--stroke);border-radius:12px;padding:8px 12px}.metric strong{font-size:19px;color:var(--accent)}.metric span{font-size:10px;color:var(--muted)}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.tag{border:1px solid var(--stroke);border-radius:30px;padding:4px 8px;font-size:11px;color:var(--muted)}.entry-link{display:inline-block;margin:5px 0;color:var(--accent);font-size:13px;font-weight:750}
+    .quote-entry{margin:0}.quote-entry .ui-icon{color:var(--accent)}blockquote{font:italic 19px/1.55 ui-serif,Georgia,serif;margin:10px 0 14px}.quote-entry figcaption{font-size:12px;color:var(--muted)}
+    .searchbox{display:block;width:100%;padding:13px 15px;margin:0 0 16px;border:1px solid var(--stroke);border-radius:12px;background:#ffffff11;color:var(--white);outline-color:var(--accent)}
+    .landmark{display:flex;align-items:center;gap:13px;text-align:left;width:100%;background:#ffffff0d;border:1px solid var(--stroke);border-radius:15px;color:var(--white);padding:14px;margin:8px 0;min-height:72px}
+    .landmark:hover,.landmark:focus-visible{background:#ffffff1d}.landmark-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:12px;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
+    .landmark-text{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.landmark-text strong{font-size:14px}.landmark-text small{font-size:12px;color:var(--muted);line-height:1.35}.landmark-arrow{font-size:18px;color:var(--accent)}
+    .hidden{display:none!important}.no-results{font-size:14px;color:var(--muted)}.recruiter-section{margin:18px 0 28px}.recruiter-section>h3{font:650 24px ui-sans-serif,system-ui,sans-serif;margin:0 0 12px;color:var(--accent)}.recruiter-section .entry{margin:10px 0}
+    .bio{font-size:14px;line-height:1.7;color:var(--muted)}.socials{display:flex;flex-wrap:wrap;gap:10px}.socials a{font-size:13px;color:var(--accent);padding:8px 10px;border:1px solid var(--stroke);border-radius:10px;text-decoration:none}
+    @keyframes gentle-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+    @keyframes twinkle{0%,100%{opacity:.6}50%{opacity:1}}
+    @keyframes drift{0%,100%{translate:0 0}50%{translate:8px -4px}}
+    @keyframes pulse{0%,100%{opacity:.82}50%{opacity:1}}
+    .motion-float{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
+    .motion-twinkle{animation:twinkle 5s ease-in-out infinite}.motion-drift{animation:drift 9s ease-in-out infinite}.motion-pulse{animation:pulse 4s ease-in-out infinite}
+    @media(max-width:680px){.app{--gutter:11px;padding:0 var(--gutter) env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(18px,5.3vw,27px);line-height:1.13;overflow-wrap:anywhere;max-width:100%}.tagline{font-size:11px;max-width:44ch}.mobile-hint{display:none}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:12px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
+    /* A real mobile subtitle: wrap rather than silently ellipsize the owner/headline. */
+    @media(max-width:680px){
+      .topbar{min-height:60px;padding-block:6px;gap:7px}
+      .brand{font-size:10px;letter-spacing:.015em;white-space:normal;line-height:1.2;max-width:52%;gap:6px}
+      .brand-icon{flex:0 0 27px;width:27px;height:27px}
+      .owner{font-size:10px;max-width:48%;min-width:0;white-space:normal;overflow:visible;text-overflow:clip;
+        overflow-wrap:anywhere;line-height:1.26;text-align:right}
+    }
+    @media(max-width:680px) and (min-height:560px){.photo-mode .scene-backdrop{object-fit:cover}}
+    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:34%;font-size:9px;padding:2px 4px;line-height:1.13}}
+    @media(max-width:380px){#start-tour::before{content:"▶";font-size:17px;line-height:1} .tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
+    @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    @media print{html,body{height:auto!important;overflow:visible!important;background:white!important;color:black!important}.app,.detail-dialog,.list-dialog,.about-dialog{display:none!important}#recruiter-dialog{display:block!important;position:static!important;border:0!important;box-shadow:none!important;width:100%!important;max-height:none!important;color:black!important;background:white!important;margin:0;padding:0}#recruiter-dialog .dialog-inner{overflow:visible!important;max-height:none!important;padding:0!important}#recruiter-dialog .close-dialog,#recruiter-dialog .print-action{display:none!important}#recruiter-dialog .dialog-heading h2,#recruiter-dialog .entry h3,#recruiter-dialog .recruiter-section>h3{color:black!important}#recruiter-dialog .entry,#recruiter-dialog .metric{break-inside:avoid;border-color:#ccc;background:white!important}#recruiter-dialog .entry *{color:black!important}#recruiter-dialog .eyebrow{color:#333!important}#recruiter-dialog .entry{padding:10px}#recruiter-dialog .tag{border-color:#bbb;color:#333!important}}
+  </style>
+</head>
+<body data-theme="toon-cartoon-city" data-family="toon" data-count="4" class="">
+  <div class="app" id="main">
+    <button type="button" class="skip" data-dialog="list-dialog">Skip to locations</button>
+    <header class="topbar"><div class="brand"><span class="brand-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg></span><span>SimpliCITY Builder</span></div><span class="owner">SimpliCITY Builder · Fictional Toon City</span></header>
+    <div class="intro"><div><p class="eyebrow">An explorable world · toon-cartoon-city</p><h1>The Toon City Studio</h1><p class="tagline">Four colorful original districts full of playful discoveries</p><p class="mobile-hint">Select a landmark to discover its story</p></div><div class="overview"><strong>4</strong>Locations</div></div>
+    <main class="stage" id="world" aria-label="Explore the world"><div class="scene-world" role="group" aria-label="Select a landmark to discover its story"><svg class="scene-svg" viewBox="0 0 620 520" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="material-0" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff6b69"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6dc2eb"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe04f"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff8a54"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><radialGradient id="aura"><stop stop-color="var(--accent2)" stop-opacity=".22"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><ellipse cx="310" cy="270" rx="345" ry="252" fill="url(#aura)" opacity=".22"></ellipse><defs><linearGradient id="v21-horizon" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#254881" stop-opacity=".96"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity=".13"></stop></linearGradient><linearGradient id="v21-ridge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="var(--accent2)" stop-opacity=".38"></stop><stop offset="1" stop-color="var(--accent)" stop-opacity=".08"></stop></linearGradient><radialGradient id="v21-light"><stop stop-color="var(--accent2)" stop-opacity=".55"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><rect x="0" y="0" width="620" height="520" fill="url(#v21-horizon)"></rect><circle cx="498" cy="93" r="60" fill="#ffe04f" stroke="#10152f" stroke-width="9"></circle><path d="M-25 319 L96 182 L190 270 L321 133 L455 252 L626 178 L655 540 H-25Z" fill="#6dc2eb" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><path d="M-25 400 Q95 324 199 376 T460 350 T660 388 V540 H-25Z" fill="#388abf" stroke="#10152f" stroke-width="8"></path><path d="M-20 487 Q140 423 306 471 T650 462" fill="none" stroke="#ffe04f" stroke-width="19" opacity=".73"></path><path d="M166 288 Q312.0 313.0 458 252" fill="none" stroke="var(--accent2)" stroke-width="4" opacity=".23"></path><path d="M458 252 Q307.5 364.5 157 391" fill="none" stroke="var(--accent2)" stroke-width="4" opacity=".23"></path><path d="M157 391 Q300.5 430.0 444 383" fill="none" stroke="var(--accent2)" stroke-width="4" opacity=".23"></path><g id="landmark-giggle-gateway" transform="translate(166 214) scale(0.87) translate(-166 -214)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Giggle Gateway" data-dialog="detail-giggle-gateway" class="scene-landmark"><title>Giggle Gateway</title><ellipse cx="166" cy="189" rx="118" ry="137" fill="url(#aura)" opacity=".48"></ellipse><path d="M64 271 L98 247 H235 L268 271 L234 298 H99Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="82" y="109" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M98 279 L108 179 L146 179 L166 104 L190 179 L226 179 L234 279Z" fill="url(#material-0)" stroke="#10152f" stroke-width="12" stroke-linejoin="round"></path><circle cx="166" cy="175" r="22" fill="#ffe04f" stroke="#10152f" stroke-width="8"></circle><path d="M133 279 V223 H199 V279" fill="#ff6b69" stroke="#10152f" stroke-width="8"></path><path d="M122 168 L143 141" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-idea-tower" transform="translate(458 178) scale(0.75) translate(-458 -178)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Idea Tower" data-dialog="detail-idea-tower" class="scene-landmark"><title>Idea Tower</title><path d="M356 235 L390 211 H527 L560 235 L526 262 H391Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="374" y="73" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M381 238 Q365 166 423 105 Q458 50 493 105 Q551 166 535 238Z" fill="url(#material-1)" stroke="#10152f" stroke-width="12"></path><path d="M416 216 H500 V239 H416Z" fill="#ffe04f" stroke="#10152f" stroke-width="7"></path><path d="M414 132 L435 105" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-bubble-lab" transform="translate(157 317) scale(0.74) translate(-157 -317)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Bubble Lab" data-dialog="detail-bubble-lab" class="scene-landmark"><title>Bubble Lab</title><path d="M55 374 L89 350 H226 L259 374 L225 401 H90Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="73" y="212" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><rect x="91" y="249" width="132" height="130" rx="19" fill="url(#material-2)" stroke="#10152f" stroke-width="12"></rect><path d="M94 248 L157 197 L220 248Z" fill="#ff6b69" stroke="#10152f" stroke-width="9"></path><circle cx="157" cy="301" r="23" fill="#ffe04f" stroke="#10152f" stroke-width="8"></circle><path d="M113 271 L134 244" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-story-station" transform="translate(444 309) scale(0.69) translate(-444 -309)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Story Station" data-dialog="detail-story-station" class="scene-landmark"><title>Story Station</title><path d="M342 366 L376 342 H513 L546 366 L512 393 H377Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="360" y="204" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M376 374 L386 274 L424 274 L444 199 L468 274 L504 274 L512 374Z" fill="url(#material-3)" stroke="#10152f" stroke-width="12" stroke-linejoin="round"></path><circle cx="444" cy="270" r="22" fill="#ffe04f" stroke="#10152f" stroke-width="8"></circle><path d="M411 374 V318 H477 V374" fill="#ff6b69" stroke="#10152f" stroke-width="8"></path><path d="M400 263 L421 236" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g></svg><template id="mobile-scene-template"><svg class="scene-svg" viewBox="0 0 620 880" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="material-0" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff6b69"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6dc2eb"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe04f"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff8a54"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><radialGradient id="aura"><stop stop-color="var(--accent2)" stop-opacity=".22"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><ellipse cx="310" cy="450" rx="345" ry="440" fill="url(#aura)" opacity=".22"></ellipse><defs><linearGradient id="v21-horizon" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#254881" stop-opacity=".96"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity=".13"></stop></linearGradient><linearGradient id="v21-ridge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="var(--accent2)" stop-opacity=".38"></stop><stop offset="1" stop-color="var(--accent)" stop-opacity=".08"></stop></linearGradient><radialGradient id="v21-light"><stop stop-color="var(--accent2)" stop-opacity=".55"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><rect x="0" y="0" width="620" height="880" fill="url(#v21-horizon)"></rect><circle cx="498" cy="158" r="60" fill="#ffe04f" stroke="#10152f" stroke-width="9"></circle><path d="M-25 532 L96 395 L190 483 L321 346 L455 465 L626 391 L655 900 H-25Z" fill="#6dc2eb" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><path d="M-25 677 Q95 601 199 653 T460 627 T660 665 V900 H-25Z" fill="#388abf" stroke="#10152f" stroke-width="8"></path><path d="M-20 847 Q140 783 306 831 T650 822" fill="none" stroke="#ffe04f" stroke-width="19" opacity=".73"></path><path d="M181 246 Q307.5 347.0 434 378" fill="none" stroke="var(--accent2)" stroke-width="4" opacity=".23"></path><path d="M434 378 Q308.5 545.0 183 642" fill="none" stroke="var(--accent2)" stroke-width="4" opacity=".23"></path><path d="M183 642 Q305.0 756.5 427 801" fill="none" stroke="var(--accent2)" stroke-width="4" opacity=".23"></path><g id="landmark-giggle-gateway" transform="translate(181 172) scale(0.93) translate(-181 -172)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Giggle Gateway" data-dialog="detail-giggle-gateway" class="scene-landmark"><title>Giggle Gateway</title><path d="M79 229 L113 205 H250 L283 229 L249 256 H114Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="97" y="67" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M113 237 L123 137 L161 137 L181 62 L205 137 L241 137 L249 237Z" fill="url(#material-0)" stroke="#10152f" stroke-width="12" stroke-linejoin="round"></path><circle cx="181" cy="133" r="22" fill="#ffe04f" stroke="#10152f" stroke-width="8"></circle><path d="M148 237 V181 H214 V237" fill="#ff6b69" stroke="#10152f" stroke-width="8"></path><path d="M137 126 L158 99" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-idea-tower" transform="translate(434 304) scale(0.93) translate(-434 -304)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Idea Tower" data-dialog="detail-idea-tower" class="scene-landmark"><title>Idea Tower</title><path d="M332 361 L366 337 H503 L536 361 L502 388 H367Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="350" y="199" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M357 364 Q341 292 399 231 Q434 176 469 231 Q527 292 511 364Z" fill="url(#material-1)" stroke="#10152f" stroke-width="12"></path><path d="M392 342 H476 V365 H392Z" fill="#ffe04f" stroke="#10152f" stroke-width="7"></path><path d="M390 258 L411 231" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-bubble-lab" transform="translate(183 568) scale(0.93) translate(-183 -568)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Bubble Lab" data-dialog="detail-bubble-lab" class="scene-landmark"><title>Bubble Lab</title><path d="M81 625 L115 601 H252 L285 625 L251 652 H116Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="99" y="463" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><rect x="117" y="500" width="132" height="130" rx="19" fill="url(#material-2)" stroke="#10152f" stroke-width="12"></rect><path d="M120 499 L183 448 L246 499Z" fill="#ff6b69" stroke="#10152f" stroke-width="9"></path><circle cx="183" cy="552" r="23" fill="#ffe04f" stroke="#10152f" stroke-width="8"></circle><path d="M139 522 L160 495" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-story-station" transform="translate(427 727) scale(0.93) translate(-427 -727)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Story Station" data-dialog="detail-story-station" class="scene-landmark"><title>Story Station</title><path d="M325 784 L359 760 H496 L529 784 L495 811 H360Z" fill="#ffe04f" stroke="#10152f" stroke-width="9" stroke-linejoin="round"></path><rect x="343" y="622" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M359 792 L369 692 L407 692 L427 617 L451 692 L487 692 L495 792Z" fill="url(#material-3)" stroke="#10152f" stroke-width="12" stroke-linejoin="round"></path><circle cx="427" cy="688" r="22" fill="#ffe04f" stroke="#10152f" stroke-width="8"></circle><path d="M394 792 V736 H460 V792" fill="#ff6b69" stroke="#10152f" stroke-width="8"></path><path d="M383 681 L404 654" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g></svg></template><span class="scene-plaque" data-plaque-for="landmark-giggle-gateway">Giggle Gateway</span><span class="scene-plaque" data-plaque-for="landmark-idea-tower">Idea Tower</span><span class="scene-plaque" data-plaque-for="landmark-bubble-lab">Bubble Lab</span><span class="scene-plaque" data-plaque-for="landmark-story-station">Story Station</span><nav class="photo-navigation" aria-label="Photo objects"><button type="button" id="photo-prev" aria-label="Previous photo object">◀</button><button type="button" id="photo-fit">Fit photo</button><button type="button" id="photo-next" aria-label="Next photo object">▶</button></nav><div class="scene-tooltip" id="scene-tooltip" hidden></div></div></main>
+    <div class="toolbar"><span class="hint">Select a landmark to discover its story</span><nav class="tools" aria-label="World navigation"><button type="button" class="tool" id="start-tour" aria-label="Start guided tour">Start tour</button><button type="button" class="tool tool-primary" data-dialog="list-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> Locations</button><button type="button" class="tool" data-dialog="about-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/></svg> About</button><button type="button" class="tool" data-dialog="recruiter-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/></svg> Overview</button></nav></div>
+    <footer class="credits"><span>Made with SimpliCITY Builder</span><span>Review facts and privacy before sharing</span></footer>
+  </div>
+  <dialog class="list-dialog" id="list-dialog" aria-labelledby="list-title"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Explore the world</p><h2 id="list-title">Locations</h2><p>Four colorful original districts full of playful discoveries</p></div><button class="close-dialog" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><label for="world-search" class="eyebrow">Search locations</label><input id="world-search" class="searchbox" type="search" placeholder="Search locations" autocomplete="off"><p id="result-count" role="status" class="eyebrow">4 Locations</p><div id="landmarks"><button type="button" class="landmark" data-dialog="detail-giggle-gateway" data-search="giggle gateway a big bright gateway welcomes imaginary explorers. giggle gateway adventure fictional visitors discover creative inventions and original playful stories.  " aria-haspopup="dialog" aria-label="Explore Giggle Gateway"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><span class="landmark-text"><strong>Giggle Gateway</strong><small>A big bright gateway welcomes imaginary explorers.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>
+<button type="button" class="landmark" data-dialog="detail-idea-tower" data-search="idea tower a colorful tower of original invention. idea tower adventure fictional visitors discover creative inventions and original playful stories.  " aria-haspopup="dialog" aria-label="Explore Idea Tower"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3ZM19 18l.7 1.3L21 20l-1.3.7L19 22l-.7-1.3L17 20l1.3-.7L19 18Z"/></svg></span><span class="landmark-text"><strong>Idea Tower</strong><small>A colorful tower of original invention.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>
+<button type="button" class="landmark" data-dialog="detail-bubble-lab" data-search="bubble lab playful inventions float through an animated laboratory. bubble lab adventure fictional visitors discover creative inventions and original playful stories.  " aria-haspopup="dialog" aria-label="Explore Bubble Lab"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c0-5 6-11 14-12l2 2c-1 8-7 14-12 14l-4-4Z"/><path d="m9 15-4 4M5 10H2l2-4 5-2M14 19v3l4-2 2-5"/><circle cx="15" cy="9" r="2"/></svg></span><span class="landmark-text"><strong>Bubble Lab</strong><small>Playful inventions float through an animated laboratory.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>
+<button type="button" class="landmark" data-dialog="detail-story-station" data-search="story station a bright station where fictional stories begin. story station adventure fictional visitors discover creative inventions and original playful stories.  " aria-haspopup="dialog" aria-label="Explore Story Station"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 7 7 .5-5.5 4.6 1.7 7-6.2-3.8-6.2 3.8 1.7-7L2 9.5 9 9Z"/></svg></span><span class="landmark-text"><strong>Story Station</strong><small>A bright station where fictional stories begin.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button></div><p id="empty-search" class="no-results hidden">No matching locations</p></div></dialog>
+  <dialog class="about-dialog" id="about-dialog" aria-labelledby="about-title"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Discover the source behind this world</p><h2 id="about-title">SimpliCITY Builder</h2><p>Fictional Toon City</p></div><button class="close-dialog" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><p class="bio">An interactive interpretation of Fictional Toon City.</p><div class="socials"></div></div></dialog>
+  <dialog id="recruiter-dialog" aria-labelledby="recruiter-title"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Overview</p><h2 id="recruiter-title">SimpliCITY Builder</h2><p>Fictional Toon City</p></div><button class="close-dialog" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><p class="bio">An interactive interpretation of Fictional Toon City.</p><button type="button" class="tool print-action" onclick="window.print()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/></svg> Print overview</button><section class="recruiter-section"><h3>Giggle Gateway</h3><article class="entry"><h3>Giggle Gateway Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></section>
+<section class="recruiter-section"><h3>Idea Tower</h3><article class="entry"><h3>Idea Tower Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></section>
+<section class="recruiter-section"><h3>Bubble Lab</h3><article class="entry"><h3>Bubble Lab Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></section>
+<section class="recruiter-section"><h3>Story Station</h3><article class="entry"><h3>Story Station Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></section></div></dialog>
+  <dialog class="detail-dialog" id="detail-giggle-gateway" aria-labelledby="label-giggle-gateway"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 01</p><h2 id="label-giggle-gateway">Giggle Gateway</h2><p>A big bright gateway welcomes imaginary explorers.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Giggle Gateway Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></div></div></dialog>
+<dialog class="detail-dialog" id="detail-idea-tower" aria-labelledby="label-idea-tower"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 02</p><h2 id="label-idea-tower">Idea Tower</h2><p>A colorful tower of original invention.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Idea Tower Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></div></div></dialog>
+<dialog class="detail-dialog" id="detail-bubble-lab" aria-labelledby="label-bubble-lab"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 03</p><h2 id="label-bubble-lab">Bubble Lab</h2><p>Playful inventions float through an animated laboratory.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Bubble Lab Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></div></div></dialog>
+<dialog class="detail-dialog" id="detail-story-station" aria-labelledby="label-story-station"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 04</p><h2 id="label-story-station">Story Station</h2><p>A bright station where fictional stories begin.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Story Station Adventure</h3><p class="entry-description">Fictional visitors discover creative inventions and original playful stories.</p></article></div></div></dialog>
+  <script type="application/json" id="photo-anchors">{}</script>
+  <script>
+    (()=>{
+      'use strict';
+      document.addEventListener('click',event=>{
+        const button=event.target.closest('[data-dialog]');
+        if(!button)return;
+        const dialog=document.getElementById(button.dataset.dialog);
+        if(dialog && !dialog.open){
+          const parent=button.closest('dialog');if(parent && parent.open)parent.close();
+          dialog.showModal();
+        }
+      });
+      document.querySelectorAll('dialog').forEach(dialog=>{
+        dialog.querySelector('.close-dialog')?.addEventListener('click',()=>dialog.close());
+        dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+      });
+
+      const world=document.querySelector('.scene-world');
+      // Separate hand-composed mobile SVG is optional, not a cropped desktop scene.
+      // A template stays inert; only one scene and one set of landmark IDs exist.
+      const mobileTemplate=document.getElementById('mobile-scene-template');
+      const desktopScene=world?.querySelector('.scene-svg')?.cloneNode(true);
+      const mobileScene=mobileTemplate?.content.querySelector('.scene-svg');
+      const mobileQuery=window.matchMedia('(max-width:680px)');
+      function chooseScene(){
+        if(!mobileScene || !desktopScene)return;
+        const desired=mobileQuery.matches ? mobileScene : desktopScene;
+        const active=world.querySelector('.scene-svg');
+        if(active.dataset.sceneVariant !== (mobileQuery.matches?'mobile':'desktop')){
+          const next=desired.cloneNode(true);
+          next.dataset.sceneVariant=mobileQuery.matches?'mobile':'desktop';
+          active.replaceWith(next);
+          renderBackdrop();
+        }
+      }
+      if(mobileScene){mobileQuery.addEventListener('change',chooseScene);chooseScene();}
+      function correctBackgroundCircles(){
+        // Full-bleed terrain intentionally uses an anisotropic viewBox fit.
+        // Cancel that anisotropy *only* for celestial circles (moons/stars),
+        // whose screen-space radius must remain round at every viewport.
+        const ambient=world?.querySelector('.scene-ambience');
+        if(!ambient)return;
+        const values=(ambient.getAttribute('viewBox')||'0 0 620 520').split(/[,\s]+/).map(Number);
+        const frame=world.getBoundingClientRect();
+        if(frame.width<=0||frame.height<=0)return;
+        const horizontal=frame.width/values[2],vertical=frame.height/values[3];
+        const ratio=vertical/horizontal;
+        ambient.querySelectorAll('circle').forEach(circle=>{
+          if(circle.closest('defs'))return;
+          const cx=Number(circle.getAttribute('cx')||0);
+          if(!circle.hasAttribute('data-original-transform')){
+            circle.setAttribute('data-original-transform',circle.getAttribute('transform')||'');
+          }
+          const original=circle.getAttribute('data-original-transform');
+          circle.setAttribute('transform',`translate(${cx} 0) scale(${ratio} 1) translate(${-cx} 0) ${original}`.trim());
+        });
+      }
+      function renderBackdrop(){
+        if(!world || document.body.classList.contains('photo-mode'))return;
+        const art=world.querySelector('.scene-svg');if(!art)return;
+        // This function runs during initial scene selection and on viewport
+        // changes. Never re-clone an already stripped foreground; doing so
+        // silently discards the actual environment and flattens the world.
+        if(art.dataset.sceneryProjected==='true' && world.querySelector('.scene-ambience')){
+          correctBackgroundCircles();return;
+        }
+        world.querySelector('.scene-ambience')?.remove();
+        const ambient=art.cloneNode(true);
+        ambient.classList.remove('scene-svg');ambient.classList.add('scene-ambience');
+        ambient.removeAttribute('role');ambient.setAttribute('aria-hidden','true');
+        ambient.setAttribute('preserveAspectRatio','none');
+        ambient.querySelectorAll('[id^="landmark-"]').forEach(el=>el.remove());
+        ambient.removeAttribute('id');
+        world.prepend(ambient);
+        // Keep scene-wide terrain only in the full-bleed environment.
+        const keepInteractive=node=>{
+          if(node.localName==='defs'||node.classList?.contains('scene-landmark'))return true;
+          let retained=false;
+          for(const child of [...node.children]){
+            if(keepInteractive(child))retained=true;
+            else child.remove();
+          }
+          return retained;
+        };
+        for(const child of [...art.children])if(!keepInteractive(child))child.remove();
+        art.dataset.sceneryProjected='true';
+        correctBackgroundCircles();
+      }
+      renderBackdrop();
+      const photo=world?.querySelector('.scene-backdrop');
+      const photoAnchors=JSON.parse(document.getElementById('photo-anchors')?.textContent || '{}');
+      const anchorKeys=Object.keys(photoAnchors);
+      let currentPhoto=0, fitWholePhoto=false;
+      function fitPhotoAnchors(){
+        // Only source photos use observed-object pan/fit mathematics. Scenic
+        // backgrounds must remain full-bleed, without a central rectangle.
+        if(!document.body.classList.contains('photo-mode'))return;
+        if(!photo || !photo.naturalWidth || !photo.naturalHeight || !world)return;
+        const fw=world.clientWidth,fh=world.clientHeight;
+        if(!fw||!fh)return;
+        const portrait=mobileQuery.matches && window.innerHeight>=560 && !fitWholePhoto;
+        // Photo mode is neither a forced full-viewport crop nor a tiny contain
+        // thumbnail. On phones, show at least 64% of the stage height, then
+        // pan toward the selected object's observed bounding box. This retains
+        // nearby visual context and avoids cutting the image far beyond need.
+        const contain=Math.min(fw/photo.naturalWidth,fh/photo.naturalHeight);
+        const scale=portrait?Math.max(contain,fh*.64/photo.naturalHeight):contain;
+        const iw=photo.naturalWidth*scale,ih=photo.naturalHeight*scale;
+        let ix=(fw-iw)/2,iy=(fh-ih)/2;
+        const focus=photoAnchors[anchorKeys[currentPhoto]];
+        if(portrait && focus){
+          if(iw>fw)ix=Math.max(fw-iw,Math.min(0,fw/2-(focus.x+focus.width/2)*iw));
+          if(ih>fh)iy=Math.max(fh-ih,Math.min(0,fh/2-(focus.y+focus.height/2)*ih));
+        }
+        photo.style.inset='auto';
+        photo.style.width=iw+'px';photo.style.height=ih+'px';
+        photo.style.left=ix+'px';photo.style.top=iy+'px';
+        photo.style.objectFit='fill';photo.style.objectPosition='center';
+        photo.dataset.fitMode=portrait?'context':'contain';
+        world.dataset.photoCoverage=(Math.min(fw,iw)*Math.min(fh,ih)/(fw*fh)).toFixed(4);
+        const svg=world.querySelector('.scene-svg');
+        if(!svg)return;
+        svg.setAttribute('preserveAspectRatio','none');
+        for(const [sid,box] of Object.entries(photoAnchors)){
+          const el=svg.querySelector('#landmark-'+CSS.escape(sid));
+          const rect=el?.querySelector('rect');if(!rect)continue;
+          const rawX=ix+box.x*iw,rawY=iy+box.y*ih;
+          const rawW=box.width*iw,rawH=box.height*ih;
+          // Keep the visible outline within the viewport. A very wide region
+          // otherwise clips both vertical borders, looking like two stray lines.
+          const l=Math.max(5,rawX),r=Math.min(fw-5,rawX+rawW);
+          const top=Math.max(5,rawY),bottom=Math.min(fh-5,rawY+rawH);
+          const visibleW=Math.max(0,r-l),visibleH=Math.max(0,bottom-top);
+          const w=Math.max(44,visibleW),h=Math.max(44,visibleH);
+          const x=Math.max(5,Math.min(fw-w-5,l-(w-visibleW)/2));
+          const y=Math.max(5,Math.min(fh-h-5,top-(h-visibleH)/2));
+          rect.setAttribute('x',(x/fw*620).toFixed(2));rect.setAttribute('y',(y/fh*520).toFixed(2));
+          rect.setAttribute('width',(w/fw*620).toFixed(2));rect.setAttribute('height',(h/fh*520).toFixed(2));
+        }
+        svg.dataset.anchored='true';
+      }
+      // Strict nearest-object placement: never use a distant edge rail.
+      // No overlap is preferable to detaching a name from its object. If
+      // packing fails, the browser test reports an unplaced label and the
+      // author must improve the mobile composition.
+      function placePlaques(){
+        if(!world)return;
+        const frame=world.getBoundingClientRect();
+        if(!frame.width||!frame.height)return;
+        const nodes=[...world.querySelectorAll('.scene-plaque')];
+        const targets=[...world.querySelectorAll('.scene-landmark')].map(el=>({el,rect:el.getBoundingClientRect()}));
+        const overlaps=(a,b,pad=0)=>a.l<b.r+pad&&a.r>b.l-pad&&a.t<b.b+pad&&a.b>b.t-pad;
+        const inBounds=a=>a.l>=4&&a.t>=4&&a.r<=frame.width-4&&a.b<=frame.height-4;
+        const local=r=>({l:r.left-frame.left,r:r.right-frame.left,t:r.top-frame.top,b:r.bottom-frame.top});
+        const near=(a,b)=>Math.hypot(Math.max(0,a.l-b.r,b.l-a.r),Math.max(0,a.t-b.b,b.t-a.b));
+        const maxGap=mobileQuery.matches?42:60;
+        const focusedPhoto=document.body.classList.contains('photo-mode') && mobileQuery.matches &&
+          window.innerHeight>=560 && !fitWholePhoto && anchorKeys.length>1;
+        // At phone-scale crop, a wide natural image region may cover most of
+        // the viewport. Only the focused region gets a plaque; the other
+        // named objects remain available through Photo Next/Previous and List.
+        const focusId='landmark-'+anchorKeys[currentPhoto];
+        const hitBoxes=targets.filter(p=>!focusedPhoto||p.el.id===focusId).map(p=>local(p.rect));
+        const controls=world.querySelector('.photo-navigation');
+        const blockers=controls&&getComputedStyle(controls).display!=='none'?[local(controls.getBoundingClientRect())]:[];
+        const featured=world.querySelector('.featured-action');
+        if(featured)blockers.push(local(featured.getBoundingClientRect()));
+        const placed=[];
+        nodes.forEach(plaque=>{plaque.classList.remove('placed');plaque.dataset.placement='';plaque.style.left='';plaque.style.top='';});
+        const sorted=nodes.map(plaque=>{
+          if(focusedPhoto&&plaque.dataset.plaqueFor!==focusId){
+            plaque.dataset.placement='offscreen';return {plaque,box:null};
+          }
+          const target=targets.find(p=>p.el.id===plaque.dataset.plaqueFor);
+          return {plaque,box:target?local(target.rect):null};
+        }).filter(i=>i.box).sort((a,b)=>a.box.t-b.box.t);
+        for(const {plaque,box} of sorted){
+          const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
+          const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
+          // Cropped photo regions are reached through the navigation controls.
+          if(document.body.classList.contains('photo-mode') &&
+             (cx<-6||cx>frame.width+6||cy<-6||cy>frame.height+6)){
+            plaque.dataset.placement='offscreen';continue;
+          }
+          const options=[];
+          for(const delta of [0,-18,18,-36,36,-54,54,-72,72]){
+            options.push({name:'above',l:cx-w/2+delta,t:box.t-h-8});
+            options.push({name:'below',l:cx-w/2+delta,t:box.b+8});
+            options.push({name:'left',l:box.l-w-8,t:cy-h/2+delta});
+            options.push({name:'right',l:box.r+8,t:cy-h/2+delta});
+          }
+          let chosen=null,score=Infinity;
+          for(const option of options){
+            const l=Math.max(5,Math.min(frame.width-w-5,option.l));
+            const t=Math.max(5,Math.min(frame.height-h-5,option.t));
+            const rect={l,t,r:l+w,b:t+h};
+            const gap=near(rect,box);
+            if(!inBounds(rect)||gap>maxGap||placed.some(p=>overlaps(p,rect,4))||
+               hitBoxes.some(b=>overlaps(b,rect,3))||blockers.some(b=>overlaps(b,rect,4)))continue;
+            const candidate=gap+Math.hypot(l-option.l,t-option.t)*.8+
+              (option.name==='above'?0:option.name==='below'?1:2);
+            if(candidate<score){score=candidate;chosen={...rect,name:option.name};}
+          }
+          if(!chosen){plaque.dataset.placement='unplaced';continue;}
+          placed.push(chosen);
+          plaque.style.left=chosen.l+'px';plaque.style.top=chosen.t+'px';
+          plaque.dataset.placement=chosen.name;plaque.classList.add('placed');
+        }
+      }
+      function updateArt(){fitPhotoAnchors();correctBackgroundCircles();requestAnimationFrame(placePlaques);}
+      function focusPhoto(index){
+        currentPhoto=(index+anchorKeys.length)%anchorKeys.length;fitWholePhoto=false;
+        const current=anchorKeys[currentPhoto];
+        const label=world.querySelector('[data-plaque-for="landmark-'+CSS.escape(current)+'"]')?.textContent?.trim()||'photo object';
+        document.getElementById('photo-prev')?.setAttribute('aria-label','Previous photo object before '+label);
+        document.getElementById('photo-next')?.setAttribute('aria-label','Next photo object after '+label);
+        updateArt();
+      }
+      document.getElementById('photo-prev')?.addEventListener('click',()=>focusPhoto(currentPhoto-1));
+      document.getElementById('photo-next')?.addEventListener('click',()=>focusPhoto(currentPhoto+1));
+      document.getElementById('photo-fit')?.addEventListener('click',event=>{
+        fitWholePhoto=!fitWholePhoto;event.currentTarget.textContent=fitWholePhoto?'Zoom photo':'Fit photo';updateArt();
+      });
+      if(photo){photo.addEventListener('load',updateArt);if(photo.complete)updateArt();}
+      window.addEventListener('resize',updateArt);
+      if(mobileScene)mobileQuery.addEventListener('change',()=>requestAnimationFrame(updateArt));
+      requestAnimationFrame(updateArt);
+      document.fonts?.ready.then(updateArt);
+      document.addEventListener('click',event=>{
+        const listItem=event.target.closest('button.landmark');
+        if(document.body.classList.contains('photo-mode') && listItem){
+          const index=tourIds.indexOf(listItem.dataset.dialog);
+          if(index>=0)focusPhoto(index);
+        }
+      });
+      world?.addEventListener('keydown'  ,event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object && (event.key==='Enter'||event.key===' ')){
+          event.preventDefault();object.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+        }
+      });
+      const tooltip=document.getElementById('scene-tooltip');
+      function labelObject(object){
+        if(!object || !world || !tooltip) return;
+        const box=object.getBoundingClientRect();
+        const frame=world.getBoundingClientRect();
+        const x=Math.max(68,Math.min(frame.width-68,(box.left+box.right)/2-frame.left));
+        const y=Math.max(37,box.top-frame.top-10);
+        tooltip.textContent=object.getAttribute('aria-label') || '';
+        tooltip.style.left=`${x}px`;tooltip.style.top=`${y}px`;
+        tooltip.hidden=false;
+      }
+      world?.addEventListener('pointerover',event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object)labelObject(object);
+      });
+      world?.addEventListener('pointerout',event=>{
+        if(event.target.closest?.('.scene-landmark') && !event.relatedTarget?.closest?.('.scene-landmark'))tooltip.hidden=true;
+      });
+      world?.addEventListener('focusin',event=>{
+        const object=event.target.closest?.('.scene-landmark');if(object)labelObject(object);
+      });
+      world?.addEventListener('focusout',()=>{tooltip.hidden=true});
+      // Accessible optional guided tour. Controls stay INSIDE the modal dialog.
+      const tourIds=[...document.querySelectorAll('button.landmark')].map(el=>el.dataset.dialog);
+      let tourIndex=-1;
+      function stopTour(){tourIndex=-1;document.querySelectorAll('.tour-buttons').forEach(x=>x.hidden=true);}
+      function goTour(index){
+        if(index<0||index>=tourIds.length)return;
+        const current=document.querySelector('dialog[open]');if(current)current.close();
+        tourIndex=index;
+        if(document.body.classList.contains('photo-mode'))focusPhoto(index);
+        const dialog=document.getElementById(tourIds[index]);
+        if(!dialog)return stopTour();
+        document.querySelectorAll('.tour-buttons').forEach(x=>x.hidden=true);
+        const nav=dialog.querySelector('.tour-buttons');if(nav){nav.hidden=false;
+          nav.querySelector('[data-tour="prev"]').disabled=index===0;
+          nav.querySelector('[data-tour="next"]').disabled=index===tourIds.length-1;
+          nav.querySelector('[data-tour="status"]').textContent=`${index+1} of ${tourIds.length}`;
+        }
+        dialog.showModal();nav?.querySelector('[data-tour="next"]:not(:disabled)')?.focus();
+      }
+      document.querySelectorAll('dialog.detail-dialog').forEach(dialog=>{
+        const controls=document.createElement('div');controls.className='tour-buttons';controls.hidden=true;
+        controls.innerHTML='<button type="button" data-tour="prev">Previous</button><span data-tour="status" aria-live="polite"></span><button type="button" data-tour="next">Next</button><button type="button" data-tour="exit">Exit tour</button>';
+        dialog.querySelector('.dialog-inner').append(controls);
+      });
+      document.getElementById('start-tour')?.addEventListener('click',()=>goTour(0));
+      document.addEventListener('click',event=>{
+        const action=event.target.closest('[data-tour]')?.dataset.tour;
+        if(!action)return;
+        if(action==='next')goTour(tourIndex+1);
+        if(action==='prev')goTour(tourIndex-1);
+        if(action==='exit'){document.querySelector('dialog[open]')?.close();stopTour();}
+      });
+      document.addEventListener('keydown',event=>{
+        if(tourIndex<0)return;
+        if(event.key==='ArrowRight'&&tourIndex<tourIds.length-1){event.preventDefault();goTour(tourIndex+1);}
+        if(event.key==='ArrowLeft'&&tourIndex>0){event.preventDefault();goTour(tourIndex-1);}
+        if(event.key==='Escape')stopTour();
+      });
+      document.querySelectorAll('dialog.detail-dialog').forEach(dialog=>dialog.addEventListener('close',()=>{
+        if(tourIndex>=0 && !document.querySelector('dialog.detail-dialog[open]'))stopTour();
+      }));
+      const search=document.getElementById('world-search');
+      const items=Array.from(document.querySelectorAll('.landmark'));
+      const count=document.getElementById('result-count');
+      const empty=document.getElementById('empty-search');
+      search.addEventListener('input',()=>{
+        const q=search.value.trim().toLocaleLowerCase();
+        let matched=0;
+        items.forEach(item=>{const ok=item.dataset.search.includes(q);item.hidden=!ok;if(ok)matched++});
+        count.textContent=`${matched} / ${items.length}`;
+        empty.classList.toggle('hidden',matched>0);
+      });
+    })();
+  </script>
+</body>
+</html>

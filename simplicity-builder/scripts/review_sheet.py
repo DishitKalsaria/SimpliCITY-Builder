@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-from datetime import date
 from pathlib import Path
 
 from verify_source import evidence_issues, numbers
@@ -59,5 +58,7 @@ def make_review_sheet(data: dict, source_text: str | None = None) -> str:
 def save_private_sheet(path: Path, data: dict, source_text: str | None = None) -> None:
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(make_review_sheet(data, source_text), encoding='utf-8')
-    try: path.chmod(0o600)
-    except OSError: pass
+    try:
+        path.chmod(0o600)
+    except OSError:
+        pass

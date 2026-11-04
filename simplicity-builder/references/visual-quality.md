@@ -1,4 +1,4 @@
-# Visual quality acceptance rubric — v0.2.0
+# Visual quality acceptance rubric — v0.2.1
 
 Qualitative, not a mathematically objective score. Evaluate each 1–5; revise any dimension below 4 before presenting as polished.
 
@@ -31,7 +31,7 @@ For a supplied photo, the original must be visibly present, no synthetic hills/m
 
 Use legible interface copy, with ordinary text meeting at least 4.5:1 and large text 3:1 where measured against its actual rendered background. Review translucent overlays and custom accents with real screenshots. A default SVG composition is an accessibility-oriented fallback, not guaranteed artistic polish for every invented theme. Never claim visual WCAG certification from structural tests alone.
 
-## Automatic checks in v0.2.0
+## Automatic checks in v0.2.1
 
 The optional Chromium runner fails on overlapping plaques, plaques outside stage, plaques crossing landmarks/photo navigation, unfilled stage edges, clipped titles, undersized targets, inadequate foreground contrast, and mobile photo coverage below 55%. In photo crop mode, objects outside the current viewport remain available through the photo object navigator and accessible location list. A manual screenshot quality review still decides whether the visual style is compelling. Keep the render → inspect → revise cycle to no more than two revisions when tools permit.
 

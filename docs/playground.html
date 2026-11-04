@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Open an object to discover a story from this imagined setting.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Imagination Playground — SimpliCITY Builder">
+  <meta property="og:description" content="Open an object to discover a story from this imagined setting.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Imagination Playground — SimpliCITY Builder">
+  <meta name="twitter:description" content="Open an object to discover a story from this imagined setting.">
+  <title>The Imagination Playground — SimpliCITY Builder</title>
+  <style>
+    :root{--bg:#16283d;--bg2:#284b55;--accent:#ffe494;--accent2:#97ebce;--white:#fdf9ff;--muted:#eee6f1;--stroke:rgba(255,255,255,.23);color-scheme:dark}
+    *{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+    body{height:100dvh;background:var(--bg);color:var(--white);font:15px/1.48 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--accent2) 17%,transparent),transparent 58%),linear-gradient(135deg,var(--bg2),var(--bg) 75%)}
+    button,input,a{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+    .ui-icon{height:19px;width:19px;flex-shrink:0;vertical-align:middle}
+    .skip{position:absolute;left:12px;top:-100px;z-index:100;border:0;border-radius:12px;background:var(--accent);color:var(--bg);padding:10px 14px}.skip:focus{top:12px}
+    .app{--gutter:clamp(12px,3vw,44px);position:relative;z-index:1;display:flex;flex-direction:column;height:100%;height:100dvh;min-height:0;max-width:1600px;margin:auto;padding:0 var(--gutter) env(safe-area-inset-bottom)}
+    .topbar{display:flex;flex:none;align-items:center;justify-content:space-between;min-height:65px;gap:12px;border-bottom:1px solid var(--stroke)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:12px;white-space:nowrap}
+    .brand-icon{width:30px;height:30px;border-radius:11px;background:linear-gradient(140deg,var(--accent),var(--accent2));display:grid;place-items:center;color:var(--bg)}
+    .owner{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:45%}
+    .intro{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:13px 3px 4px}
+    .eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:850;margin:0 0 5px}
+    h1{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:clamp(24px,3.2vw,44px);font-weight:500;line-height:1.05;letter-spacing:-.035em;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+    .mobile-hint{display:none;margin:7px 0 0;color:var(--white);font-size:12px;line-height:1.3;max-width:40ch}.tagline{margin:6px 0 0;color:var(--muted);font-size:clamp(11px,1.2vw,14px);line-height:1.35;max-width:66ch}
+    .overview{font-size:11px;text-align:right;white-space:nowrap;color:var(--muted);padding-top:4px}
+    .overview strong{display:block;font-size:23px;color:var(--accent);line-height:1.1}
+    .stage{margin-inline:calc(-1 * var(--gutter));display:grid;place-items:stretch;flex:1;min-height:0;position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 64%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 66%);overflow:hidden}
+    .scene-world{width:100%;height:100%;position:relative;min-height:0;min-width:0;max-height:100%;isolation:isolate;overflow:hidden}
+    .scene-ambience{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;z-index:0;opacity:1}
+    .scene-svg{display:block;width:100%;height:100%;overflow:hidden;position:relative;z-index:1}
+    .scene-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85;z-index:0;pointer-events:none;user-select:none}.photo-mode .scene-backdrop{object-fit:contain;opacity:1}.photo-ambient{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(23px);opacity:.35;z-index:0;pointer-events:none}.photo-mode .scene-backdrop{z-index:1}.photo-mode .scene-svg{z-index:2}.photo-mode .scene-world{background:#0a101b}.photo-mode .scene-world::before{display:none}.photo-mode .scene-svg{pointer-events:none}.photo-mode .scene-landmark{pointer-events:bounding-box}.photo-mode .scene-landmark rect{fill-opacity:.12}.photo-mode .scene-landmark:hover rect,.photo-mode .scene-landmark:focus-visible rect{fill-opacity:.24}
+    .scene-world::before{content:none}
+    /* Optional high-definition scenic artwork: painted landscape remains the
+       backdrop, while independent SVG landmarks and accessible controls stay
+       interactive. Scene SVG positions must be authored against the image. */
+    .scenic-art-mode .scene-backdrop{opacity:1;object-fit:cover}
+    .scenic-art-mode .scene-ambience{opacity:.075}
+    .scenic-art-mode .scene-world{background:#10141e}
+    /* Only decorative ambience moves; interactive hit regions stay fixed.
+       Motion is disabled entirely by the existing reduced-motion rules. */
+    @media(prefers-reduced-motion:no-preference){
+      body:not(.photo-mode) .scene-ambience{transition:transform 3s ease}
+      body:not(.photo-mode) .scene-world:hover .scene-ambience{transform:scale(1.008)}
+    }
+    /* The scene objects themselves are the hit targets: no icon pins or overlaid badges. */
+    .scene-landmark{cursor:pointer;pointer-events:bounding-box;touch-action:manipulation;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
+    /* Avoid double-applying SVG transforms when packing dense layouts. */
+    body:is([data-family="meeting"],[data-family="playground"],[data-family="farm"],[data-count="5"],[data-count="6"],[data-count="7"],[data-count="8"]) .scene-landmark{transform-box:view-box;transform-origin:0 0}
+    .scene-landmark:active{scale:.985;opacity:.88}.scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
+    .scene-landmark:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
+    .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
+    .scene-tooltip[hidden]{display:none}
+    .scene-plaque{position:absolute;z-index:4;pointer-events:none;display:block;max-width:min(200px,43%);padding:5px 9px;border-radius:9px;background:#101a2df2;border:1px solid #bdcde7;color:#fff;font:750 12px/1.28 ui-sans-serif,system-ui,sans-serif;box-shadow:0 3px 12px #000a;text-align:center;overflow-wrap:anywhere;opacity:0;transition:opacity .1s ease}
+    /* Family plaque vocabulary: subdued basalt, ocean glass, orbital metal,
+       or thick-ink toon. Labels remain HTML and never baked into scenery. */
+    body[data-family="volcanic"] .scene-plaque{background:#281b24f2;border-color:#ffb06e;color:#fff0dc;box-shadow:0 4px 15px #12080ce6,0 0 13px #ee6a323d}
+    body[data-family="ocean"] .scene-plaque{background:#103a4aeF;border-color:#8ce8d5;color:#f2ffff}
+    body[data-family="space"] .scene-plaque{background:#161c41f2;border-color:#b7c3ff;color:#f6f4ff}
+    body[data-family="toon"] .scene-plaque{background:#1c2e63;border:3px solid #10152f;color:#ffe04f;border-radius:14px;box-shadow:4px 5px 0 #10152f}
+    body[data-family="toon"] h1{font-weight:900;letter-spacing:-.035em}
+    @media(prefers-reduced-motion:no-preference){
+      body[data-family="volcanic"] .scene-landmark:hover{filter:drop-shadow(0 0 16px #fa7840)}
+      body[data-family="space"] .scene-landmark:hover{filter:drop-shadow(0 0 16px #93bfff)}
+    }
+    .photo-mode .scene-plaque{transition:none} .scene-plaque.placed{opacity:1}.scene-plaque[data-placement="rail"]{font-size:10px;padding:3px 6px}.scene-plaque:before{content:"";display:block;position:absolute;inset:-3px;pointer-events:none;border-radius:11px;border:1px solid var(--accent);opacity:.55}
+    .featured-action{position:absolute;bottom:9px;left:50%;z-index:6;transform:translateX(-50%);min-height:44px;max-width:90%;padding:9px 16px;border-radius:13px;border:1px solid var(--accent);background:#101a2ff5;color:#fff;font-weight:800;box-shadow:0 5px 18px #0008;white-space:normal;text-align:center}
+    .photo-navigation{display:none;position:absolute;z-index:7;right:8px;bottom:8px;gap:5px;align-items:center}
+    .photo-navigation button{min-width:44px;min-height:44px;border-radius:10px;border:1px solid #c5dcf0;background:#142338ed;color:#fff;padding:6px;font-weight:700}
+    .photo-mode .photo-navigation{display:flex}
+    .scene-plaque[data-placement="offscreen"]{opacity:0!important;visibility:hidden}
+    .photo-mode .stage{background:#0a101b}.photo-mode .scene-landmark{filter:drop-shadow(0 1px 4px #000)}
+    .single-mode .overview{display:none}
+    body[data-family="technology"] h1,body[data-family="guardian"] h1{letter-spacing:-.055em;font-weight:800}
+    body[data-family="fantasy"] h1,body[data-family="museum"] h1{font-family:ui-serif,Georgia,Cambria,serif;font-weight:650;letter-spacing:-.035em}
+
+     .tour-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;padding-top:12px;border-top:1px solid var(--stroke)}
+    .tour-buttons button{min-height:44px;padding:9px 12px;border-radius:11px;color:var(--white);background:#263750;border:1px solid var(--stroke)}
+    .tour-buttons button:disabled{opacity:.5;cursor:not-allowed}
+    body[data-family="desert"] h1{font-family:Georgia,Cambria,ui-serif,serif;font-weight:700}
+    body[data-family="noir"] h1{font-family:Impact,"Arial Narrow",ui-sans-serif,sans-serif;letter-spacing:.015em}
+    .toolbar{display:flex;flex:none;justify-content:space-between;align-items:center;gap:12px;min-height:74px;border-top:1px solid var(--stroke)}
+    .hint{color:var(--white);font-size:13px;max-width:34ch}.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
+    .tool{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--stroke);border-radius:13px;padding:10px 12px;background:rgba(255,255,255,.065);color:var(--white);font-size:12px;font-weight:750;white-space:nowrap;min-height:42px}
+    .tool:hover{background:rgba(255,255,255,.13)}.tool-primary{color:var(--bg);background:var(--accent);border-color:var(--accent)}.tool-primary:hover{background:var(--accent2)}
+    .credits{font-size:14px;color:var(--white);padding:0 3px 8px;display:flex;justify-content:space-between;gap:12px}
+    dialog{color:var(--white);border:1px solid var(--stroke);border-radius:23px;width:min(760px,calc(100vw - 24px));max-height:min(88dvh,900px);padding:0;background:linear-gradient(155deg,var(--bg2),var(--bg));box-shadow:0 35px 120px #0009}
+    dialog::backdrop{background:#030712da;backdrop-filter:blur(9px)}.dialog-inner{padding:clamp(18px,3vw,30px);overflow-y:auto;overscroll-behavior:contain;max-height:calc(88dvh - 2px);scrollbar-color:var(--accent2) transparent}
+    .dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:1px solid var(--stroke);padding-bottom:17px;margin-bottom:17px}
+    .dialog-heading h2{font:650 clamp(25px,4.8vw,39px)/1.14 ui-sans-serif,system-ui,sans-serif;margin:0 0 9px}.dialog-heading p:last-child{color:var(--muted);margin:0;font-size:13px;line-height:1.6}
+    .close-dialog{display:grid;place-items:center;flex:none;min-width:42px;min-height:42px;border:1px solid var(--stroke);border-radius:14px;background:#ffffff12;color:var(--white)}
+    .entries{display:grid;gap:12px}.entry{border:1px solid var(--stroke);border-radius:17px;padding:19px;background:#ffffff09;overflow-wrap:anywhere}
+    .entry h3{font-size:18px;line-height:1.24;margin:0 0 6px}.entry-subtitle{color:var(--accent);font-size:12px;margin:0 0 10px}
+    .entry-description{color:var(--muted);font-size:13px;line-height:1.65;margin:7px 0 10px;white-space:pre-line}
+    .highlights{margin:12px 0;padding:0 0 0 20px}.highlights li{margin-bottom:7px;font-size:13px;line-height:1.55}
+    .metrics{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.metric{display:flex;flex-direction:column;gap:3px;background:#ffffff10;border:1px solid var(--stroke);border-radius:12px;padding:8px 12px}.metric strong{font-size:19px;color:var(--accent)}.metric span{font-size:10px;color:var(--muted)}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.tag{border:1px solid var(--stroke);border-radius:30px;padding:4px 8px;font-size:11px;color:var(--muted)}.entry-link{display:inline-block;margin:5px 0;color:var(--accent);font-size:13px;font-weight:750}
+    .quote-entry{margin:0}.quote-entry .ui-icon{color:var(--accent)}blockquote{font:italic 19px/1.55 ui-serif,Georgia,serif;margin:10px 0 14px}.quote-entry figcaption{font-size:12px;color:var(--muted)}
+    .searchbox{display:block;width:100%;padding:13px 15px;margin:0 0 16px;border:1px solid var(--stroke);border-radius:12px;background:#ffffff11;color:var(--white);outline-color:var(--accent)}
+    .landmark{display:flex;align-items:center;gap:13px;text-align:left;width:100%;background:#ffffff0d;border:1px solid var(--stroke);border-radius:15px;color:var(--white);padding:14px;margin:8px 0;min-height:72px}
+    .landmark:hover,.landmark:focus-visible{background:#ffffff1d}.landmark-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:12px;background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
+    .landmark-text{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.landmark-text strong{font-size:14px}.landmark-text small{font-size:12px;color:var(--muted);line-height:1.35}.landmark-arrow{font-size:18px;color:var(--accent)}
+    .hidden{display:none!important}.no-results{font-size:14px;color:var(--muted)}.recruiter-section{margin:18px 0 28px}.recruiter-section>h3{font:650 24px ui-sans-serif,system-ui,sans-serif;margin:0 0 12px;color:var(--accent)}.recruiter-section .entry{margin:10px 0}
+    .bio{font-size:14px;line-height:1.7;color:var(--muted)}.socials{display:flex;flex-wrap:wrap;gap:10px}.socials a{font-size:13px;color:var(--accent);padding:8px 10px;border:1px solid var(--stroke);border-radius:10px;text-decoration:none}
+    @keyframes gentle-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+    @keyframes twinkle{0%,100%{opacity:.6}50%{opacity:1}}
+    @keyframes drift{0%,100%{translate:0 0}50%{translate:8px -4px}}
+    @keyframes pulse{0%,100%{opacity:.82}50%{opacity:1}}
+    .motion-float{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
+    .motion-twinkle{animation:twinkle 5s ease-in-out infinite}.motion-drift{animation:drift 9s ease-in-out infinite}.motion-pulse{animation:pulse 4s ease-in-out infinite}
+    @media(max-width:680px){.app{--gutter:11px;padding:0 var(--gutter) env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(18px,5.3vw,27px);line-height:1.13;overflow-wrap:anywhere;max-width:100%}.tagline{font-size:11px;max-width:44ch}.mobile-hint{display:none}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:12px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
+    /* A real mobile subtitle: wrap rather than silently ellipsize the owner/headline. */
+    @media(max-width:680px){
+      .topbar{min-height:60px;padding-block:6px;gap:7px}
+      .brand{font-size:10px;letter-spacing:.015em;white-space:normal;line-height:1.2;max-width:52%;gap:6px}
+      .brand-icon{flex:0 0 27px;width:27px;height:27px}
+      .owner{font-size:10px;max-width:48%;min-width:0;white-space:normal;overflow:visible;text-overflow:clip;
+        overflow-wrap:anywhere;line-height:1.26;text-align:right}
+    }
+    @media(max-width:680px) and (min-height:560px){.photo-mode .scene-backdrop{object-fit:cover}}
+    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:34%;font-size:9px;padding:2px 4px;line-height:1.13}}
+    @media(max-width:380px){#start-tour::before{content:"▶";font-size:17px;line-height:1} .tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
+    @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    @media print{html,body{height:auto!important;overflow:visible!important;background:white!important;color:black!important}.app,.detail-dialog,.list-dialog,.about-dialog{display:none!important}#recruiter-dialog{display:block!important;position:static!important;border:0!important;box-shadow:none!important;width:100%!important;max-height:none!important;color:black!important;background:white!important;margin:0;padding:0}#recruiter-dialog .dialog-inner{overflow:visible!important;max-height:none!important;padding:0!important}#recruiter-dialog .close-dialog,#recruiter-dialog .print-action{display:none!important}#recruiter-dialog .dialog-heading h2,#recruiter-dialog .entry h3,#recruiter-dialog .recruiter-section>h3{color:black!important}#recruiter-dialog .entry,#recruiter-dialog .metric{break-inside:avoid;border-color:#ccc;background:white!important}#recruiter-dialog .entry *{color:black!important}#recruiter-dialog .eyebrow{color:#333!important}#recruiter-dialog .entry{padding:10px}#recruiter-dialog .tag{border-color:#bbb;color:#333!important}}
+  </style>
+</head>
+<body data-theme="joyful-outdoor-playground" data-family="playground" data-count="4" class="">
+  <div class="app" id="main">
+    <button type="button" class="skip" data-dialog="list-dialog">Skip to locations</button>
+    <header class="topbar"><div class="brand"><span class="brand-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg></span><span>SimpliCITY Builder</span></div><span class="owner">SimpliCITY Builder · A fictional interactive exploration</span></header>
+    <div class="intro"><div><p class="eyebrow">An explorable world · joyful outdoor playground</p><h1>The Imagination Playground</h1><p class="tagline">Open an object to discover a story from this imagined setting.</p><p class="mobile-hint">Select a landmark to discover its story</p></div><div class="overview"><strong>4</strong>Locations</div></div>
+    <main class="stage" id="world" aria-label="Explore the world"><div class="scene-world" role="group" aria-label="Select a landmark to discover its story"><svg class="scene-svg" viewBox="0 0 620 520" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="material-0" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6a963"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ed2c4"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5cc82"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9cc6e9"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><radialGradient id="aura"><stop stop-color="var(--accent2)" stop-opacity=".22"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><ellipse cx="310" cy="270" rx="345" ry="252" fill="url(#aura)" opacity=".22"></ellipse><defs><linearGradient id="v21-horizon" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1c2746" stop-opacity=".96"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity=".13"></stop></linearGradient><linearGradient id="v21-ridge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="var(--accent2)" stop-opacity=".38"></stop><stop offset="1" stop-color="var(--accent)" stop-opacity=".08"></stop></linearGradient><radialGradient id="v21-light"><stop stop-color="var(--accent2)" stop-opacity=".55"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><rect x="0" y="0" width="620" height="520" fill="url(#v21-horizon)"></rect><rect x="0" y="0" width="620" height="270" fill="#4c8fa9"></rect><circle cx="503" cy="72" r="45" fill="#ffe7a6"></circle><path d="M0 270 Q155 197 310 258 T620 238 V520 H0Z" fill="#52917c"></path><path d="M0 374 Q150 338 320 390 T620 353 V520 H0Z" fill="#3e7a67"></path><path d="M310 520 Q150 384 320 286 T305 182" fill="none" stroke="#e9d5ac" stroke-width="45" opacity=".5"></path><path d="M0 248 H620" stroke="#e6d9b6" stroke-width="8"></path><path d="M41 265 V334 M86 262 V331 M540 262 V332 M584 262 V334" stroke="#e9d7b0" stroke-width="10"></path><circle cx="65" cy="182" r="40" fill="#6eb697" opacity=".65"></circle><circle cx="566" cy="218" r="35" fill="#84c69d" opacity=".6"></circle><ellipse cx="389" cy="135" rx="230" ry="156" fill="url(#v21-light)"></ellipse><path d="M-40 310 L74 185 L147 251 L235 147 L344 267 L435 163 L549 247 L650 190 V550 H-40Z" fill="url(#v21-ridge)" opacity=".63"></path><path d="M-30 400 Q110 297 225 364 T470 366 T650 347 V550 H-30Z" fill="#26344d" opacity=".42"></path><g id="landmark-adventure-slide" transform="translate(162 189) scale(0.87) translate(-162 -189)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Adventure Slide" data-dialog="detail-adventure-slide" class="scene-landmark"><title>Adventure Slide</title><ellipse cx="162" cy="164" rx="118" ry="137" fill="url(#aura)" opacity=".48"></ellipse><ellipse cx="162" cy="246" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="78" y="84" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M103 259 L143 92 H207 L242 259Z" fill="url(#material-0)" stroke="#ffeab2" stroke-width="8"></path><path d="M177 112 L235 259" stroke="#fda35f" stroke-width="29"></path><path d="M105 250 L143 104" stroke="#e5eac9" stroke-width="10"></path><path d="M118 143 L139 116" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-swings" transform="translate(457 215) scale(0.75) translate(-457 -215)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Swings" data-dialog="detail-swings" class="scene-landmark"><title>Swings</title><ellipse cx="457" cy="272" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="373" y="110" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M386 282 L409 130 H505 L528 282" fill="none" stroke="#f3e3bb" stroke-width="15"></path><path d="M432 138 V238 M482 138 V238" stroke="#9bcfd2" stroke-width="5"></path><path d="M421 239 H493" stroke="#ffbb68" stroke-width="14"></path><path d="M413 169 L434 142" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-sandbox" transform="translate(175 327) scale(0.74) translate(-175 -327)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Sandbox" data-dialog="detail-sandbox" class="scene-landmark"><title>Sandbox</title><ellipse cx="175" cy="384" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="91" y="222" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M96 342 L186 288 L260 342 L165 397Z" fill="#f2d292" stroke="#ab8b6a" stroke-width="11"></path><path d="M143 338 Q175 319 205 344" fill="none" stroke="#fff0bc" stroke-width="8"></path><path d="M204 346 L210 292 M189 290 H229" stroke="#ed795f" stroke-width="8"></path><path d="M131 281 L152 254" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-climbing-frame" transform="translate(439 346) scale(0.69) translate(-439 -346)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Climbing Frame" data-dialog="detail-climbing-frame" class="scene-landmark"><title>Climbing Frame</title><ellipse cx="439" cy="403" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="355" y="241" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M365 417 L439 239 L513 417Z" fill="none" stroke="#e1c08b" stroke-width="13"></path><path d="M387 381 H491 M402 351 H476 M416 319 H462 M439 258 V401" stroke="#94e5cb" stroke-width="7"></path><path d="M395 300 L416 273" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g></svg><template id="mobile-scene-template"><svg class="scene-svg" viewBox="0 0 620 880" role="group" aria-label="Explorable illustrated world" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="material-0" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6a963"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ed2c4"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5cc82"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><linearGradient id="material-3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9cc6e9"></stop><stop offset="1" stop-color="var(--accent2)"></stop></linearGradient><radialGradient id="aura"><stop stop-color="var(--accent2)" stop-opacity=".22"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><ellipse cx="310" cy="450" rx="345" ry="440" fill="url(#aura)" opacity=".22"></ellipse><defs><linearGradient id="v21-horizon" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1c2746" stop-opacity=".96"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity=".13"></stop></linearGradient><linearGradient id="v21-ridge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="var(--accent2)" stop-opacity=".38"></stop><stop offset="1" stop-color="var(--accent)" stop-opacity=".08"></stop></linearGradient><radialGradient id="v21-light"><stop stop-color="var(--accent2)" stop-opacity=".55"></stop><stop offset="1" stop-color="var(--accent2)" stop-opacity="0"></stop></radialGradient></defs><rect x="0" y="0" width="620" height="880" fill="url(#v21-horizon)"></rect><rect x="0" y="0" width="620" height="457" fill="#4c8fa9"></rect><circle cx="503" cy="123" r="45" fill="#ffe7a6"></circle><path d="M0 457 Q155 384 310 445 T620 425 V880 H0Z" fill="#52917c"></path><path d="M0 633 Q150 572 320 660 T620 598 V880 H0Z" fill="#3e7a67"></path><path d="M310 880 Q150 651 320 484 T305 308" fill="none" stroke="#e9d5ac" stroke-width="45" opacity=".5"></path><path d="M0 435 H620" stroke="#e6d9b6" stroke-width="8"></path><path d="M41 452 V521 M86 449 V518 M540 449 V519 M584 449 V521" stroke="#e9d7b0" stroke-width="10"></path><circle cx="65" cy="308" r="40" fill="#6eb697" opacity=".65"></circle><circle cx="566" cy="369" r="35" fill="#84c69d" opacity=".6"></circle><ellipse cx="389" cy="228" rx="230" ry="264" fill="url(#v21-light)"></ellipse><path d="M-40 523 L74 398 L147 464 L235 360 L344 480 L435 376 L549 460 L650 403 V910 H-40Z" fill="url(#v21-ridge)" opacity=".63"></path><path d="M-30 677 Q110 574 225 641 T470 643 T650 624 V910 H-30Z" fill="#26344d" opacity=".42"></path><g id="landmark-adventure-slide" transform="translate(181 172) scale(0.93) translate(-181 -172)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Adventure Slide" data-dialog="detail-adventure-slide" class="scene-landmark"><title>Adventure Slide</title><ellipse cx="181" cy="229" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="97" y="67" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M122 242 L162 75 H226 L261 242Z" fill="url(#material-0)" stroke="#ffeab2" stroke-width="8"></path><path d="M196 95 L254 242" stroke="#fda35f" stroke-width="29"></path><path d="M124 233 L162 87" stroke="#e5eac9" stroke-width="10"></path><path d="M137 126 L158 99" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-swings" transform="translate(434 304) scale(0.93) translate(-434 -304)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Swings" data-dialog="detail-swings" class="scene-landmark"><title>Swings</title><ellipse cx="434" cy="361" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="350" y="199" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M363 371 L386 219 H482 L505 371" fill="none" stroke="#f3e3bb" stroke-width="15"></path><path d="M409 227 V327 M459 227 V327" stroke="#9bcfd2" stroke-width="5"></path><path d="M398 328 H470" stroke="#ffbb68" stroke-width="14"></path><path d="M390 258 L411 231" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-sandbox" transform="translate(183 568) scale(0.93) translate(-183 -568)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Sandbox" data-dialog="detail-sandbox" class="scene-landmark"><title>Sandbox</title><ellipse cx="183" cy="625" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="99" y="463" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M104 583 L194 529 L268 583 L173 638Z" fill="#f2d292" stroke="#ab8b6a" stroke-width="11"></path><path d="M151 579 Q183 560 213 585" fill="none" stroke="#fff0bc" stroke-width="8"></path><path d="M212 587 L218 533 M197 531 H237" stroke="#ed795f" stroke-width="8"></path><path d="M139 522 L160 495" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g><g id="landmark-climbing-frame" transform="translate(427 727) scale(0.93) translate(-427 -727)" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Explore Climbing Frame" data-dialog="detail-climbing-frame" class="scene-landmark"><title>Climbing Frame</title><ellipse cx="427" cy="784" rx="92" ry="28" fill="#4b8a72" stroke="#d9d99c" stroke-width="5" opacity=".72"></ellipse><rect x="343" y="622" width="168" height="186" rx="12" fill="#ffffff" opacity=".001"></rect><path d="M353 798 L427 620 L501 798Z" fill="none" stroke="#e1c08b" stroke-width="13"></path><path d="M375 762 H479 M390 732 H464 M404 700 H450 M427 639 V782" stroke="#94e5cb" stroke-width="7"></path><path d="M383 681 L404 654" fill="none" stroke="#e7faff" stroke-width="6" opacity=".27"></path></g></svg></template><span class="scene-plaque" data-plaque-for="landmark-adventure-slide">Adventure Slide</span><span class="scene-plaque" data-plaque-for="landmark-swings">Swings</span><span class="scene-plaque" data-plaque-for="landmark-sandbox">Sandbox</span><span class="scene-plaque" data-plaque-for="landmark-climbing-frame">Climbing Frame</span><nav class="photo-navigation" aria-label="Photo objects"><button type="button" id="photo-prev" aria-label="Previous photo object">◀</button><button type="button" id="photo-fit">Fit photo</button><button type="button" id="photo-next" aria-label="Next photo object">▶</button></nav><div class="scene-tooltip" id="scene-tooltip" hidden></div></div></main>
+    <div class="toolbar"><span class="hint">Select a landmark to discover its story</span><nav class="tools" aria-label="World navigation"><button type="button" class="tool" id="start-tour" aria-label="Start guided tour">Start tour</button><button type="button" class="tool tool-primary" data-dialog="list-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> Locations</button><button type="button" class="tool" data-dialog="about-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/></svg> About</button><button type="button" class="tool" data-dialog="recruiter-dialog"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/></svg> Overview</button></nav></div>
+    <footer class="credits"><span>Made with SimpliCITY Builder</span><span>Review facts and privacy before sharing</span></footer>
+  </div>
+  <dialog class="list-dialog" id="list-dialog" aria-labelledby="list-title"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Explore the world</p><h2 id="list-title">Locations</h2><p>Open an object to discover a story from this imagined setting.</p></div><button class="close-dialog" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><label for="world-search" class="eyebrow">Search locations</label><input id="world-search" class="searchbox" type="search" placeholder="Search locations" autocomplete="off"><p id="result-count" role="status" class="eyebrow">4 Locations</p><div id="landmarks"><button type="button" class="landmark" data-dialog="detail-adventure-slide" data-search="adventure slide where the journey begins with a little bravery. start the adventure where the journey begins with a little bravery. this is a fictional demonstration.  " aria-haspopup="dialog" aria-label="Explore Adventure Slide"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><span class="landmark-text"><strong>Adventure Slide</strong><small>Where the journey begins with a little bravery.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>
+<button type="button" class="landmark" data-dialog="detail-swings" data-search="swings take a new perspective and see how far an idea can travel. bigger perspectives take a new perspective and see how far an idea can travel. this is a fictional demonstration.  " aria-haspopup="dialog" aria-label="Explore Swings"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3ZM19 18l.7 1.3L21 20l-1.3.7L19 22l-.7-1.3L17 20l1.3-.7L19 18Z"/></svg></span><span class="landmark-text"><strong>Swings</strong><small>Take a new perspective and see how far an idea can travel.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>
+<button type="button" class="landmark" data-dialog="detail-sandbox" data-search="sandbox experiment with simple pieces and build something unexpected. experiment corner experiment with simple pieces and build something unexpected. this is a fictional demonstration.  " aria-haspopup="dialog" aria-label="Explore Sandbox"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c0-5 6-11 14-12l2 2c-1 8-7 14-12 14l-4-4Z"/><path d="m9 15-4 4M5 10H2l2-4 5-2M14 19v3l4-2 2-5"/><circle cx="15" cy="9" r="2"/></svg></span><span class="landmark-text"><strong>Sandbox</strong><small>Experiment with simple pieces and build something unexpected.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button>
+<button type="button" class="landmark" data-dialog="detail-climbing-frame" data-search="climbing frame every challenge offers a new way forward. climb together every challenge offers a new way forward. this is a fictional demonstration.  " aria-haspopup="dialog" aria-label="Explore Climbing Frame"><span class="landmark-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 7 7 .5-5.5 4.6 1.7 7-6.2-3.8-6.2 3.8 1.7-7L2 9.5 9 9Z"/></svg></span><span class="landmark-text"><strong>Climbing Frame</strong><small>Every challenge offers a new way forward.</small></span><span class="landmark-arrow" aria-hidden="true">↗</span></button></div><p id="empty-search" class="no-results hidden">No matching locations</p></div></dialog>
+  <dialog class="about-dialog" id="about-dialog" aria-labelledby="about-title"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Discover the source behind this world</p><h2 id="about-title">SimpliCITY Builder</h2><p>A fictional interactive exploration</p></div><button class="close-dialog" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><p class="bio">An interactive interpretation of A fictional interactive exploration.</p><div class="socials"></div></div></dialog>
+  <dialog id="recruiter-dialog" aria-labelledby="recruiter-title"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Overview</p><h2 id="recruiter-title">SimpliCITY Builder</h2><p>A fictional interactive exploration</p></div><button class="close-dialog" aria-label="Close"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><p class="bio">An interactive interpretation of A fictional interactive exploration.</p><button type="button" class="tool print-action" onclick="window.print()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z"/></svg> Print overview</button><section class="recruiter-section"><h3>Adventure Slide</h3><article class="entry"><h3>Start the Adventure</h3><p class="entry-description">Where the journey begins with a little bravery. This is a fictional demonstration.</p></article></section>
+<section class="recruiter-section"><h3>Swings</h3><article class="entry"><h3>Bigger Perspectives</h3><p class="entry-description">Take a new perspective and see how far an idea can travel. This is a fictional demonstration.</p></article></section>
+<section class="recruiter-section"><h3>Sandbox</h3><article class="entry"><h3>Experiment Corner</h3><p class="entry-description">Experiment with simple pieces and build something unexpected. This is a fictional demonstration.</p></article></section>
+<section class="recruiter-section"><h3>Climbing Frame</h3><article class="entry"><h3>Climb Together</h3><p class="entry-description">Every challenge offers a new way forward. This is a fictional demonstration.</p></article></section></div></dialog>
+  <dialog class="detail-dialog" id="detail-adventure-slide" aria-labelledby="label-adventure-slide"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 01</p><h2 id="label-adventure-slide">Adventure Slide</h2><p>Where the journey begins with a little bravery.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Start the Adventure</h3><p class="entry-description">Where the journey begins with a little bravery. This is a fictional demonstration.</p></article></div></div></dialog>
+<dialog class="detail-dialog" id="detail-swings" aria-labelledby="label-swings"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 02</p><h2 id="label-swings">Swings</h2><p>Take a new perspective and see how far an idea can travel.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Bigger Perspectives</h3><p class="entry-description">Take a new perspective and see how far an idea can travel. This is a fictional demonstration.</p></article></div></div></dialog>
+<dialog class="detail-dialog" id="detail-sandbox" aria-labelledby="label-sandbox"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 03</p><h2 id="label-sandbox">Sandbox</h2><p>Experiment with simple pieces and build something unexpected.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Experiment Corner</h3><p class="entry-description">Experiment with simple pieces and build something unexpected. This is a fictional demonstration.</p></article></div></div></dialog>
+<dialog class="detail-dialog" id="detail-climbing-frame" aria-labelledby="label-climbing-frame"><div class="dialog-inner"><header class="dialog-heading"><div><p class="eyebrow">Chapter 04</p><h2 id="label-climbing-frame">Climbing Frame</h2><p>Every challenge offers a new way forward.</p></div><button type="button" class="close-dialog" aria-label="Close details"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button></header><div class="entries"><article class="entry"><h3>Climb Together</h3><p class="entry-description">Every challenge offers a new way forward. This is a fictional demonstration.</p></article></div></div></dialog>
+  <script type="application/json" id="photo-anchors">{}</script>
+  <script>
+    (()=>{
+      'use strict';
+      document.addEventListener('click',event=>{
+        const button=event.target.closest('[data-dialog]');
+        if(!button)return;
+        const dialog=document.getElementById(button.dataset.dialog);
+        if(dialog && !dialog.open){
+          const parent=button.closest('dialog');if(parent && parent.open)parent.close();
+          dialog.showModal();
+        }
+      });
+      document.querySelectorAll('dialog').forEach(dialog=>{
+        dialog.querySelector('.close-dialog')?.addEventListener('click',()=>dialog.close());
+        dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+      });
+
+      const world=document.querySelector('.scene-world');
+      // Separate hand-composed mobile SVG is optional, not a cropped desktop scene.
+      // A template stays inert; only one scene and one set of landmark IDs exist.
+      const mobileTemplate=document.getElementById('mobile-scene-template');
+      const desktopScene=world?.querySelector('.scene-svg')?.cloneNode(true);
+      const mobileScene=mobileTemplate?.content.querySelector('.scene-svg');
+      const mobileQuery=window.matchMedia('(max-width:680px)');
+      function chooseScene(){
+        if(!mobileScene || !desktopScene)return;
+        const desired=mobileQuery.matches ? mobileScene : desktopScene;
+        const active=world.querySelector('.scene-svg');
+        if(active.dataset.sceneVariant !== (mobileQuery.matches?'mobile':'desktop')){
+          const next=desired.cloneNode(true);
+          next.dataset.sceneVariant=mobileQuery.matches?'mobile':'desktop';
+          active.replaceWith(next);
+          renderBackdrop();
+        }
+      }
+      if(mobileScene){mobileQuery.addEventListener('change',chooseScene);chooseScene();}
+      function correctBackgroundCircles(){
+        // Full-bleed terrain intentionally uses an anisotropic viewBox fit.
+        // Cancel that anisotropy *only* for celestial circles (moons/stars),
+        // whose screen-space radius must remain round at every viewport.
+        const ambient=world?.querySelector('.scene-ambience');
+        if(!ambient)return;
+        const values=(ambient.getAttribute('viewBox')||'0 0 620 520').split(/[,\s]+/).map(Number);
+        const frame=world.getBoundingClientRect();
+        if(frame.width<=0||frame.height<=0)return;
+        const horizontal=frame.width/values[2],vertical=frame.height/values[3];
+        const ratio=vertical/horizontal;
+        ambient.querySelectorAll('circle').forEach(circle=>{
+          if(circle.closest('defs'))return;
+          const cx=Number(circle.getAttribute('cx')||0);
+          if(!circle.hasAttribute('data-original-transform')){
+            circle.setAttribute('data-original-transform',circle.getAttribute('transform')||'');
+          }
+          const original=circle.getAttribute('data-original-transform');
+          circle.setAttribute('transform',`translate(${cx} 0) scale(${ratio} 1) translate(${-cx} 0) ${original}`.trim());
+        });
+      }
+      function renderBackdrop(){
+        if(!world || document.body.classList.contains('photo-mode'))return;
+        const art=world.querySelector('.scene-svg');if(!art)return;
+        // This function runs during initial scene selection and on viewport
+        // changes. Never re-clone an already stripped foreground; doing so
+        // silently discards the actual environment and flattens the world.
+        if(art.dataset.sceneryProjected==='true' && world.querySelector('.scene-ambience')){
+          correctBackgroundCircles();return;
+        }
+        world.querySelector('.scene-ambience')?.remove();
+        const ambient=art.cloneNode(true);
+        ambient.classList.remove('scene-svg');ambient.classList.add('scene-ambience');
+        ambient.removeAttribute('role');ambient.setAttribute('aria-hidden','true');
+        ambient.setAttribute('preserveAspectRatio','none');
+        ambient.querySelectorAll('[id^="landmark-"]').forEach(el=>el.remove());
+        ambient.removeAttribute('id');
+        world.prepend(ambient);
+        // Keep scene-wide terrain only in the full-bleed environment.
+        const keepInteractive=node=>{
+          if(node.localName==='defs'||node.classList?.contains('scene-landmark'))return true;
+          let retained=false;
+          for(const child of [...node.children]){
+            if(keepInteractive(child))retained=true;
+            else child.remove();
+          }
+          return retained;
+        };
+        for(const child of [...art.children])if(!keepInteractive(child))child.remove();
+        art.dataset.sceneryProjected='true';
+        correctBackgroundCircles();
+      }
+      renderBackdrop();
+      const photo=world?.querySelector('.scene-backdrop');
+      const photoAnchors=JSON.parse(document.getElementById('photo-anchors')?.textContent || '{}');
+      const anchorKeys=Object.keys(photoAnchors);
+      let currentPhoto=0, fitWholePhoto=false;
+      function fitPhotoAnchors(){
+        // Only source photos use observed-object pan/fit mathematics. Scenic
+        // backgrounds must remain full-bleed, without a central rectangle.
+        if(!document.body.classList.contains('photo-mode'))return;
+        if(!photo || !photo.naturalWidth || !photo.naturalHeight || !world)return;
+        const fw=world.clientWidth,fh=world.clientHeight;
+        if(!fw||!fh)return;
+        const portrait=mobileQuery.matches && window.innerHeight>=560 && !fitWholePhoto;
+        // Photo mode is neither a forced full-viewport crop nor a tiny contain
+        // thumbnail. On phones, show at least 64% of the stage height, then
+        // pan toward the selected object's observed bounding box. This retains
+        // nearby visual context and avoids cutting the image far beyond need.
+        const contain=Math.min(fw/photo.naturalWidth,fh/photo.naturalHeight);
+        const scale=portrait?Math.max(contain,fh*.64/photo.naturalHeight):contain;
+        const iw=photo.naturalWidth*scale,ih=photo.naturalHeight*scale;
+        let ix=(fw-iw)/2,iy=(fh-ih)/2;
+        const focus=photoAnchors[anchorKeys[currentPhoto]];
+        if(portrait && focus){
+          if(iw>fw)ix=Math.max(fw-iw,Math.min(0,fw/2-(focus.x+focus.width/2)*iw));
+          if(ih>fh)iy=Math.max(fh-ih,Math.min(0,fh/2-(focus.y+focus.height/2)*ih));
+        }
+        photo.style.inset='auto';
+        photo.style.width=iw+'px';photo.style.height=ih+'px';
+        photo.style.left=ix+'px';photo.style.top=iy+'px';
+        photo.style.objectFit='fill';photo.style.objectPosition='center';
+        photo.dataset.fitMode=portrait?'context':'contain';
+        world.dataset.photoCoverage=(Math.min(fw,iw)*Math.min(fh,ih)/(fw*fh)).toFixed(4);
+        const svg=world.querySelector('.scene-svg');
+        if(!svg)return;
+        svg.setAttribute('preserveAspectRatio','none');
+        for(const [sid,box] of Object.entries(photoAnchors)){
+          const el=svg.querySelector('#landmark-'+CSS.escape(sid));
+          const rect=el?.querySelector('rect');if(!rect)continue;
+          const rawX=ix+box.x*iw,rawY=iy+box.y*ih;
+          const rawW=box.width*iw,rawH=box.height*ih;
+          // Keep the visible outline within the viewport. A very wide region
+          // otherwise clips both vertical borders, looking like two stray lines.
+          const l=Math.max(5,rawX),r=Math.min(fw-5,rawX+rawW);
+          const top=Math.max(5,rawY),bottom=Math.min(fh-5,rawY+rawH);
+          const visibleW=Math.max(0,r-l),visibleH=Math.max(0,bottom-top);
+          const w=Math.max(44,visibleW),h=Math.max(44,visibleH);
+          const x=Math.max(5,Math.min(fw-w-5,l-(w-visibleW)/2));
+          const y=Math.max(5,Math.min(fh-h-5,top-(h-visibleH)/2));
+          rect.setAttribute('x',(x/fw*620).toFixed(2));rect.setAttribute('y',(y/fh*520).toFixed(2));
+          rect.setAttribute('width',(w/fw*620).toFixed(2));rect.setAttribute('height',(h/fh*520).toFixed(2));
+        }
+        svg.dataset.anchored='true';
+      }
+      // Strict nearest-object placement: never use a distant edge rail.
+      // No overlap is preferable to detaching a name from its object. If
+      // packing fails, the browser test reports an unplaced label and the
+      // author must improve the mobile composition.
+      function placePlaques(){
+        if(!world)return;
+        const frame=world.getBoundingClientRect();
+        if(!frame.width||!frame.height)return;
+        const nodes=[...world.querySelectorAll('.scene-plaque')];
+        const targets=[...world.querySelectorAll('.scene-landmark')].map(el=>({el,rect:el.getBoundingClientRect()}));
+        const overlaps=(a,b,pad=0)=>a.l<b.r+pad&&a.r>b.l-pad&&a.t<b.b+pad&&a.b>b.t-pad;
+        const inBounds=a=>a.l>=4&&a.t>=4&&a.r<=frame.width-4&&a.b<=frame.height-4;
+        const local=r=>({l:r.left-frame.left,r:r.right-frame.left,t:r.top-frame.top,b:r.bottom-frame.top});
+        const near=(a,b)=>Math.hypot(Math.max(0,a.l-b.r,b.l-a.r),Math.max(0,a.t-b.b,b.t-a.b));
+        const maxGap=mobileQuery.matches?42:60;
+        const focusedPhoto=document.body.classList.contains('photo-mode') && mobileQuery.matches &&
+          window.innerHeight>=560 && !fitWholePhoto && anchorKeys.length>1;
+        // At phone-scale crop, a wide natural image region may cover most of
+        // the viewport. Only the focused region gets a plaque; the other
+        // named objects remain available through Photo Next/Previous and List.
+        const focusId='landmark-'+anchorKeys[currentPhoto];
+        const hitBoxes=targets.filter(p=>!focusedPhoto||p.el.id===focusId).map(p=>local(p.rect));
+        const controls=world.querySelector('.photo-navigation');
+        const blockers=controls&&getComputedStyle(controls).display!=='none'?[local(controls.getBoundingClientRect())]:[];
+        const featured=world.querySelector('.featured-action');
+        if(featured)blockers.push(local(featured.getBoundingClientRect()));
+        const placed=[];
+        nodes.forEach(plaque=>{plaque.classList.remove('placed');plaque.dataset.placement='';plaque.style.left='';plaque.style.top='';});
+        const sorted=nodes.map(plaque=>{
+          if(focusedPhoto&&plaque.dataset.plaqueFor!==focusId){
+            plaque.dataset.placement='offscreen';return {plaque,box:null};
+          }
+          const target=targets.find(p=>p.el.id===plaque.dataset.plaqueFor);
+          return {plaque,box:target?local(target.rect):null};
+        }).filter(i=>i.box).sort((a,b)=>a.box.t-b.box.t);
+        for(const {plaque,box} of sorted){
+          const w=plaque.offsetWidth||110,h=plaque.offsetHeight||26;
+          const cx=(box.l+box.r)/2,cy=(box.t+box.b)/2;
+          // Cropped photo regions are reached through the navigation controls.
+          if(document.body.classList.contains('photo-mode') &&
+             (cx<-6||cx>frame.width+6||cy<-6||cy>frame.height+6)){
+            plaque.dataset.placement='offscreen';continue;
+          }
+          const options=[];
+          for(const delta of [0,-18,18,-36,36,-54,54,-72,72]){
+            options.push({name:'above',l:cx-w/2+delta,t:box.t-h-8});
+            options.push({name:'below',l:cx-w/2+delta,t:box.b+8});
+            options.push({name:'left',l:box.l-w-8,t:cy-h/2+delta});
+            options.push({name:'right',l:box.r+8,t:cy-h/2+delta});
+          }
+          let chosen=null,score=Infinity;
+          for(const option of options){
+            const l=Math.max(5,Math.min(frame.width-w-5,option.l));
+            const t=Math.max(5,Math.min(frame.height-h-5,option.t));
+            const rect={l,t,r:l+w,b:t+h};
+            const gap=near(rect,box);
+            if(!inBounds(rect)||gap>maxGap||placed.some(p=>overlaps(p,rect,4))||
+               hitBoxes.some(b=>overlaps(b,rect,3))||blockers.some(b=>overlaps(b,rect,4)))continue;
+            const candidate=gap+Math.hypot(l-option.l,t-option.t)*.8+
+              (option.name==='above'?0:option.name==='below'?1:2);
+            if(candidate<score){score=candidate;chosen={...rect,name:option.name};}
+          }
+          if(!chosen){plaque.dataset.placement='unplaced';continue;}
+          placed.push(chosen);
+          plaque.style.left=chosen.l+'px';plaque.style.top=chosen.t+'px';
+          plaque.dataset.placement=chosen.name;plaque.classList.add('placed');
+        }
+      }
+      function updateArt(){fitPhotoAnchors();correctBackgroundCircles();requestAnimationFrame(placePlaques);}
+      function focusPhoto(index){
+        currentPhoto=(index+anchorKeys.length)%anchorKeys.length;fitWholePhoto=false;
+        const current=anchorKeys[currentPhoto];
+        const label=world.querySelector('[data-plaque-for="landmark-'+CSS.escape(current)+'"]')?.textContent?.trim()||'photo object';
+        document.getElementById('photo-prev')?.setAttribute('aria-label','Previous photo object before '+label);
+        document.getElementById('photo-next')?.setAttribute('aria-label','Next photo object after '+label);
+        updateArt();
+      }
+      document.getElementById('photo-prev')?.addEventListener('click',()=>focusPhoto(currentPhoto-1));
+      document.getElementById('photo-next')?.addEventListener('click',()=>focusPhoto(currentPhoto+1));
+      document.getElementById('photo-fit')?.addEventListener('click',event=>{
+        fitWholePhoto=!fitWholePhoto;event.currentTarget.textContent=fitWholePhoto?'Zoom photo':'Fit photo';updateArt();
+      });
+      if(photo){photo.addEventListener('load',updateArt);if(photo.complete)updateArt();}
+      window.addEventListener('resize',updateArt);
+      if(mobileScene)mobileQuery.addEventListener('change',()=>requestAnimationFrame(updateArt));
+      requestAnimationFrame(updateArt);
+      document.fonts?.ready.then(updateArt);
+      document.addEventListener('click',event=>{
+        const listItem=event.target.closest('button.landmark');
+        if(document.body.classList.contains('photo-mode') && listItem){
+          const index=tourIds.indexOf(listItem.dataset.dialog);
+          if(index>=0)focusPhoto(index);
+        }
+      });
+      world?.addEventListener('keydown'  ,event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object && (event.key==='Enter'||event.key===' ')){
+          event.preventDefault();object.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+        }
+      });
+      const tooltip=document.getElementById('scene-tooltip');
+      function labelObject(object){
+        if(!object || !world || !tooltip) return;
+        const box=object.getBoundingClientRect();
+        const frame=world.getBoundingClientRect();
+        const x=Math.max(68,Math.min(frame.width-68,(box.left+box.right)/2-frame.left));
+        const y=Math.max(37,box.top-frame.top-10);
+        tooltip.textContent=object.getAttribute('aria-label') || '';
+        tooltip.style.left=`${x}px`;tooltip.style.top=`${y}px`;
+        tooltip.hidden=false;
+      }
+      world?.addEventListener('pointerover',event=>{
+        const object=event.target.closest?.('.scene-landmark');
+        if(object)labelObject(object);
+      });
+      world?.addEventListener('pointerout',event=>{
+        if(event.target.closest?.('.scene-landmark') && !event.relatedTarget?.closest?.('.scene-landmark'))tooltip.hidden=true;
+      });
+      world?.addEventListener('focusin',event=>{
+        const object=event.target.closest?.('.scene-landmark');if(object)labelObject(object);
+      });
+      world?.addEventListener('focusout',()=>{tooltip.hidden=true});
+      // Accessible optional guided tour. Controls stay INSIDE the modal dialog.
+      const tourIds=[...document.querySelectorAll('button.landmark')].map(el=>el.dataset.dialog);
+      let tourIndex=-1;
+      function stopTour(){tourIndex=-1;document.querySelectorAll('.tour-buttons').forEach(x=>x.hidden=true);}
+      function goTour(index){
+        if(index<0||index>=tourIds.length)return;
+        const current=document.querySelector('dialog[open]');if(current)current.close();
+        tourIndex=index;
+        if(document.body.classList.contains('photo-mode'))focusPhoto(index);
+        const dialog=document.getElementById(tourIds[index]);
+        if(!dialog)return stopTour();
+        document.querySelectorAll('.tour-buttons').forEach(x=>x.hidden=true);
+        const nav=dialog.querySelector('.tour-buttons');if(nav){nav.hidden=false;
+          nav.querySelector('[data-tour="prev"]').disabled=index===0;
+          nav.querySelector('[data-tour="next"]').disabled=index===tourIds.length-1;
+          nav.querySelector('[data-tour="status"]').textContent=`${index+1} of ${tourIds.length}`;
+        }
+        dialog.showModal();nav?.querySelector('[data-tour="next"]:not(:disabled)')?.focus();
+      }
+      document.querySelectorAll('dialog.detail-dialog').forEach(dialog=>{
+        const controls=document.createElement('div');controls.className='tour-buttons';controls.hidden=true;
+        controls.innerHTML='<button type="button" data-tour="prev">Previous</button><span data-tour="status" aria-live="polite"></span><button type="button" data-tour="next">Next</button><button type="button" data-tour="exit">Exit tour</button>';
+        dialog.querySelector('.dialog-inner').append(controls);
+      });
+      document.getElementById('start-tour')?.addEventListener('click',()=>goTour(0));
+      document.addEventListener('click',event=>{
+        const action=event.target.closest('[data-tour]')?.dataset.tour;
+        if(!action)return;
+        if(action==='next')goTour(tourIndex+1);
+        if(action==='prev')goTour(tourIndex-1);
+        if(action==='exit'){document.querySelector('dialog[open]')?.close();stopTour();}
+      });
+      document.addEventListener('keydown',event=>{
+        if(tourIndex<0)return;
+        if(event.key==='ArrowRight'&&tourIndex<tourIds.length-1){event.preventDefault();goTour(tourIndex+1);}
+        if(event.key==='ArrowLeft'&&tourIndex>0){event.preventDefault();goTour(tourIndex-1);}
+        if(event.key==='Escape')stopTour();
+      });
+      document.querySelectorAll('dialog.detail-dialog').forEach(dialog=>dialog.addEventListener('close',()=>{
+        if(tourIndex>=0 && !document.querySelector('dialog.detail-dialog[open]'))stopTour();
+      }));
+      const search=document.getElementById('world-search');
+      const items=Array.from(document.querySelectorAll('.landmark'));
+      const count=document.getElementById('result-count');
+      const empty=document.getElementById('empty-search');
+      search.addEventListener('input',()=>{
+        const q=search.value.trim().toLocaleLowerCase();
+        let matched=0;
+        items.forEach(item=>{const ok=item.dataset.search.includes(q);item.hidden=!ok;if(ok)matched++});
+        count.textContent=`${matched} / ${items.length}`;
+        empty.classList.toggle('hidden',matched>0);
+      });
+    })();
+  </script>
+</body>
+</html>

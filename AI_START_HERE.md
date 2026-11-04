@@ -1,4 +1,4 @@
-# SimpliCITY Builder v0.2.0 — Chat bootstrap
+# SimpliCITY Builder v0.2.1 — Chat bootstrap
 
 **Needs a chat or agent with code execution and file output; a text-only chat cannot run the generator.**
 
@@ -17,6 +17,9 @@
    python3 scripts/check.py /path/to/content.json /path/to/index.html
    # For private content review (outside public site folders):
    python3 scripts/build.py --input /path/to/content.json --output /path/to/index.html --review-sheet /path/to/private/review.md
+   # Optional original scenic image: author scene_svg AND scene_svg_mobile
+   # in the input first, aligned to the actual scenery, then:
+   python3 scripts/build.py --input /path/to/content.json --scenic-image /path/to/scenery.png --output /path/to/world.html
    # Re-render same facts using another built-in or free-form theme:
    python3 scripts/build.py --input /path/to/content.json --output /path/to/retinted.html --theme "noir mystery"
    # When privately extracted source text is available, compare excerpts too:
@@ -31,7 +34,7 @@
 
 ## Download source in a sandbox limited to GitHub/codeload
 
-**Choose one route**, after reviewing the repository source/trust. The `main` branch is mutable development code; after v0.2.0 is tagged, prefer `--branch v0.2.0` and `refs/tags/v0.2.0` instead.
+**Choose one route**, after reviewing the repository source/trust. The `main` branch is mutable development code; after v0.2.1 is tagged, prefer `--branch v0.2.1` and `refs/tags/v0.2.1` instead.
 
 Git clone:
 

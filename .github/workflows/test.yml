@@ -1,4 +1,4 @@
-name: Verify SimpliCITY Builder v0.2.0
+name: Verify SimpliCITY Builder v0.2.1
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
         run: python3 -m pip install -r requirements-dev.txt
       - name: Ruff lint (new modules, fatal errors and structural style)
         run: python3 scripts/ci_preflight.py lint
-      - name: Type-check focused v0.2.0 modules
+      - name: Type-check scene, experience and portfolio generators
         run: python3 scripts/ci_preflight.py types
       - name: Unit test coverage (baseline reporting, no arbitrary target)
         run: coverage run --source=simplicity-builder/scripts -m unittest discover -s tests -q && coverage report
@@ -52,7 +52,7 @@ jobs:
           test -f /tmp/test-publish/site/index.html
           grep -q 'og:image' /tmp/test-publish/site/index.html
       - name: Build installable skill archive and checksum manifest
-        run: python3 scripts/package_release.py --label v0.2.0
+        run: python3 scripts/package_release.py --label v0.2.1
 
   browser:
     runs-on: ubuntu-latest
@@ -67,9 +67,17 @@ jobs:
         run: |
           python3 -m pip install 'playwright==1.57.0' 'Pillow==12.3.0'
           python3 -m playwright install --with-deps chromium
+      - name: Install axe-core for mandatory WCAG checks
+        run: npm install --no-save --no-audit --ignore-scripts axe-core@4.10.3
       - name: Test actual HTML in desktop and mobile Chromium
         run: |
-          python3 simplicity-builder/scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html docs/guardian.html docs/photo.html --screenshots private/screenshots
+          python3 simplicity-builder/scripts/browser_smoke.py docs/fairytale.html docs/space.html docs/festival.html docs/clockwork.html docs/guardian.html docs/photo.html docs/volcanic.html docs/toon.html docs/meeting-room.html docs/playground.html docs/farm.html --screenshots private/screenshots --axe-script node_modules/axe-core/axe.min.js
+      - name: Check room, playground and farm layouts from 1 to 8 landmarks; regress legacy families at 4 and 8
+        run: python3 scripts/check_environment_matrix.py
+      - name: Create full gallery visual contact sheet
+        run: |
+          python3 scripts/contact_sheet.py --screenshots private/screenshots \
+            --output private/screenshots/contact-sheet.png --worlds fairytale space festival clockwork guardian photo volcanic toon
       - name: Enforce approved screenshot baselines (25% tolerance)
         run: python3 scripts/check_visual_baselines.py --screenshots private/screenshots --tolerance 0.25
       - name: Save screenshots for visual review

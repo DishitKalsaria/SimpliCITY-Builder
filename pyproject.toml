@@ -4,7 +4,7 @@ line-length = 120
 exclude = ["docs", "private"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"  # Matches GitHub Actions; runtime Python 3.9 syntax is tested separately.
 ignore_missing_imports = true
 check_untyped_defs = false
 warn_unused_ignores = true

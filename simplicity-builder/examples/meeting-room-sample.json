@@ -1,0 +1,56 @@
+{
+  "source": {
+    "kind": "prompt",
+    "title": "A fictional interactive exploration",
+    "fictional": true
+  },
+  "creator": "SimpliCITY Builder",
+  "experience": {
+    "title": "The Collaboration Room",
+    "theme": "inviting modern meeting room",
+    "mode": "world",
+    "tagline": "Open an object to discover a story from this imagined setting."
+  },
+  "chapters": [
+    {
+      "title": "Presentation Screen",
+      "summary": "An interactive presentation about what the team is building.",
+      "items": [
+        {
+          "title": "Our Shared Vision",
+          "description": "An interactive presentation about what the team is building. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Roundtable Discussion",
+      "summary": "A place for decisions, feedback, and collective thinking.",
+      "items": [
+        {
+          "title": "Ideas Around the Table",
+          "description": "A place for decisions, feedback, and collective thinking. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Planning Whiteboard",
+      "summary": "How we turn ambitious goals into achievable milestones.",
+      "items": [
+        {
+          "title": "The Plan",
+          "description": "How we turn ambitious goals into achievable milestones. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Team Laptop",
+      "summary": "Prototype concepts and learnings from our latest experiments.",
+      "items": [
+        {
+          "title": "The Prototype",
+          "description": "Prototype concepts and learnings from our latest experiments. This is a fictional demonstration."
+        }
+      ]
+    }
+  ]
+}

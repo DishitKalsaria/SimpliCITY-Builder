@@ -1,5 +1,4 @@
 """GitHub Pages bundle + social metadata regression checks (no network calls)."""
-import importlib.util
 import json
 import sys
 import tempfile

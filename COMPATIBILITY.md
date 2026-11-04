@@ -1,11 +1,11 @@
-# SimpliCITY Builder v0.2.0 — capabilities and support
+# SimpliCITY Builder v0.2.1 — capabilities and support
 
 | Environment | Route | Verified status |
 |---|---|---|
 | Local Python 3.9+ | Standalone ZIP + two validators | Local automated test coverage; cross-version Python verification remains to run |
-| Claude custom Skills | Import skill ZIP with code execution | External v0.2.0 acceptance pending |
-| Claude Code | Install `simplicity-builder/` and run Python | External v0.2.0 acceptance pending |
-| OpenAI Codex | Install skill in supported skills directory | External v0.2.0 acceptance pending |
+| Claude custom Skills | Import skill ZIP with code execution | External v0.2.1 acceptance pending |
+| Claude Code | Install `simplicity-builder/` and run Python | External v0.2.1 acceptance pending |
+| OpenAI Codex | Install skill in supported skills directory | External v0.2.1 acceptance pending |
 | Other coding-enabled chats | Reviewed repository fetch + Python + file output | Host-dependent; cannot guarantee capabilities |
 | Text-only chatbot | No code execution or downloadable files | Cannot run generator |
 | Photo input | Host image understanding + observed normalized object boxes + approved local image | Python generator refuses a photo scene without `--source-image`; the host, not the engine, identifies objects |

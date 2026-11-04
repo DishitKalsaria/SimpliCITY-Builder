@@ -26,15 +26,16 @@ RUFF_TARGETS = (
     'scripts/package_skill.py',
     'scripts/ci_preflight.py',
 )
-MYpy_TARGETS = (
+MYPY_TARGETS = (
     'simplicity-builder/scripts/scene_art.py',
     'simplicity-builder/scripts/build_experience.py',
+    'simplicity-builder/scripts/build_portfolio.py',
 )
 
 
 def source_fingerprints() -> None:
     print('Source fingerprints (compare with the files in your pushed commit):', flush=True)
-    for relative in MYpy_TARGETS:
+    for relative in MYPY_TARGETS:
         path = ROOT / relative
         print(f'  SHA256 {hashlib.sha256(path.read_bytes()).hexdigest()}  {relative}', flush=True)
 
@@ -69,7 +70,7 @@ def main() -> int:
         return 2
     commands = {
         'lint': ['ruff', 'check', *RUFF_TARGETS, '--select', 'E4,E7,E9,F821,F822,F823'],
-        'types': ['mypy', *MYpy_TARGETS, '--follow-imports=skip', '--ignore-missing-imports'],
+        'types': ['mypy', *MYPY_TARGETS, '--follow-imports=skip', '--ignore-missing-imports'],
         'tests': [sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
     }
     selected = ('lint', 'types', 'tests') if args.step == 'all' else (args.step,)

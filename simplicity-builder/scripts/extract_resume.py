@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import re
-import sys
 import xml.etree.ElementTree as ET
 import zipfile
 

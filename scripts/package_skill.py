@@ -48,8 +48,8 @@ def make_skill(output: Path, tag: str | None = None) -> Path:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, default=ROOT / 'simplicity-builder.zip')
-    parser.add_argument('--tag', help='Optional exact release tag, e.g. v0.2.0')
-    parser.add_argument('--label', help='Backward-compatible label, e.g. v0.2.0')
+    parser.add_argument('--tag', help='Optional exact release tag, e.g. v0.2.1')
+    parser.add_argument('--label', help='Backward-compatible label, e.g. v0.2.1')
     args = parser.parse_args()
     version = args.tag or args.label
     if args.tag and args.label and args.tag != args.label:

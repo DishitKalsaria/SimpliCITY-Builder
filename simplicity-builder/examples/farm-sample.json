@@ -1,0 +1,56 @@
+{
+  "source": {
+    "kind": "prompt",
+    "title": "A fictional interactive exploration",
+    "fictional": true
+  },
+  "creator": "SimpliCITY Builder",
+  "experience": {
+    "title": "The Living Farm",
+    "theme": "sunlit working agricultural farm",
+    "mode": "world",
+    "tagline": "Open an object to discover a story from this imagined setting."
+  },
+  "chapters": [
+    {
+      "title": "The Barn",
+      "summary": "A welcoming place for animals and everyday farm work.",
+      "items": [
+        {
+          "title": "Farm Operations",
+          "description": "A welcoming place for animals and everyday farm work. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Crop Fields",
+      "summary": "Follow the progress of plants from seed to harvest.",
+      "items": [
+        {
+          "title": "Growing Together",
+          "description": "Follow the progress of plants from seed to harvest. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Farm Tractor",
+      "summary": "See the equipment that helps the farm run efficiently.",
+      "items": [
+        {
+          "title": "Practical Engineering",
+          "description": "See the equipment that helps the farm run efficiently. This is a fictional demonstration."
+        }
+      ]
+    },
+    {
+      "title": "Greenhouse",
+      "summary": "Care for seedlings and new ideas as they take root.",
+      "items": [
+        {
+          "title": "New Beginnings",
+          "description": "Care for seedlings and new ideas as they take root. This is a fictional demonstration."
+        }
+      ]
+    }
+  ]
+}

@@ -78,7 +78,7 @@ class UnifiedCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             base = Path(folder)
             archive = base / 'skill.zip'
-            result = run(ROOT / 'scripts/package_skill.py', '--tag', 'v0.2.0', '--output', archive)
+            result = run(ROOT / 'scripts/package_skill.py', '--tag', 'v0.2.1', '--output', archive)
             self.assertEqual(result.returncode, 0, result.stderr)
             with zipfile.ZipFile(archive) as z:
                 z.extractall(base)

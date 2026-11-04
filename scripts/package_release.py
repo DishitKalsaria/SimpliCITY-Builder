@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import re
 import zipfile
 from pathlib import Path
 from package_skill import make_skill
@@ -51,5 +50,5 @@ def package(label: str):
 
 if __name__ == '__main__':
     arg = argparse.ArgumentParser()
-    arg.add_argument('--label', default='v0.2.0')
+    arg.add_argument('--label', default='v0.2.1')
     package(arg.parse_args().label)

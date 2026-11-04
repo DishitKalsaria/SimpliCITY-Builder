@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.2.1 — Environment-first visual refinement (unreleased candidate)
+
+### Release quality and maintainability hardening
+
+- Closed the remaining v0.2.1 style and stale-gallery-documentation gaps; aligned mypy target to CI Python 3.11 while keeping the Python 3.9+ runtime contract.
+- Added direct CLI artwork-sanitizer and browser-smoke assertions to cover validation, failure states, viewport checks and opt-in accessibility.
+- Expanded compact one-line suites and semicolon statements into reviewable blocks without changing Python syntax trees or generated scenes.
+- Corrected all three scene generator semicolon lint violations; removed unused imports and duplicate test imports without changing generated HTML output for the representative six-world comparison.
+- Expanded the existing type-check gate to include the portfolio generator and marked its raising validation helper `NoReturn` so invalid inputs stay rejected with correctly narrowed types.
+- Strengthened offline, mocked publishing tests for explicit approval, matched GitHub account/repository metadata, existing repositories, public-bundle boundaries, and local error recovery.
+- Added in-process build/check/experience-validation tests for more meaningful coverage, a Python 3.9 syntax guard, and release-document consistency tests.
+- Consolidated v0.2.1 changelog entries into a single version heading; corrected contribution instructions and the 11-demo versus eight-baseline distinction in testing documentation.
+
+### Environment-first scenes, layouts and browser coverage
+
+- Expanded procedural scene generation to meeting rooms, playgrounds and agricultural farms, with scene-specific layouts, interior/exterior depth, coherent materials and chapter-aware object silhouettes.
+- Corrected scaled landmark placement for 5–8 sections without disturbing the approved four-object legacy scene layouts; added compact seven/eight-object phone plaques and a visible small-phone tour icon.
+- Changed theme classification to token-boundary matching to avoid terms such as `smart` accidentally selecting `art`/festival themes.
+- Added three standalone fictional interactive demos and reusable inputs; added a browser scene-matrix script and unit regression coverage for 1–8 landmarks.
+- Visual quality remains subject to owner review; offline SVG is not claimed to provide bespoke cinematic artwork for arbitrary prompts.
+
+### Theme art-direction and visual refinement
+
+- Added family-specific landscape grammars, placement variants, matching color/material constraints and terrain-based landmark foundations for volcanic, ocean, space, guardian and original toon worlds.
+- Promoted AI-authored desktop/mobile safe SVG to the host-preferred experience, with a concise scene-authoring reference, mandatory render/look/revise when browser tools exist, and honest fallback declarations.
+- Added toon and volcanic interactive demos with actual preview captures, an original browser tour recording, and a gallery contact-sheet generator.
+- Extended browser CI to eight demos, axe-core WCAG checks, and eight visual regression candidates; final visual-owner approval and GitHub Actions remain release gates.
+- Shortened README; split long artwork guidance in SKILL.md; updated golden baseline documentation and removed technology-family `network` matching.
+
+### Visual definition and scenic-image workflow
+
+- New volcanic visual family with differentiated interactive citadel, forge, observatory and refinery landmarks.
+- Richer cinematic procedural scene grammar: textured atmosphere, themed terrain, distant ridge structures, environmental lighting, connected destinations and architectural landmark foundations.
+- Portrait-specific terrain distribution retained; authored photo experiences remain image-anchored and unchanged.
+- Adds optional first-class `--scenic-image` for reviewed scenery-only art with mandatory authored desktop/mobile SVG landmark layouts; source-photo anchoring stays separate.
+- Fixes unintended source-photo pan/fit resizing of non-photo scenic images, keeping scenic art full-bleed.
+- No remote image API, JavaScript dependency or change to factual source-grounding; scenic composition remains subject to human visual approval.
+- Updated live demo output candidates and visual checks; human visual approval is still required before release.
+
 ## v0.2.0 — Chat-first, source-neutral interactive experiences (implementation; stable release pending acceptance)
 
 - Final visual/trust correction: collision-aware name plaques with free-space placement; full-bleed ambient scene layers, mobile photo crop/fit and object navigator, responsive title; hard photo-box area/overlap guards and new negative Chromium tests.

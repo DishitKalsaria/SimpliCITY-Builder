@@ -1,4 +1,4 @@
-# Curated SVG artwork primitives (v0.2.0)
+# Curated SVG artwork primitives (v0.2.1)
 
 Reusable **inspiration**, not a list of allowable themes. All art is created as original, local geometry with simple gradients and named clickable object groups. Adapt silhouettes, proportions, palette, light direction and landmark ID to fit the user's world.
 

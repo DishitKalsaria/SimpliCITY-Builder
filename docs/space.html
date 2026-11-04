@@ -42,14 +42,39 @@
     .scene-svg{display:block;width:100%;height:100%;overflow:hidden;position:relative;z-index:1}
     .scene-backdrop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85;z-index:0;pointer-events:none;user-select:none}.photo-mode .scene-backdrop{object-fit:contain;opacity:1}.photo-ambient{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(23px);opacity:.35;z-index:0;pointer-events:none}.photo-mode .scene-backdrop{z-index:1}.photo-mode .scene-svg{z-index:2}.photo-mode .scene-world{background:#0a101b}.photo-mode .scene-world::before{display:none}.photo-mode .scene-svg{pointer-events:none}.photo-mode .scene-landmark{pointer-events:bounding-box}.photo-mode .scene-landmark rect{fill-opacity:.12}.photo-mode .scene-landmark:hover rect,.photo-mode .scene-landmark:focus-visible rect{fill-opacity:.24}
     .scene-world::before{content:none}
+    /* Optional high-definition scenic artwork: painted landscape remains the
+       backdrop, while independent SVG landmarks and accessible controls stay
+       interactive. Scene SVG positions must be authored against the image. */
+    .scenic-art-mode .scene-backdrop{opacity:1;object-fit:cover}
+    .scenic-art-mode .scene-ambience{opacity:.075}
+    .scenic-art-mode .scene-world{background:#10141e}
+    /* Only decorative ambience moves; interactive hit regions stay fixed.
+       Motion is disabled entirely by the existing reduced-motion rules. */
+    @media(prefers-reduced-motion:no-preference){
+      body:not(.photo-mode) .scene-ambience{transition:transform 3s ease}
+      body:not(.photo-mode) .scene-world:hover .scene-ambience{transform:scale(1.008)}
+    }
     /* The scene objects themselves are the hit targets: no icon pins or overlaid badges. */
     .scene-landmark{cursor:pointer;pointer-events:bounding-box;touch-action:manipulation;transform-box:fill-box;transform-origin:center;transition:filter .22s ease,opacity .22s ease,scale .22s ease;outline:none}
+    /* Avoid double-applying SVG transforms when packing dense layouts. */
+    body:is([data-family="meeting"],[data-family="playground"],[data-family="farm"],[data-count="5"],[data-count="6"],[data-count="7"],[data-count="8"]) .scene-landmark{transform-box:view-box;transform-origin:0 0}
     .scene-landmark:active{scale:.985;opacity:.88}.scene-landmark:hover,.scene-landmark:focus-visible{scale:1.035;filter:drop-shadow(0 0 9px var(--accent)) drop-shadow(0 0 19px var(--accent2))}
     .scene-landmark:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
     .scene-world:has(.scene-landmark:hover) .scene-landmark:not(:hover){opacity:.76}
     .scene-tooltip{position:absolute;z-index:3;pointer-events:none;transform:translate(-50%,-100%);max-width:min(200px,82%);padding:7px 11px;border:1px solid var(--accent);border-radius:10px;box-shadow:0 9px 25px #0008;background:#101522f2;color:#fff;font-size:12px;font-weight:750;line-height:1.2;text-align:center;white-space:normal}
     .scene-tooltip[hidden]{display:none}
     .scene-plaque{position:absolute;z-index:4;pointer-events:none;display:block;max-width:min(200px,43%);padding:5px 9px;border-radius:9px;background:#101a2df2;border:1px solid #bdcde7;color:#fff;font:750 12px/1.28 ui-sans-serif,system-ui,sans-serif;box-shadow:0 3px 12px #000a;text-align:center;overflow-wrap:anywhere;opacity:0;transition:opacity .1s ease}
+    /* Family plaque vocabulary: subdued basalt, ocean glass, orbital metal,
+       or thick-ink toon. Labels remain HTML and never baked into scenery. */
+    body[data-family="volcanic"] .scene-plaque{background:#281b24f2;border-color:#ffb06e;color:#fff0dc;box-shadow:0 4px 15px #12080ce6,0 0 13px #ee6a323d}
+    body[data-family="ocean"] .scene-plaque{background:#103a4aeF;border-color:#8ce8d5;color:#f2ffff}
+    body[data-family="space"] .scene-plaque{background:#161c41f2;border-color:#b7c3ff;color:#f6f4ff}
+    body[data-family="toon"] .scene-plaque{background:#1c2e63;border:3px solid #10152f;color:#ffe04f;border-radius:14px;box-shadow:4px 5px 0 #10152f}
+    body[data-family="toon"] h1{font-weight:900;letter-spacing:-.035em}
+    @media(prefers-reduced-motion:no-preference){
+      body[data-family="volcanic"] .scene-landmark:hover{filter:drop-shadow(0 0 16px #fa7840)}
+      body[data-family="space"] .scene-landmark:hover{filter:drop-shadow(0 0 16px #93bfff)}
+    }
     .photo-mode .scene-plaque{transition:none} .scene-plaque.placed{opacity:1}.scene-plaque[data-placement="rail"]{font-size:10px;padding:3px 6px}.scene-plaque:before{content:"";display:block;position:absolute;inset:-3px;pointer-events:none;border-radius:11px;border:1px solid var(--accent);opacity:.55}
     .featured-action{position:absolute;bottom:9px;left:50%;z-index:6;transform:translateX(-50%);min-height:44px;max-width:90%;padding:9px 16px;border-radius:13px;border:1px solid var(--accent);background:#101a2ff5;color:#fff;font-weight:800;box-shadow:0 5px 18px #0008;white-space:normal;text-align:center}
     .photo-navigation{display:none;position:absolute;z-index:7;right:8px;bottom:8px;gap:5px;align-items:center}
@@ -70,7 +95,7 @@
     .hint{color:var(--white);font-size:13px;max-width:34ch}.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
     .tool{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--stroke);border-radius:13px;padding:10px 12px;background:rgba(255,255,255,.065);color:var(--white);font-size:12px;font-weight:750;white-space:nowrap;min-height:42px}
     .tool:hover{background:rgba(255,255,255,.13)}.tool-primary{color:var(--bg);background:var(--accent);border-color:var(--accent)}.tool-primary:hover{background:var(--accent2)}
-    .credits{font-size:12px;color:var(--white);padding:0 3px 8px;display:flex;justify-content:space-between;gap:12px}
+    .credits{font-size:14px;color:var(--white);padding:0 3px 8px;display:flex;justify-content:space-between;gap:12px}
     dialog{color:var(--white);border:1px solid var(--stroke);border-radius:23px;width:min(760px,calc(100vw - 24px));max-height:min(88dvh,900px);padding:0;background:linear-gradient(155deg,var(--bg2),var(--bg));box-shadow:0 35px 120px #0009}
     dialog::backdrop{background:#030712da;backdrop-filter:blur(9px)}.dialog-inner{padding:clamp(18px,3vw,30px);overflow-y:auto;overscroll-behavior:contain;max-height:calc(88dvh - 2px);scrollbar-color:var(--accent2) transparent}
     .dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:1px solid var(--stroke);padding-bottom:17px;margin-bottom:17px}
@@ -95,7 +120,7 @@
     @keyframes pulse{0%,100%{opacity:.82}50%{opacity:1}}
     .motion-float{animation:gentle-float 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
     .motion-twinkle{animation:twinkle 5s ease-in-out infinite}.motion-drift{animation:drift 9s ease-in-out infinite}.motion-pulse{animation:pulse 4s ease-in-out infinite}
-    @media(max-width:680px){.app{--gutter:11px;padding:0 var(--gutter) env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(18px,5.3vw,27px);line-height:1.13;overflow-wrap:anywhere;max-width:100%}.tagline{font-size:11px;max-width:44ch}.mobile-hint{display:none}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:11px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
+    @media(max-width:680px){.app{--gutter:11px;padding:0 var(--gutter) env(safe-area-inset-bottom)}.topbar{min-height:52px}.owner{font-size:10px;max-width:47%}.intro{padding:9px 2px 2px}.intro h1{font-size:clamp(18px,5.3vw,27px);line-height:1.13;overflow-wrap:anywhere;max-width:100%}.tagline{font-size:11px;max-width:44ch}.mobile-hint{display:none}.overview{font-size:10px}.overview strong{font-size:18px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:11px;padding:6px 9px}.toolbar{min-height:61px}.hint{display:none}.tools{flex:1;justify-content:space-between;gap:5px}.tool{flex:1;min-width:0;padding:9px 5px;font-size:10px;min-height:43px;gap:4px}.tool .ui-icon{height:16px;width:16px}.credits{font-size:12px;padding-bottom:5px}.credits span:last-child{display:none}.dialog-inner{max-height:calc(94dvh - 2px)}dialog{max-height:94dvh}.entry{padding:15px}}
     /* A real mobile subtitle: wrap rather than silently ellipsize the owner/headline. */
     @media(max-width:680px){
       .topbar{min-height:60px;padding-block:6px;gap:7px}
@@ -105,13 +130,14 @@
         overflow-wrap:anywhere;line-height:1.26;text-align:right}
     }
     @media(max-width:680px) and (min-height:560px){.photo-mode .scene-backdrop{object-fit:cover}}
-    @media(max-width:380px){.tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
+    @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:34%;font-size:9px;padding:2px 4px;line-height:1.13}}
+    @media(max-width:380px){#start-tour::before{content:"▶";font-size:17px;line-height:1} .tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
     @media(max-height:570px){.topbar{min-height:42px}.intro{padding:5px 0}.tagline{display:none}.credits{display:none}.toolbar{min-height:48px}.scene-world{width:100%;height:100%}.scene-tooltip{font-size:10px;padding:3px 7px}.tool{min-height:38px;padding:5px 10px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
     @media print{html,body{height:auto!important;overflow:visible!important;background:white!important;color:black!important}.app,.detail-dialog,.list-dialog,.about-dialog{display:none!important}#recruiter-dialog{display:block!important;position:static!important;border:0!important;box-shadow:none!important;width:100%!important;max-height:none!important;color:black!important;background:white!important;margin:0;padding:0}#recruiter-dialog .dialog-inner{overflow:visible!important;max-height:none!important;padding:0!important}#recruiter-dialog .close-dialog,#recruiter-dialog .print-action{display:none!important}#recruiter-dialog .dialog-heading h2,#recruiter-dialog .entry h3,#recruiter-dialog .recruiter-section>h3{color:black!important}#recruiter-dialog .entry,#recruiter-dialog .metric{break-inside:avoid;border-color:#ccc;background:white!important}#recruiter-dialog .entry *{color:black!important}#recruiter-dialog .eyebrow{color:#333!important}#recruiter-dialog .entry{padding:10px}#recruiter-dialog .tag{border-color:#bbb;color:#333!important}}
   </style>
 </head>
-<body data-theme="space" data-family="space" class="">
+<body data-theme="space" data-family="space" data-count="3" class="">
   <div class="app" id="main">
     <button type="button" class="skip" data-dialog="list-dialog">Skip to locations</button>
     <header class="topbar"><div class="brand"><span class="brand-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg></span><span>SimpliCITY Builder</span></div><span class="owner">Jordan Vega · Software Engineer &amp; Data Explorer</span></header>
@@ -225,6 +251,9 @@
       const anchorKeys=Object.keys(photoAnchors);
       let currentPhoto=0, fitWholePhoto=false;
       function fitPhotoAnchors(){
+        // Only source photos use observed-object pan/fit mathematics. Scenic
+        // backgrounds must remain full-bleed, without a central rectangle.
+        if(!document.body.classList.contains('photo-mode'))return;
         if(!photo || !photo.naturalWidth || !photo.naturalHeight || !world)return;
         const fw=world.clientWidth,fh=world.clientHeight;
         if(!fw||!fh)return;

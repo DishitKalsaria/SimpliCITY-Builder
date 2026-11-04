@@ -1,8 +1,8 @@
-# Link-only bootstrap for capable AI chats — v0.2.0
+# Link-only bootstrap for capable AI chats — v0.2.1
 
 Requires repository retrieval, attachment/link understanding, Python execution and downloadable file output. A GitHub URL alone does **not** activate a skill. Read [AI_START_HERE.md](../AI_START_HERE.md) for exact `git clone` and codeload `curl`/unzip fallback commands.
 
-Use a reviewed pinned `v0.2.0` tag **only after it exists**. Before then use an explicitly reviewed commit on mutable `main` with permission; verify the files being executed. The installable `simplicity-builder.zip` is the preferred option for compatible chat-agent skill upload.
+Use a reviewed pinned `v0.2.1` tag **only after it exists**. Before then use an explicitly reviewed commit on mutable `main` with permission; verify the files being executed. The installable `simplicity-builder.zip` is the preferred option for compatible chat-agent skill upload.
 
 ## Longer advanced prompt
 

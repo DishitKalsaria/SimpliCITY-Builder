@@ -70,12 +70,14 @@ class BuildTests(unittest.TestCase):
             with self.subTest(svg=payload):
                 data = self.load('custom')
                 data['world']['scene_svg'] = payload
-                with self.assertRaises(ValueError): builder.generate(data)
+                with self.assertRaises(ValueError):
+                    builder.generate(data)
 
     def test_rejects_light_background(self):
         data = self.load()
         data['world']['background'] = '#ffffff'
-        with self.assertRaises(ValueError): builder.generate(data)
+        with self.assertRaises(ValueError):
+            builder.generate(data)
 
     def test_custom_unknown_theme_works_without_svg(self):
         data = self.load()

@@ -12,4 +12,4 @@ Important principles: any imaginative theme; source-grounded facts or clearly fi
 
 By contributing, you agree your contribution is provided under the repository's MIT License.
 
-For v0.2.0, include tests for new source-neutral inputs, preserve standalone installation, and run `scripts/package_skill.py` from a clean checkout. Optional developer dependencies are in `requirements-dev.txt`; Python generator runtime remains stdlib-only.
+For v0.2.1, cover any added environment with both schema tests and responsive 1–8 landmark checks; preserve standalone installation and run `scripts/ci_preflight.py all` and `scripts/package_skill.py` from a clean checkout. Optional developer dependencies are in `requirements-dev.txt`; Python generator runtime remains stdlib-only. Visual excellence also requires human review of the rendered desktop and mobile artwork, not only green automated geometry checks.

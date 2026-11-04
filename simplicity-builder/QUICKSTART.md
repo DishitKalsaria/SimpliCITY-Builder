@@ -1,4 +1,4 @@
-# Chat-first quickstart — SimpliCITY Builder v0.2.0
+# Chat-first quickstart — SimpliCITY Builder v0.2.1
 
 Needs a chat/agent with code execution and file output; a text-only chat cannot run the generator.
 
@@ -13,3 +13,23 @@ For an approved photo, build with `python3 scripts/build.py --input /path/to/pho
 Optional visual QA: `python3 scripts/browser_smoke.py /path/to/index.html`. If Playwright/Chromium is unavailable, report that it was skipped.
 
 No automatic publishing. Review factual claims, real people in photos, private details and sharing permissions before any public deployment. Read `SKILL.md` for full safeguards, art direction and publishing options. The skill works independently of repository-root files.
+
+## v0.2.1 enhanced scenic art (optional)
+
+Use a locally approved original **scenery-only** PNG/JPEG/WebP. It must not contain
+baked-in labels, buttons, personal contact details, fabricated achievements,
+or facts; those belong in validated HTML. Set both `scene_svg` and
+`scene_svg_mobile` to authored, safe SVG landmark structures in the input JSON
+and align them against the art at desktop and phone resolutions. The builder
+rejects missing authored layouts rather than guessing scene coordinates.
+
+```bash
+python3 simplicity-builder/scripts/build.py --input input.json \
+  --scenic-image /path/to/approved-scenery.png --output world.html
+python3 simplicity-builder/scripts/check.py input.json world.html
+```
+
+A `--theme` override is deliberately incompatible with `--scenic-image`:
+changing art direction invalidates the reviewed scene geometry. Source photos
+must use `--source-image` with observed region anchors instead. The runtime
+remains fully offline and never calls an image-generation service.

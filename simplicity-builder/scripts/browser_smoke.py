@@ -83,7 +83,7 @@ METRICS_JS = r'''() => {
       return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)});
   const doc=document.documentElement;
   const ambience=world.querySelector('.scene-ambience');
-  const edgeFill=isPhoto||!!(ambience&&visible(ambience)&&getComputedStyle(ambience).width===getComputedStyle(world).width);
+  const edgeFill=isPhoto||document.body.classList.contains('scenic-art-mode')||!!(ambience&&visible(ambience)&&getComputedStyle(ambience).width===getComputedStyle(world).width);
   // Detect the previous double-projection regression: empty background clone
   // after the first call stripped scenery from the foreground.
   const sceneryMissing=!isPhoto && (!ambience||!ambience.querySelector('path,polygon,rect,ellipse'));
@@ -160,14 +160,16 @@ def check(path: Path, browser, screenshots: Path | None = None, axe_script: Path
         if page.locator('#mobile-scene-template').count():
             variant=page.locator('.scene-world > .scene-svg').get_attribute('data-scene-variant')
             expected='mobile' if width<=680 else 'desktop'
-            if variant!=expected:raise AssertionError(f'{label}: wrong active scene {variant}')
+            if variant!=expected:
+                raise AssertionError(f'{label}: wrong active scene {variant}')
         if screenshots:
             screenshots.mkdir(parents=True,exist_ok=True)
             page.screenshot(path=str(screenshots/f'{path.stem}-{label}.png'))
         if axe_script:
             page.add_script_tag(path=str(axe_script))
             violations=page.evaluate('''async()=>{const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa']}});return r.violations.map(v=>v.id)}''')
-            if violations:raise AssertionError(f'{path.name} {label}: axe violations: {violations}')
+            if violations:
+                raise AssertionError(f'{path.name} {label}: axe violations: {violations}')
         else:
             print('SKIP axe-core: no --axe-script supplied (optional accessibility checks)')
         # DOM Tab order must reach every labelled SVG object (plaques label these objects;
@@ -181,8 +183,10 @@ def check(path: Path, browser, screenshots: Path | None = None, axe_script: Path
         for _ in range(focusable.count()+12):
             page.keyboard.press('Tab')
             focus_id=page.evaluate('document.activeElement?.id')
-            if focus_id and focus_id.startswith('landmark-'):reached.add(focus_id)
-            if len(reached)==focusable.count():break
+            if focus_id and focus_id.startswith('landmark-'):
+                reached.add(focus_id)
+            if len(reached)==focusable.count():
+                break
         if len(reached)!=focusable.count():
             raise AssertionError(f'{label}: Tab order missed named landmarks: {reached}')
         # For cropped mobile photos, focus only a visible object; other objects
@@ -211,23 +215,30 @@ def check(path: Path, browser, screenshots: Path | None = None, axe_script: Path
                 raise AssertionError(f'{label}: guided tour Next failed')
         page.locator('dialog.detail-dialog[open] [data-tour="exit"]').click()
         page.locator('[data-dialog="list-dialog"]').last.click()
-        if page.locator('#list-dialog[open]').count()!=1:raise AssertionError('Accessible location list missing')
-        search=page.locator('#world-search');search.fill('unlikely-query-123xyz')
-        if page.locator('button.landmark:visible').count():raise AssertionError('Location search failed')
-        search.fill('');page.keyboard.press('Escape')
+        if page.locator('#list-dialog[open]').count()!=1:
+            raise AssertionError('Accessible location list missing')
+        search=page.locator('#world-search')
+        search.fill('unlikely-query-123xyz')
+        if page.locator('button.landmark:visible').count():
+            raise AssertionError('Location search failed')
+        search.fill('')
+        page.keyboard.press('Escape')
         page.locator('[data-dialog="recruiter-dialog"]').first.click()
         if page.locator('#recruiter-dialog[open] .recruiter-section').count()<1:
             raise AssertionError('Overview/print view missing')
-        if errors:raise AssertionError(f'{label}: JavaScript errors {errors}')
+        if errors:
+            raise AssertionError(f'{label}: JavaScript errors {errors}')
         print(f'PASS {path.name} {label}: geometry, contrast, labels, source alignment, tour and navigation')
         page.close()
 
 
 def launch(p):
-    try: return p.chromium.launch(headless=True)
+    try:
+        return p.chromium.launch(headless=True)
     except Exception:
         binary=shutil.which('chromium') or shutil.which('google-chrome')
-        if not binary:raise RuntimeError('No Chromium available; browser QA skipped')
+        if not binary:
+            raise RuntimeError('No Chromium available; browser QA skipped')
         return p.chromium.launch(headless=True, executable_path=binary,args=['--no-sandbox'])
 
 
@@ -237,15 +248,22 @@ def main():
     ap.add_argument('--screenshots',type=Path)
     ap.add_argument('--axe-script',type=Path,help='Optional locally installed axe-core JS file; no CDN fetch')
     args=ap.parse_args()
-    try:from playwright.sync_api import sync_playwright
-    except ImportError:ap.exit(2,'SKIP browser QA: Playwright unavailable. Install Playwright and Chromium.\n')
-    if args.axe_script and not args.axe_script.is_file():ap.exit(2,'SKIP axe: supplied --axe-script missing\n')
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        ap.exit(2,'SKIP browser QA: Playwright unavailable. Install Playwright and Chromium.\n')
+    if args.axe_script and not args.axe_script.is_file():
+        ap.exit(2,'SKIP axe: supplied --axe-script missing\n')
     try:
         with sync_playwright() as p:
             browser=launch(p)
             try:
-                for file in args.pages: check(file,browser,args.screenshots,args.axe_script)
-            finally:browser.close()
-    except RuntimeError as err:ap.exit(2,str(err)+'\n')
+                for file in args.pages:
+                    check(file,browser,args.screenshots,args.axe_script)
+            finally:
+                browser.close()
+    except RuntimeError as err:
+        ap.exit(2,str(err)+'\n')
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main()

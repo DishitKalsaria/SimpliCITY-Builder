@@ -1,6 +1,6 @@
 # GitHub Pages demo gallery
 
-This folder hosts a **demo gallery** at `index.html` and six standalone, interactive experience samples:
+This folder hosts a **demo gallery** at `index.html` and eleven linked, standalone, interactive experience samples:
 
 - `fairytale.html` generated from `docs/demo-inputs/fairytale-sample.json`
 - `space.html` generated from `docs/demo-inputs/space-sample.json`
@@ -8,6 +8,8 @@ This folder hosts a **demo gallery** at `index.html` and six standalone, interac
 - `clockwork.html` generated from `docs/demo-inputs/clockwork-sample.json`
 - `photo.html` generated from `simplicity-builder/examples/photo-sample.json` and the synthetic image
 - `guardian.html` generated from `simplicity-builder/examples/guardian-academy.json` (fictional prompt; new source-neutral input)
+
+An additional, unlisted **v0.2.1 volcanic visual-reference candidate** lives at `volcanic.html`, generated from `simplicity-builder/examples/volcanic-sample.json`. It is intentionally not promoted in the public gallery until the owner approves the art.
 
 The JSON files are **developer input**, not the visitor-facing demo. Screenshots in `assets/` are captured from the actual generated HTML. All sample profiles are fictional.
 
@@ -21,6 +23,8 @@ python3 simplicity-builder/scripts/build.py --input docs/demo-inputs/fairytale-s
 
 Do not replace the demos with real people’s résumé content without approval. If you modify the generator or sample inputs, regenerate the affected HTML and preview image.
 
-To regenerate the v0.2.0 general-input demo: `python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/guardian-academy.json --output docs/guardian.html`. Screenshots are actual browser captures; visual inspection remains necessary.
+To regenerate the v0.2.1 general-input demo: `python3 simplicity-builder/scripts/build.py --input simplicity-builder/examples/guardian-academy.json --output docs/guardian.html`. Screenshots are actual browser captures; visual inspection remains necessary.
 
 **Share metadata:** `docs/demo-inputs/` is the only place that stores demo-specific canonical/share URLs. Reusable `examples/` and installable skill fixtures deliberately omit `world.share` so copying an example never points a new portfolio back at this demo gallery.
+
+The v0.2.1 environment-first expansion adds `meeting-room.html`, `playground.html` and `farm.html`, generated respectively from `simplicity-builder/examples/{meeting-room,playground,farm}-sample.json`. These are procedural fallback examples, **not cinematic-quality certifications**. Each includes accessible clickable objects and independently composed portrait SVGs.

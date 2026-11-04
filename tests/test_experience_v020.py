@@ -94,7 +94,7 @@ class ExperienceTests(unittest.TestCase):
             directory = Path(folder)
             archive = directory / 'simplicity-builder.zip'
             result = subprocess.run([sys.executable, str(ROOT / 'scripts/package_skill.py'),
-                                     '--output', str(archive), '--tag', 'v0.2.0'], capture_output=True, text=True)
+                                     '--output', str(archive), '--tag', 'v0.2.1'], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             with zipfile.ZipFile(archive) as z:
                 z.extractall(directory)

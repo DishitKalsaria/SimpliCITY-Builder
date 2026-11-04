@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 import html
-import json
 import re
 import shutil
 import subprocess
@@ -65,7 +64,8 @@ def rewrite_social(html_source: str, url: str, image_url: str, image_alt: str) -
     first = CANONICAL_RE.sub('', first)
     if 'property="og:title"' not in first or 'property="og:description"' not in first:
         raise ValueError('Required Open Graph title/description missing')
-    escape = lambda s: html.escape(s, quote=True)
+    def escape(value: str) -> str:
+        return html.escape(value, quote=True)
     title_match = re.search(r'<title>(.*?)</title>', first, flags=re.I | re.S)
     title = html.unescape(title_match.group(1)) if title_match else 'My interactive world'
     desc_match = re.search(r'<meta property="og:description" content="([^"]*)"', first, flags=re.I)

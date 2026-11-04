@@ -8,6 +8,7 @@ import html
 import json
 import re
 from pathlib import Path
+from typing import NoReturn
 from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
 import sys
@@ -26,7 +27,7 @@ THEMES = {
 }
 
 
-def fail(message: str) -> None:
+def fail(message: str) -> NoReturn:
     raise ValueError(message)
 
 
@@ -491,10 +492,14 @@ def object_scene(theme: str, sections: list[dict]) -> str:
     or artificial overlay hit targets are generated.
     """
     n = len(sections)
-    if n == 1: positions = [(310, 275)]
-    elif n == 2: positions = [(186, 300), (438, 277)]
-    elif n == 3: positions = [(154, 322), (463, 322), (313, 170)]
-    elif n == 4: positions = [(153, 187), (455, 191), (156, 372), (456, 371)]
+    if n == 1:
+        positions = [(310, 275)]
+    elif n == 2:
+        positions = [(186, 300), (438, 277)]
+    elif n == 3:
+        positions = [(154, 322), (463, 322), (313, 170)]
+    elif n == 4:
+        positions = [(153, 187), (455, 191), (156, 372), (456, 371)]
     else:
         positions = [(x, y) for y in (185, 365) for x in (95, 235, 385, 525)][:n]
     top = ('<svg viewBox="0 0 620 520"><defs>'
@@ -609,6 +614,7 @@ def generate(data: dict, background_image: str = '') -> str:
         fail('Image-assisted world requires --background-image with a local PNG/JPEG/WebP')
     profile, world, sections = data['profile'], data['world'], data['sections']
     is_photo = world.get('content_kind') == 'photo'
+    is_scenic = not is_photo and world.get('artwork_mode') == 'image-assisted'
     if is_photo and not background_image:
         fail('Photo experiences require --source-image; generic procedural art cannot substitute for the photo')
     theme_name = world['theme']
@@ -666,7 +672,7 @@ def generate(data: dict, background_image: str = '') -> str:
         'THEME':e(theme_name), 'THEME_FAMILY':e(family_for(' '.join((theme_name, world['title'], world.get('visual_name') or '')))), 'THEME_LABEL':e(world.get('visual_name') or theme['label']),
         'SCENE':scene, 'SCENE_MOBILE':scene_mobile, 'SCENE_BACKDROP':background,
         'SCENE_PLAQUES':labels, 'PHOTO_ANCHORS':photo_hotspots,
-        'PHOTO_CLASS':('photo-mode ' if is_photo else '') + ('single-mode' if len(sections) == 1 else ''),
+        'PHOTO_CLASS':('photo-mode ' if is_photo else 'scenic-art-mode ' if is_scenic else '') + ('single-mode' if len(sections) == 1 else ''),
         'FEATURED_ACTION':featured,
         'LANDMARKS':'\n'.join(list_items),
         'DIALOGS':'\n'.join(dialogs), 'RECRUITER_ENTRIES':'\n'.join(recruiter_items),

@@ -1,8 +1,8 @@
-# SimpliCITY Builder v0.2.0 — stable-release acceptance
+# SimpliCITY Builder v0.2.1 — stable-release acceptance
 
 **This checklist is a gate; blank items are not passing results.**
 
-- [ ] All v0.1.5 regression tests and added v0.2.0 tests pass.
+- [ ] All v0.1.5 regression tests and added v0.2.1 tests pass.
 - [ ] Skill ZIP extracts and runs both legacy résumé and new experience examples without accessing the repository root.
 - [ ] Versions match in SKILL metadata, H1, README, latest CHANGELOG entry and tag; no escaping skill paths.
 - [ ] Installed-skill chat successfully builds from an owner-consented real résumé with no invented career claims.
@@ -10,11 +10,15 @@
 - [ ] Document-reading chat turns a real authorized PDF/document into source-grounded chapters and an interactive exhibition.
 - [ ] Retrieval-capable chat transforms an authorized link, preserving source attribution and without copying entire copyrighted content.
 - [ ] Prompt-only chat makes a fictional world with imaginative art; no fiction is represented as verified information.
+- [ ] All 1–8 landmarks in a meeting room, playground and farm pass desktop, compact phone and landscape browser checks; inspect artistic coherence separately.
 - [ ] New arbitrary superhero-team prompt yields recognizable, original, unbranded art and clickable named SVG objects.
 - [ ] Host without image tools still produces coherent procedural SVG; limitations clearly disclosed.
+- [ ] Compare v0.2.1 procedural volcanic, guardian and space scenes against v0.2.0 at desktop and phone sizes; approve architectural silhouette, lighting, contrast, cohesion and layout.
+- [ ] Test scenic-art mode with approved label-free scenery, authored desktop/mobile geometry and 5-viewport browser review; reject missing geometry and unintended photo-style pan/fit behavior.
+- [ ] Verify custom image-assisted artwork is original/authorized; do not ship source documents, false claims or baked-in UI labels.
 - [ ] Desktop, narrow phone, landscape mobile, keyboard, search, overview, reduced-motion, and print verified; no unintended document scroll.
 - [ ] Contrast and visual coherence reviewed using screenshots (no unsupported WCAG certification claim).
-- [ ] GitHub Pages live gallery and all six demos checked; 404 resolved or clearly disclosed.
+- [ ] GitHub Pages live gallery and all eleven demos checked; 404 resolved or clearly disclosed.
 - [ ] Test opt-in publish preparation and ensure no remote deployment without explicit permission.
 - [ ] Run or explicitly skip optional Chromium/Playwright QA and state which.
 - [ ] No actual résumés/photos, secrets, private evidence or raw extracted text in repository or release assets.

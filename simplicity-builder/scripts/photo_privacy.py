@@ -20,7 +20,8 @@ PNG_SIGNATURE = b'\x89PNG\r\n\x1a\n'
 def jpeg_clean(raw: bytes) -> bytes:
     if not raw.startswith(b'\xff\xd8\xff'):
         raise ValueError('Malformed JPEG')
-    result = bytearray(raw[:2]); offset = 2
+    result = bytearray(raw[:2])
+    offset = 2
     # Retain the byte-for-byte entropy-coded scan after SOS.
     while offset < len(raw):
         if raw[offset] != 0xff:
@@ -30,7 +31,8 @@ def jpeg_clean(raw: bytes) -> bytes:
             offset += 1
         if offset == len(raw):
             raise ValueError('Truncated JPEG')
-        marker = raw[offset]; offset += 1
+        marker = raw[offset]
+        offset += 1
         if marker in (0xd9, 0x01) or 0xd0 <= marker <= 0xd7:
             result.extend(raw[marker_start:offset])
             if marker == 0xd9:
@@ -45,7 +47,8 @@ def jpeg_clean(raw: bytes) -> bytes:
         if length < 2 or end > len(raw):
             raise ValueError('Invalid JPEG segment length')
         if marker == 0xda:
-            result.extend(raw[marker_start:]);return bytes(result)
+            result.extend(raw[marker_start:])
+            return bytes(result)
         if marker not in (0xe1, 0xed):  # APP1 / APP13: EXIF, XMP, Photoshop/IPTC
             result.extend(raw[marker_start:end])
         offset = end
@@ -55,7 +58,9 @@ def jpeg_clean(raw: bytes) -> bytes:
 def png_clean(raw: bytes) -> bytes:
     if not raw.startswith(PNG_SIGNATURE):
         raise ValueError('Malformed PNG')
-    result = bytearray(PNG_SIGNATURE); offset = 8; found_end = False
+    result = bytearray(PNG_SIGNATURE)
+    offset = 8
+    found_end = False
     # Remove location-bearing metadata; keep compressed pixels/chunks unchanged.
     excluded = {b'eXIf', b'tEXt', b'zTXt', b'iTXt'}
     while offset + 12 <= len(raw):
@@ -82,11 +87,14 @@ def webp_clean(raw: bytes) -> bytes:
         raise ValueError('Malformed WebP')
     if int.from_bytes(raw[4:8], 'little') + 8 != len(raw):
         raise ValueError('WebP RIFF size mismatch')
-    chunks = []; offset = 12
+    chunks = []
+    offset = 12
     while offset + 8 <= len(raw):
-        tag=raw[offset:offset+4]; size=int.from_bytes(raw[offset+4:offset+8], 'little')
+        tag=raw[offset:offset+4]
+        size=int.from_bytes(raw[offset+4:offset+8], 'little')
         end=offset+8+size+(size&1)
-        if end > len(raw): raise ValueError('Invalid WebP chunk size')
+        if end > len(raw):
+            raise ValueError('Invalid WebP chunk size')
         payload=bytearray(raw[offset+8:offset+8+size])
         if tag == b'VP8X' and len(payload) >= 10:
             payload[0] &= ~0x0c  # EXIF 0x08, XMP 0x04 in VP8X feature flags
@@ -102,11 +110,14 @@ def webp_clean(raw: bytes) -> bytes:
 def clean_image(path: Path) -> tuple[bytes, str]:
     raw = path.read_bytes()
     if raw.startswith(PNG_SIGNATURE):
-        mime='image/png'; cleaned=png_clean(raw)
+        mime='image/png'
+        cleaned=png_clean(raw)
     elif raw.startswith(b'\xff\xd8\xff'):
-        mime='image/jpeg'; cleaned=jpeg_clean(raw)
+        mime='image/jpeg'
+        cleaned=jpeg_clean(raw)
     elif raw.startswith(b'RIFF') and raw[8:12] == b'WEBP':
-        mime='image/webp'; cleaned=webp_clean(raw)
+        mime='image/webp'
+        cleaned=webp_clean(raw)
     else:
         raise ValueError('Expected a valid JPEG, PNG, or WebP file')
     # Optional Pillow: downscale only when present AND > 2000px long side.

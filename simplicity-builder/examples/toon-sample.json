@@ -1,0 +1,59 @@
+{
+  "source": {
+    "kind": "prompt",
+    "title": "Fictional Toon City",
+    "fictional": true
+  },
+  "experience": {
+    "title": "The Toon City Studio",
+    "theme": "toon-cartoon-city",
+    "mode": "world",
+    "tagline": "Four colorful original districts full of playful discoveries"
+  },
+  "chapters": [
+    {
+      "id": "giggle-gateway",
+      "title": "Giggle Gateway",
+      "summary": "A big bright gateway welcomes imaginary explorers.",
+      "items": [
+        {
+          "title": "Giggle Gateway Adventure",
+          "description": "Fictional visitors discover creative inventions and original playful stories."
+        }
+      ]
+    },
+    {
+      "id": "idea-tower",
+      "title": "Idea Tower",
+      "summary": "A colorful tower of original invention.",
+      "items": [
+        {
+          "title": "Idea Tower Adventure",
+          "description": "Fictional visitors discover creative inventions and original playful stories."
+        }
+      ]
+    },
+    {
+      "id": "bubble-lab",
+      "title": "Bubble Lab",
+      "summary": "Playful inventions float through an animated laboratory.",
+      "items": [
+        {
+          "title": "Bubble Lab Adventure",
+          "description": "Fictional visitors discover creative inventions and original playful stories."
+        }
+      ]
+    },
+    {
+      "id": "story-station",
+      "title": "Story Station",
+      "summary": "A bright station where fictional stories begin.",
+      "items": [
+        {
+          "title": "Story Station Adventure",
+          "description": "Fictional visitors discover creative inventions and original playful stories."
+        }
+      ]
+    }
+  ]
+}

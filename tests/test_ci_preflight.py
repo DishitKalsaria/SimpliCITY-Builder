@@ -24,7 +24,8 @@ class CiPreflightTests(unittest.TestCase):
                                 cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         for relative in ('simplicity-builder/scripts/scene_art.py',
-                         'simplicity-builder/scripts/build_experience.py'):
+                         'simplicity-builder/scripts/build_experience.py',
+                         'simplicity-builder/scripts/build_portfolio.py'):
             digest = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
             self.assertIn(f'SHA256 {digest}  {relative}', result.stdout)
 

@@ -1,5 +1,4 @@
 import copy
-import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -43,7 +42,8 @@ class InteractiveWorldTests(unittest.TestCase):
     def test_missing_landmark_label_rejected(self):
         data=copy.deepcopy(self.data)
         data['world']['landmarks'][1]['section_id']='not-a-section'
-        with self.assertRaisesRegex(ValueError,'exactly one'):validate_model(data)
+        with self.assertRaisesRegex(ValueError,'exactly one'):
+            validate_model(data)
 
     def test_scene_objects_are_real_svg_geometry(self):
         data=copy.deepcopy(self.data)
@@ -57,12 +57,14 @@ class InteractiveWorldTests(unittest.TestCase):
     def test_rejects_unmapped_svg_landmark(self):
         data=copy.deepcopy(self.data)
         data['world']['scene_svg']='<svg viewBox="0 0 620 520"><g id="landmark-experience"><rect x="50" y="80" width="100" height="100" fill="#aabbcc"/></g></svg>'
-        with self.assertRaisesRegex(ValueError,'each section needs exactly one'):generate(data)
+        with self.assertRaisesRegex(ValueError,'each section needs exactly one'):
+            generate(data)
 
     def test_rejects_duplicate_svg_landmarks_and_unsafe_ids(self):
         data=copy.deepcopy(self.data)
         data['world']['scene_svg']='<svg viewBox="0 0 620 520"><g id="landmark-experience"><circle cx="100" cy="100" r="35" fill="#aabbcc"/></g><rect id="landmark-experience" x="350" y="90" width="90" height="90" fill="#aabbcc"/><g id="landmark-projects"><rect x="150" y="250" width="90" height="90" fill="#aabbcc"/></g></svg>'
-        with self.assertRaisesRegex(ValueError,'duplicate'):generate(data)
+        with self.assertRaisesRegex(ValueError,'duplicate'):
+            generate(data)
 
     def test_complete_open_graph_metadata_when_image_given(self):
         data=copy.deepcopy(self.data)
@@ -71,12 +73,14 @@ class InteractiveWorldTests(unittest.TestCase):
         for frag in ('property="og:image"','property="og:url"','name="twitter:card" content="summary_large_image"','name="twitter:image"'):
             self.assertIn(frag,html)
         data['world']['share']['image']='javascript:alert(1)'
-        with self.assertRaises(ValueError):generate(data)
+        with self.assertRaises(ValueError):
+            generate(data)
 
     def test_reject_false_quote_attribution(self):
         data=copy.deepcopy(self.data)
         del data['sections'][1]['entries'][1]['attribution']
-        with self.assertRaisesRegex(ValueError,'attribution'):validate_model(data)
+        with self.assertRaisesRegex(ValueError,'attribution'):
+            validate_model(data)
 
     def test_fact_evidence_catches_unmatched_metric_and_employer(self):
         data=copy.deepcopy(self.data)
@@ -92,4 +96,5 @@ class InteractiveWorldTests(unittest.TestCase):
         resume='Jordan Lee — Analyst at Cloud Company. Reduced effort 97% in 2024. Python automation. Improved workflows by 97%.'
         self.assertEqual(evidence_gaps(data,resume),[])
 
-if __name__=='__main__':unittest.main()
+if __name__=='__main__':
+    unittest.main()
