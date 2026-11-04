@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import shutil
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -41,7 +41,7 @@ def source_fingerprints() -> None:
 
 
 def check_tools(names: tuple[str, ...]) -> bool:
-    missing = [name for name in names if shutil.which(name) is None]
+    missing = [name for name in names if importlib.util.find_spec(name) is None]
     if missing:
         print(f'Missing developer tool(s): {", ".join(missing)}', file=sys.stderr)
         print('Install them with: python -m pip install -r requirements-dev.txt', file=sys.stderr)
@@ -69,8 +69,8 @@ def main() -> int:
     if not check_tools(required_tools):
         return 2
     commands = {
-        'lint': ['ruff', 'check', *RUFF_TARGETS, '--select', 'E4,E7,E9,F821,F822,F823'],
-        'types': ['mypy', *MYPY_TARGETS, '--follow-imports=skip', '--ignore-missing-imports'],
+        'lint': [sys.executable, '-m', 'ruff', 'check', *RUFF_TARGETS, '--select', 'E4,E7,E9,F821,F822,F823'],
+        'types': [sys.executable, '-m', 'mypy', *MYPY_TARGETS, '--follow-imports=skip', '--ignore-missing-imports'],
         'tests': [sys.executable, '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
     }
     selected = ('lint', 'types', 'tests') if args.step == 'all' else (args.step,)
