@@ -166,6 +166,16 @@ def check(path: Path, browser, screenshots: Path | None = None, axe_script: Path
             expected='mobile' if width<=680 else 'desktop'
             if variant!=expected:
                 raise AssertionError(f'{label}: wrong active scene {variant}')
+        # This approved gallery title must remain one line at 390px.
+        # Font fallback on Ubuntu previously wrapped it, shrinking the scene
+        # and causing a 28.78% guardian-mobile golden-image drift.
+        if path.stem == 'guardian' and label == 'mobile':
+            wrapped = page.locator('.intro h1').evaluate('''heading => {
+              const height=heading.getBoundingClientRect().height;
+              return height > parseFloat(getComputedStyle(heading).lineHeight)+2;
+            }''')
+            if wrapped:
+                raise AssertionError('guardian mobile heading unexpectedly wraps; check system font metrics')
         if screenshots:
             screenshots.mkdir(parents=True,exist_ok=True)
             page.screenshot(path=str(screenshots/f'{path.stem}-{label}.png'))

@@ -126,6 +126,11 @@
     }
     @media(max-width:680px) and (min-height:560px){.photo-mode .scene-backdrop{object-fit:cover}}
     @media(max-width:680px){body:is([data-count="7"],[data-count="8"]) .scene-plaque{max-width:46%;font-size:9px;padding:1px 3px;line-height:1.08}}
+    /* The mobile Guardian title sits beside the location count. Wider Linux
+       system-font metrics can wrap it, shift the stage and invalidate the
+       approved composition. Reserve a little typographic width without
+       hiding content or changing the visual-regression tolerance. */
+    @media(min-width:381px) and (max-width:680px){body[data-family="guardian"] .intro h1{font-size:clamp(17px,4.6vw,27px)}}
     @media(max-width:380px){#start-tour::before{content:"▶";font-size:17px;line-height:1} .tool{font-size:0;gap:0}.tool .ui-icon{width:20px;height:20px}.scene-tooltip{font-size:10px}.scene-plaque{font-size:10px;padding:4px 7px}.overview{display:none}}
     /* On short landscape screens, dense scenes have room beside landmarks but
        little vertical room. Wider plaques prevent font-dependent line wrapping. */
